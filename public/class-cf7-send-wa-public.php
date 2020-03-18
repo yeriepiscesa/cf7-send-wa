@@ -97,26 +97,24 @@ class Cf7_Send_Wa_Public {
 
 	public function render_contact_form( $atts ) {
         $html = '';
-        if( is_plugin_active( 'contact-form-7/wp-contact-form-7.php' ) ) {
-            wp_enqueue_script( 'underscore' );
-            $shortcode = '[contact-form-7';
-            if( isset( $atts['number'] ) && $atts['number'] != '' ) {
-                $this->numbers[$atts['id']] = $atts['number'];
-                unset( $atts['number'] );
-            } else {
-                $this->numbers[$atts['id']] = get_option( 'cf7sendwa_number', '628123456789' );
-            }
-            foreach( $atts as $key=>$val ) {
-                $shortcode .= ' ' . $key .'="' . $val . '"';
-            }
-            $shortcode .= ']';
-            $html = do_shortcode( $shortcode );
-            array_push( $this->ids, intval($atts['id']) );
-            $_mail = get_post_meta( $atts['id'], '_mail', true );
-            if( $_mail && isset( $_mail['body'] ) ) {
-                $this->bodies[$atts['id']] = $_mail['body'];
-            }        
+        wp_enqueue_script( 'underscore' );
+        $shortcode = '[contact-form-7';
+        if( isset( $atts['number'] ) && $atts['number'] != '' ) {
+            $this->numbers[$atts['id']] = $atts['number'];
+            unset( $atts['number'] );
+        } else {
+            $this->numbers[$atts['id']] = get_option( 'cf7sendwa_number', '628123456789' );
         }
+        foreach( $atts as $key=>$val ) {
+            $shortcode .= ' ' . $key .'="' . $val . '"';
+        }
+        $shortcode .= ']';
+        $html = do_shortcode( $shortcode );
+        array_push( $this->ids, intval($atts['id']) );
+        $_mail = get_post_meta( $atts['id'], '_mail', true );
+        if( $_mail && isset( $_mail['body'] ) ) {
+            $this->bodies[$atts['id']] = $_mail['body'];
+        }        
 		return $html;
 	}
     
@@ -136,9 +134,22 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 		if( _.indexOf( cf7wa_ids, the_id ) ) {
 			var inputs = event.detail.inputs;
 			var the_text = cf7wa_bodies[the_id];
+			var input_array = {};
+			
 			$.each( inputs, function( index, detail ) {
 				the_text = the_text.replace( '[' + detail.name + ']', detail.value );
-			} );			
+				if( detail.name.indexOf( '[]' ) >= 0 ) {
+					var _key = detail.name.replace('[]','');
+					if( input_array[ _key ] == undefined ) {
+						input_array[ _key ] = [];
+					}
+					input_array[ _key ].push( detail.value );
+				}
+			} );	
+			_.each( input_array, function( val, key, list ){
+				the_text = the_text.replace( '[' + key + ']', val.join(", ") );
+			} );
+			
 			var the_phone = cf7wa_numbers[ the_id ];
             <?php if( $this->use_twilio ): ?>
                 $( '.wpcf7-response-output' ).css( 'display', 'none' );

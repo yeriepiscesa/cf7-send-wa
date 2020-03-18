@@ -1,7 +1,7 @@
 # cf7-send-wa
 Send Contact Form 7 message to WhatsApp Message.
 
-This is a WordPress plugin, require Contact Form 7 plugin to be activated.
+This is a WordPress plugin, require Contact Form 7 plugin to be activated.\
 For Twilio integration require PHP 7.2 or newer.
 
 - Download the stable version at https://solusipress.com/download/contact-form-7-send-to-whatsapp/

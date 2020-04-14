@@ -135,6 +135,7 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 		var the_id = event.detail.contactFormId;
 		if( _.indexOf( cf7wa_ids, the_id ) ) {
 			var inputs = event.detail.inputs;
+			var api_response = event.detail.apiResponse;
 			var the_text = cf7wa_bodies[the_id];
 			var input_array = {};
 			$.each( inputs, function( index, detail ) {
@@ -166,6 +167,14 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
                     }
                 });
             <?php else: ?>
+            if( api_response.attachments != undefined ) {
+		        if( api_response.attachments.length ) {
+			        the_text += "\n\n"+"*Attachments*";
+		            _.each( api_response.attachments, function( url, index, list ){
+			            the_text += "\n"+url;
+		            } );
+	            }
+            }
             the_text = window.encodeURIComponent( the_text );
 			var url = 'https://api.whatsapp.com/send?phone=' + the_phone + '&text=' + the_text;
 			var isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
@@ -221,29 +230,27 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 	 */     
     public function prepare_attachments( $contact_form ) {
 	    
-	    if( $this->use_twilio ) {
-		
-		    $attachments = $this->get_attachments( $contact_form );
-		    if( !empty( $attachments ) ) {
-			    $wp_upload_dir = wp_upload_dir();
-			    $parent_post_id = null;
-			    foreach( $attachments as $file_path ) {
-					$file_name = basename( $file_path );
-					$new_file_name = date('Ymdhis').'.'.uniqid().'-'.$file_name;
-					$new_file_path = $wp_upload_dir['basedir'].'/cf7sendwa/' . $new_file_name;
-				    copy( $file_path, $new_file_path );
-					$file_type = wp_check_filetype( $file_name, null );
-					$attachment_title = sanitize_file_name( pathinfo( $file_name, PATHINFO_FILENAME ) );
-					$post_info = array(
-						'guid'           => $wp_upload_dir['baseurl']. '/cf7sendwa/' . $new_file_name,
-						'post_mime_type' => $file_type['type'],
-						'post_title'     => $attachment_title,
-						'post_content'   => '',
-						'post_status'    => 'inherit',
-					);				
-				    if( wp_insert_attachment( $post_info, $new_file_path, $parent_post_id ) ) {
-					    array_push( $this->attachments, $post_info['guid'] );
-				    }
+	    $attachments = $this->get_attachments( $contact_form );
+	    $opt_attachments = array();
+	    if( !empty( $attachments ) ) {
+		    $wp_upload_dir = wp_upload_dir();
+		    $parent_post_id = null;
+		    foreach( $attachments as $file_path ) {
+				$file_name = basename( $file_path );
+				$new_file_name = date('Ymdhis').'.'.uniqid().'-'.$file_name;
+				$new_file_path = $wp_upload_dir['basedir'].'/cf7sendwa/' . $new_file_name;
+			    copy( $file_path, $new_file_path );
+				$file_type = wp_check_filetype( $file_name, null );
+				$attachment_title = sanitize_file_name( pathinfo( $file_name, PATHINFO_FILENAME ) );
+				$post_info = array(
+					'guid'           => $wp_upload_dir['baseurl']. '/cf7sendwa/' . $new_file_name,
+					'post_mime_type' => $file_type['type'],
+					'post_title'     => $attachment_title,
+					'post_content'   => '',
+					'post_status'    => 'inherit',
+				);		
+			    if( wp_insert_attachment( $post_info, $new_file_path, $parent_post_id ) ) {
+				    array_push( $this->attachments, $post_info['guid'] );
 			    }
 		    }
 	    }
@@ -282,6 +289,20 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 			}
 		}
 		return $attachments;
+    }
+    
+    
+    /*
+	 * Feedback ajax json echo 
+	 * @since 0.5.0
+	 * @access public
+	 */
+    public function feedback_ajax_json_echo( $response, $result ) {
+	    
+	    if( !empty( $this->attachments ) ) {
+		    $response['attachments'] = $this->attachments;
+	    }
+	    return $response;
     }
     
 }

@@ -179,6 +179,7 @@ class Cf7_Send_Wa {
         $this->loader->add_filter( 'wpcf7_skip_mail', $plugin_public, 'check_skip_mail', 10, 2 );
         $this->loader->add_action( 'wpcf7_before_send_mail', $plugin_public, 'prepare_attachments', 15, 1 );
 		$this->loader->add_action( 'wp_footer', $plugin_public, 'render_script_footer', 99 );
+		$this->loader->add_filter( 'wpcf7_ajax_json_echo', $plugin_public, 'feedback_ajax_json_echo', 10, 2 );
         
         $this->loader->add_action( 'wp_ajax_send_twilio', $plugin_public, 'send_twilio' );
         $this->loader->add_action( 'wp_ajax_nopriv_send_twilio', $plugin_public, 'send_twilio' );

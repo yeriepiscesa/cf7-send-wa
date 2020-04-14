@@ -47,6 +47,8 @@ class Cf7_Send_Wa_Public {
     protected $use_twilio = false;
     protected $twilio_sid = null;
     protected $twilio_token = null;
+    
+    protected $attachments = array();
 
 	/**
 	 * Initialize the class and set its properties.
@@ -135,7 +137,6 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 			var inputs = event.detail.inputs;
 			var the_text = cf7wa_bodies[the_id];
 			var input_array = {};
-			
 			$.each( inputs, function( index, detail ) {
 				the_text = the_text.replace( '[' + detail.name + ']', detail.value );
 				if( detail.name.indexOf( '[]' ) >= 0 ) {
@@ -198,14 +199,89 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
     public function send_twilio() {
         check_ajax_referer( 'cf7sendwa-twilio-action', 'security' );
         $twilio = new \Twilio\Rest\Client( $this->twilio_sid, $this->twilio_token );
+        $inputs = array(
+            "body" => $_POST['message'],
+            "from" => "whatsapp:+" . get_option( 'cf7sendwa_twilio_from', '14155238886' )
+        );
+        if( !empty( $this->attachments ) ) {
+	        $inputs[ 'mediaUrl' ] = $this->attachments;
+        }
         $message = $twilio->messages
                  ->create(
                     "whatsapp:+" . $_POST['to_number'],
-                    array(
-                        "body" => $_POST['message'],
-                        "from" => "whatsapp:+" . get_option( 'cf7sendwa_twilio_from', '14155238886' )
-                    )
+                    $inputs
                  );
         wp_die();
     }
+
+	/**
+	 * Prepare attachments
+	 * @since 0.5.0
+	 * @access public
+	 */     
+    public function prepare_attachments( $contact_form ) {
+	    
+	    if( $this->use_twilio ) {
+		
+		    $attachments = $this->get_attachments( $contact_form );
+		    if( !empty( $attachments ) ) {
+			    $wp_upload_dir = wp_upload_dir();
+			    $parent_post_id = null;
+			    foreach( $attachments as $file_path ) {
+					$file_name = basename( $file_path );
+					$new_file_name = date('Ymdhis').'.'.uniqid().'-'.$file_name;
+					$new_file_path = $wp_upload_dir['basedir'].'/cf7sendwa/' . $new_file_name;
+				    copy( $file_path, $new_file_path );
+					$file_type = wp_check_filetype( $file_name, null );
+					$attachment_title = sanitize_file_name( pathinfo( $file_name, PATHINFO_FILENAME ) );
+					$post_info = array(
+						'guid'           => $wp_upload_dir['baseurl']. '/cf7sendwa/' . $new_file_name,
+						'post_mime_type' => $file_type['type'],
+						'post_title'     => $attachment_title,
+						'post_content'   => '',
+						'post_status'    => 'inherit',
+					);				
+				    if( wp_insert_attachment( $post_info, $new_file_path, $parent_post_id ) ) {
+					    array_push( $this->attachments, $post_info['guid'] );
+				    }
+			    }
+		    }
+	    }
+	    
+    }
+    
+    /*
+	 * Get attachments 
+	 * @since 0.5.0
+	 * @access private
+	 */
+    private function get_attachments( $contact_form ) {
+		$attachments = array();
+		if ( $submission = WPCF7_Submission::get_instance() ) {
+			$uploaded_files = $submission->uploaded_files();
+		}
+		$template = $contact_form->prop('mail');
+		foreach ( (array) $uploaded_files as $name => $path ) {
+			if ( false !== strpos( $template, "[${name}]" )
+			and ! empty( $path ) ) {
+				$attachments[] = $path;
+			}
+		}
+		foreach ( explode( "\n", $template ) as $line ) {
+			$line = trim( $line );
+			if ( '[' == substr( $line, 0, 1 ) ) {
+				continue;
+			}
+			$path = path_join( WP_CONTENT_DIR, $line );
+			if ( ! wpcf7_is_file_path_in_content_dir( $path ) ) {
+				continue;
+			}
+			if ( is_readable( $path )
+			and is_file( $path ) ) {
+				$attachments[] = $path;
+			}
+		}
+		return $attachments;
+    }
+    
 }

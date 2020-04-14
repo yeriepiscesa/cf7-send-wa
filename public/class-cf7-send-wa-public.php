@@ -155,13 +155,19 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 			var the_phone = cf7wa_numbers[ the_id ];
             <?php if( $this->use_twilio ): ?>
                 $( '.wpcf7-response-output' ).css( 'display', 'none' );
+                var twilio_send_data = {
+                    'action': 'send_twilio', 'to_number': the_phone, 
+                    'message': the_text, 'security': cf7wa_security 
+                };
+				if( api_response.attachments != undefined ) {
+					if( api_response.attachments.length ) {
+						twilio_send_data.attachments = api_response.attachments;
+					}
+                }
                 $.ajax({
                     url: cf7wa_ajaxurl,
                     type: 'POST',
-                    data: { 
-                        'action': 'send_twilio', 'to_number': the_phone, 
-                        'message': the_text, 'security': cf7wa_security 
-                    },
+                    data: twilio_send_data,
                     success: function( response ) {
                         $( '.wpcf7-response-output' ).css( 'display', 'block' );
                     }
@@ -212,8 +218,8 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
             "body" => $_POST['message'],
             "from" => "whatsapp:+" . get_option( 'cf7sendwa_twilio_from', '14155238886' )
         );
-        if( !empty( $this->attachments ) ) {
-	        $inputs[ 'mediaUrl' ] = $this->attachments;
+        if( !empty( $_POST['attachments'] ) ) {
+	        $inputs[ 'mediaUrl' ] = $_POST['attachments'];
         }
         $message = $twilio->messages
                  ->create(

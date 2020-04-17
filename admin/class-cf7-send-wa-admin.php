@@ -74,6 +74,7 @@ class Cf7_Send_Wa_Admin {
 		 */
 
 		wp_register_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/cf7-send-wa-admin.css', array(), $this->version, 'all' );
+		wp_register_style( 'select2', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/select2.min.css' );
 
 	}
 
@@ -97,6 +98,7 @@ class Cf7_Send_Wa_Admin {
 		 */
 
 		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cf7-send-wa-admin.js', array( 'jquery' ), $this->version, false );
+		wp_register_script( 'select2', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/select2.min.js' );
 
 	}
     
@@ -110,6 +112,14 @@ class Cf7_Send_Wa_Admin {
     }
 
     public function wa_settings() {
+	    
+	    wp_enqueue_style( 'select2' );
+	    wp_enqueue_script( 'select2' );
+	    wp_localize_script( $this->plugin_name, 'cf7sendwa', array(
+			'ajaxurl' => admin_url( 'admin-ajax.php' ),
+	        'security' => wp_create_nonce( 'cf7sendwa-settings' ),
+	    ) );
+	    wp_enqueue_script( $this->plugin_name );
         
         $settings_saved = false;
         if( isset( $_POST ) && !empty( $_POST ) ) {
@@ -118,6 +128,8 @@ class Cf7_Send_Wa_Admin {
             $disable_mail = $_POST['disable_send_mail'];
             if( $disable_mail != '1' ) $disable_mail = '0';
             update_option( 'cf7sendwa_disablemail', $disable_mail );
+            
+            update_option( 'cf7sendwa_woo_checkout', $_POST['woo_checkout'] );
 
             $use_twilio = $_POST['use_twilio'];
             if( $use_twilio != '1' ) $use_twilio = '0';
@@ -129,6 +141,8 @@ class Cf7_Send_Wa_Admin {
         $whatsapp_number = get_option( 'cf7sendwa_number', '628123456789' );
         $disable_mail = get_option( 'cf7sendwa_disablemail', '0' );
         
+        $woo_checkout = get_option( 'cf7sendwa_woo_checkout', '' );
+        
         $use_twilio = get_option( 'cf7sendwa_use_twilio', '0' );
         $twilio_sid = get_option( 'cf7sendwa_twilio_sid', '' );
         $twilio_token = get_option( 'cf7sendwa_twilio_token', '' );
@@ -136,5 +150,44 @@ class Cf7_Send_Wa_Admin {
         
         include 'partials/cf7-send-wa-admin-display.php';
         
+    }
+    
+    /**
+	 * Contact Forms Lookup
+	 * @since 0.6.0
+	 * @access public
+	 *
+	 */	   
+    public function contact_forms_lookup() {
+	    
+        check_ajax_referer( 'cf7sendwa-settings', 'security' );
+		$args = array(
+			'post_type' => 'wpcf7_contact_form',
+			'post_status' => 'publish',
+			'posts_per_page' => -1,
+ 			'orderby' => 'title',
+			'order' => 'ASC',
+		);   
+		if( $_POST['search'] != '' ) {
+			$args['post_title_like'] = $_POST['search'];
+		}
+		$query = new WP_Query( $args );
+		$data = array();
+		if( $query->have_posts() ) {
+			while( $query->have_posts() ) { $query->the_post();
+				$row = array(
+					'id' => get_the_ID(),
+					'text' => get_the_title()
+				);
+				array_push($data, $row);								
+			}
+			wp_reset_postdata();
+		}
+		$results = array(
+			'results' => $data
+		);
+		
+		echo json_encode( $results );
+	    wp_die();
     }
 }

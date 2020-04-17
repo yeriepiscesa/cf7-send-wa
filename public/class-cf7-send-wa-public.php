@@ -311,4 +311,18 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 	    return $response;
     }
     
+    
+    /*
+	 * Switch Woocommerce Checkout Page
+	 * @since 0.6.0
+	 * @access public
+	 */
+    public function switch_woo_checkout( $template ) {
+        if( is_checkout() && get_option( 'cf7sendwa_woo_checkout', '' ) != '' ) {
+            remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20 );
+            add_filter( 'woocommerce_show_page_title', '__return_false' );
+	        $template = plugin_dir_path( __FILE__ ) . 'template-checkout.php';
+        }
+	    return $template;
+    }
 }

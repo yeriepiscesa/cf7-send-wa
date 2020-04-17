@@ -78,6 +78,7 @@ class Cf7_Send_Wa {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
+		$this->define_global_hooks();
 
 	}
 
@@ -142,6 +143,17 @@ class Cf7_Send_Wa {
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 
 	}
+	
+	private function define_global_hooks(){
+		add_filter( 'posts_where', array( $this, 'title_like_posts_where' ), 10, 2 );
+	}
+	public function title_like_posts_where( $where, $wp_query ) {
+	    global $wpdb;
+	    if ( $post_title_like = $wp_query->get( 'post_title_like' ) ) {
+	        $where .= ' AND ' . $wpdb->posts . '.post_title LIKE \'%' . esc_sql( $wpdb->esc_like( $post_title_like ) ) . '%\'';
+	    }
+	    return $where;
+	}		
 
 	/**
 	 * Register all of the hooks related to the admin area functionality
@@ -157,6 +169,7 @@ class Cf7_Send_Wa {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
         
+        $this->loader->add_action( 'wp_ajax_select_contact_form', $plugin_admin, 'contact_forms_lookup' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'create_menu' );
         $this->loader->add_filter( 'wpcf7_contact_form_shortcode', $plugin_admin, 'cf7_extended_shortcode', 10, 3 );
 
@@ -183,6 +196,11 @@ class Cf7_Send_Wa {
         
         $this->loader->add_action( 'wp_ajax_send_twilio', $plugin_public, 'send_twilio' );
         $this->loader->add_action( 'wp_ajax_nopriv_send_twilio', $plugin_public, 'send_twilio' );
+        
+        /* woocommerce integration */
+		if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+			$this->loader->add_filter( 'template_include', $plugin_public, 'switch_woo_checkout', 50 );
+		}        
 
 	}
 

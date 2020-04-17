@@ -29,4 +29,21 @@
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 
+	 $( '.cf7-checkout-form' ).select2({
+		placeholder: "Select Contact Form", 
+		allowClear: true, 
+		ajax: {
+			method: 'post',
+			url: cf7sendwa.ajaxurl,
+			dataType: 'json',
+			data: function( params ){
+				return {
+					search: params.term,
+					action: 'select_contact_form',
+					security: cf7sendwa.security
+				};
+			}
+		}
+	 });
+
 })( jQuery );

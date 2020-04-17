@@ -48,7 +48,25 @@
                     </td>
 				</tr>
 			</tbody>
-		</table>	
+		</table>
+			
+        <h3>Woocommerce Integration</h3>
+        <table class="form-table">
+	        <tbody>
+		        <tr>
+			        <th scope="row"><label>Checkout Form</label></th>
+			        <td><select class="cf7-checkout-form" name="woo_checkout" style="width: 300px;">
+				        <?php 
+					    $cf7_woo = get_option( 'cf7sendwa_woo_checkout', '' );    
+					    if( $cf7_woo != '' ) { 
+					        $__p = get_post( $cf7_woo );
+					        echo '<option value="'. $__p->ID .'" selected="selected">' . $__p->post_title . '</option>'; 
+					    } ?>
+			        </select></td>
+		        </tr>
+	        </tbody>
+        </table>
+        
         <h3>Twilio Integration</h3>
         <p>Please create <a href="https://www.twilio.com/try-twilio" target="_blank">Twilio Account</a> to get Account SID &amp; Auth Token.</p>
 		<table class="form-table">

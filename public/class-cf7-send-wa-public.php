@@ -48,6 +48,9 @@ class Cf7_Send_Wa_Public {
     protected $twilio_sid = null;
     protected $twilio_token = null;
     
+    protected $woo_cart = null;
+    protected $woo_shippings = null;
+    
     protected $attachments = array();
 
 	/**
@@ -62,6 +65,7 @@ class Cf7_Send_Wa_Public {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 		add_shortcode( 'contact-form-7-wa', array( $this, 'render_contact_form' ) );
+		add_shortcode( 'cf7sendwa_woo_checkout', array( $this, 'render_woo_cart' ) );
         
         $use_twilio = get_option( 'cf7sendwa_use_twilio', '0' );
         if( $use_twilio == '1' ) {
@@ -91,7 +95,7 @@ class Cf7_Send_Wa_Public {
 	}
     
     public function check_skip_mail( $skip_mail, $contact_form ) {
-        if( get_option( 'cf7sendwa_disablemail', '0' ) == '1' && !empty( $this->numbers ) ) {
+        if( get_option( 'cf7sendwa_disablemail', '0' ) == '1' ) {
             $skip_mail = true;
         }
         return $skip_mail;
@@ -151,6 +155,8 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 			_.each( input_array, function( val, key, list ){
 				the_text = the_text.replace( '[' + key + ']', val.join(", ") );
 			} );
+			
+			<?php include 'partials/woo-order-details.php'; ?>
 			
 			var the_phone = cf7wa_numbers[ the_id ];
             <?php if( $this->use_twilio ): ?>
@@ -319,10 +325,47 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 	 */
     public function switch_woo_checkout( $template ) {
         if( is_checkout() && get_option( 'cf7sendwa_woo_checkout', '' ) != '' ) {
+	        $this->woo_cart = cf7sendwa_woo_get_cart_items();
+	        $this->woo_shippings = cf7sendwa_woo_get_shippings();
             remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20 );
             add_filter( 'woocommerce_show_page_title', '__return_false' );
 	        $template = plugin_dir_path( __FILE__ ) . 'template-checkout.php';
         }
 	    return $template;
+    }
+    
+    /*
+	 * Render Woocommerce cart at checkout page
+	 * @since 0.6.0
+	 * @access public
+	 */
+    public function render_woo_cart() {
+	    $html = '';
+        if( is_checkout() && get_option( 'cf7sendwa_woo_checkout', '' ) != '' ) {
+	        ob_start();
+	        include 'partials/cf7-send-wa-public-display.php';
+	        $html = ob_get_contents();
+	        ob_end_clean();
+		}			
+		return $html;    
+    }
+    
+    /**
+	 * Woocommerce order detail on mail template
+	 * @since 0.6.0
+	 * @access public
+	 */
+    public function wpcf7_woo_mail_tags( $output, $tagname, $html ){
+	    if( $tagname == 'woo-orderdetail' ) {
+		    ob_start();
+		    if( $html ) {
+		    	include 'partials/cf7-send-wa-public-display.php';
+		    } else {
+				    
+		    }
+		    $output = ob_get_contents();
+		    ob_end_clean();
+	    }
+	    return $output;
     }
 }

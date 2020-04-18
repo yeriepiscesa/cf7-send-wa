@@ -100,6 +100,8 @@ class Cf7_Send_Wa {
 	 */
 	private function load_dependencies() {
 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/functions.php';
+		
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
@@ -171,7 +173,7 @@ class Cf7_Send_Wa {
         
         $this->loader->add_action( 'wp_ajax_select_contact_form', $plugin_admin, 'contact_forms_lookup' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'create_menu' );
-        $this->loader->add_filter( 'wpcf7_contact_form_shortcode', $plugin_admin, 'cf7_extended_shortcode', 10, 3 );
+		$this->loader->add_filter( 'wpcf7_contact_form_shortcode', $plugin_admin, 'cf7_extended_shortcode', 10, 3 );
 
 	}
 
@@ -189,7 +191,7 @@ class Cf7_Send_Wa {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
         
-        $this->loader->add_filter( 'wpcf7_skip_mail', $plugin_public, 'check_skip_mail', 10, 2 );
+        $this->loader->add_filter( 'wpcf7_skip_mail', $plugin_public, 'check_skip_mail', 20, 2 );
         $this->loader->add_action( 'wpcf7_before_send_mail', $plugin_public, 'prepare_attachments', 15, 1 );
 		$this->loader->add_action( 'wp_footer', $plugin_public, 'render_script_footer', 99 );
 		$this->loader->add_filter( 'wpcf7_ajax_json_echo', $plugin_public, 'feedback_ajax_json_echo', 10, 2 );
@@ -199,6 +201,7 @@ class Cf7_Send_Wa {
         
         /* woocommerce integration */
 		if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+			$this->loader->add_filter( 'wpcf7_special_mail_tags', $plugin_public, 'wpcf7_woo_mail_tags', 10, 3 ); 
 			$this->loader->add_filter( 'template_include', $plugin_public, 'switch_woo_checkout', 50 );
 		}        
 

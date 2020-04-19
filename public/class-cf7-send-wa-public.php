@@ -51,6 +51,8 @@ class Cf7_Send_Wa_Public {
     protected $woo_is_active = false;
     protected $woo_cart = null;
     protected $woo_shippings = null;
+    protected $woo_order_id = null;
+    protected $woo_order = false;
     
     protected $attachments = array();
 
@@ -102,6 +104,10 @@ class Cf7_Send_Wa_Public {
     public function check_skip_mail( $skip_mail, $contact_form ) {
         if( get_option( 'cf7sendwa_disablemail', '0' ) == '1' ) {
             $skip_mail = true;
+        }
+	    $woo = get_option( 'cf7sendwa_woo_checkout', '' );
+        if( $contact_form->id() == $woo ) {
+	        $skip_mail = true;
         }
         return $skip_mail;
     }
@@ -203,6 +209,15 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 				window.open( url, '_blank' );
 			}			
             <?php endif; ?>
+            
+            if( api_response.woo_order != undefined ) {
+	            $( '.woocommerce-checkout-review-order-table' ).html('');
+	            var interval = window.setInterval( function(){
+		            document.location = api_response.redirect;
+		            clearInterval( interval );
+		        }, 500 );
+            }
+            
 		}
 	} );
 })(jQuery);
@@ -320,6 +335,12 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 	    if( !empty( $this->attachments ) ) {
 		    $response['attachments'] = $this->attachments;
 	    }
+	    
+	    if( $this->woo_order ) {
+		    $response['woo_order'] = $this->woo_order_id;
+		    $response['redirect'] = $this->woo_order_received_url;
+	    }
+	    
 	    return $response;
     }
     
@@ -330,12 +351,15 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 	 * @access public
 	 */
     public function switch_woo_checkout( $template ) {
-        if( is_checkout() && get_option( 'cf7sendwa_woo_checkout', '' ) != '' ) {
+        if( is_checkout() && get_option( 'cf7sendwa_woo_checkout', '' ) != '' && 
+            !is_checkout_pay_page() && !is_wc_endpoint_url( 'order-received' ) ) {
+
 	        $this->woo_cart = cf7sendwa_woo_get_cart_items();
 	        $this->woo_shippings = cf7sendwa_woo_get_shippings();
             remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20 );
             add_filter( 'woocommerce_show_page_title', '__return_false' );
 	        $template = plugin_dir_path( __FILE__ ) . 'template-checkout.php';
+	        
         }
 	    return $template;
     }
@@ -354,32 +378,6 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 	        ob_end_clean();
 		}			
 		return $html;    
-    }
-    
-    /**
-	 * Woocommerce order detail on mail template
-	 * @since 0.6.0
-	 * @access public
-	 */
-    public function wpcf7_woo_mail_tags( $output, $tagname, $html ){
-	    if( $tagname == 'woo-orderdetail' ) { 
-	        if( is_null( $this->woo_cart ) ) {
-	        	$this->woo_cart = cf7sendwa_woo_get_cart_items();
-	        }
-	        if( is_null( $this->woo_shippings ) ) {
-	        	$this->woo_shippings = cf7sendwa_woo_get_shippings();
-	        }
-	        
-		    ob_start();
-		    if( $html ) {
-		    	include 'partials/woo-order-html-mail.php';
-		    } else {
-				include 'partials/woo-order-no-html-mail.php';	    
-		    }
-		    $output = ob_get_contents();
-		    ob_end_clean();
-	    }
-	    return $output;
     }
     
     /**
@@ -433,9 +431,13 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 	            'city'       => $shipping['address_parts']['city'],
 	            'postcode'   => $shipping['address_parts']['postcode'],
 	        );
-			$order_id = cf7sendwa_woo_create_order( $order_address, $woo_settings['note'], $_posted_data );
-			update_post_meta( $order_id, 'cf7sendwa_woo_settings', $woo_settings );
+			$obj_order = cf7sendwa_woo_create_order( $order_address, $woo_settings['note'], $_posted_data );
+			$this->woo_order = true;
+			$this->woo_order_id = $obj_order->get_id();
+			$this->woo_order_received_url = $obj_order->get_checkout_order_received_url();
+			
 			WC()->cart->empty_cart();
+			WC()->session->set('cart', array());
 		}
     }
 }

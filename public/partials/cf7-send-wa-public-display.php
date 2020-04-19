@@ -11,6 +11,7 @@
  * @package    Cf7_Send_Wa
  * @subpackage Cf7_Send_Wa/public/partials
  */
+ 
 ?>
 <table class="<?php echo apply_filters( 'cf7sendwa_checkout_review_table_classes', 'shop_table woocommerce-checkout-review-order-table' ) ?>">
 	<tbody>

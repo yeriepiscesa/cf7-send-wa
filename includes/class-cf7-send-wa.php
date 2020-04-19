@@ -203,7 +203,6 @@ class Cf7_Send_Wa {
         /* woocommerce integration */
 		if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 	        $this->loader->add_action( 'wpcf7_before_send_mail', $plugin_public, 'create_woo_order', 20, 1 );
-			$this->loader->add_filter( 'wpcf7_special_mail_tags', $plugin_public, 'wpcf7_woo_mail_tags', 10, 3 ); 
 			$this->loader->add_filter( 'template_include', $plugin_public, 'switch_woo_checkout', 50 );
 		}        
 

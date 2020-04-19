@@ -48,6 +48,7 @@ class Cf7_Send_Wa_Public {
     protected $twilio_sid = null;
     protected $twilio_token = null;
     
+    protected $woo_is_active = false;
     protected $woo_cart = null;
     protected $woo_shippings = null;
     
@@ -72,6 +73,10 @@ class Cf7_Send_Wa_Public {
             $this->use_twilio = true;
             $this->twilio_sid = get_option( 'cf7sendwa_twilio_sid', '' );
             $this->twilio_token = get_option( 'cf7sendwa_twilio_token', '' );
+        }
+        
+        if( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+	        $this->woo_is_active = true;
         }
 
 	}
@@ -191,6 +196,7 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 			var url = 'https://api.whatsapp.com/send?phone=' + the_phone + '&text=' + the_text;
 			var isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
 			var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+			
 			if( isSafari && iOS ) {
 				location = url;
 			} else {
@@ -356,16 +362,80 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 	 * @access public
 	 */
     public function wpcf7_woo_mail_tags( $output, $tagname, $html ){
-	    if( $tagname == 'woo-orderdetail' ) {
+	    if( $tagname == 'woo-orderdetail' ) { 
+	        if( is_null( $this->woo_cart ) ) {
+	        	$this->woo_cart = cf7sendwa_woo_get_cart_items();
+	        }
+	        if( is_null( $this->woo_shippings ) ) {
+	        	$this->woo_shippings = cf7sendwa_woo_get_shippings();
+	        }
+	        
 		    ob_start();
 		    if( $html ) {
-		    	include 'partials/cf7-send-wa-public-display.php';
+		    	include 'partials/woo-order-html-mail.php';
 		    } else {
-				    
+				include 'partials/woo-order-no-html-mail.php';	    
 		    }
 		    $output = ob_get_contents();
 		    ob_end_clean();
 	    }
 	    return $output;
+    }
+    
+    /**
+	 * Create Woocommerce Order 
+	 * @since 0.6.0
+	 * @access public
+	 */
+    public function create_woo_order( $contact_form ) {
+		$woo_checkout_form = get_option( 'cf7sendwa_woo_checkout', '' );	    
+		if( $contact_form->id() == $woo_checkout_form ) {
+			$submission = WPCF7_Submission::get_instance();
+			if ( ! $submission || ! $posted_data = $submission->get_posted_data() ) {
+				return;
+			}
+			$_posted_data = array();
+			foreach( $posted_data as $k => $v ) {
+				$_key = str_replace( '_wpcf7', '', $k );
+				if( $k == $_key ) {
+					$_posted_data[ $k ] = $v;
+				}
+			}
+			$f1 = $contact_form->additional_setting( 'woo_checkout_first_name' );
+			$f2 = $contact_form->additional_setting( 'woo_checkout_last_name' );
+			$f3 = $contact_form->additional_setting( 'woo_checkout_email' );
+			$f4 = $contact_form->additional_setting( 'woo_checkout_phone' );
+			$f5 = $contact_form->additional_setting( 'woo_checkout_address' );
+			$f6 = $contact_form->additional_setting( 'woo_checkout_order_note' );
+			$woo_settings = array(
+				'first_name' => !empty( $f1 ) ? $f1[0]:'',
+				'last_name' => !empty( $f2 ) ? $f2[0]:'',
+				'email' => !empty( $f3 ) ? $f3[0]:'',
+				'phone' => !empty( $f4 ) ? $f4[0]:'',
+				'address' => !empty( $f5 ) ? $f5[0]:'',
+				'note' => !empty( $f6 ) ? $f6[0]:''
+			);
+			$woo_order = array();
+			foreach( $woo_settings as $key=>$val ){
+				if( isset( $posted_data[ $val ] ) ) {
+					$woo_order[ $key ] = $posted_data[ $val ];
+					unset( $_posted_data[$val] );
+				}
+			}
+			$shipping = cf7sendwa_woo_get_shippings();
+			$order_address = array(
+	            'first_name' => $woo_order[ 'first_name' ],
+	            'last_name'  => $woo_order[ 'last_name' ],
+	            'email'      => $woo_order[ 'email' ],
+	            'phone'      => $woo_order[ 'phone' ],
+	            'address_1'  => $woo_order[ 'address' ],
+	            'address_2'  => $shipping['address_parts']['address_2'], 
+	            'city'       => $shipping['address_parts']['city'],
+	            'postcode'   => $shipping['address_parts']['postcode'],
+	        );
+			$order_id = cf7sendwa_woo_create_order( $order_address, $woo_settings['note'], $_posted_data );
+			update_post_meta( $order_id, 'cf7sendwa_woo_settings', $woo_settings );
+			WC()->cart->empty_cart();
+		}
     }
 }

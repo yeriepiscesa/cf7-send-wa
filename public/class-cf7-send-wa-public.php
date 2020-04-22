@@ -187,6 +187,7 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
                     data: twilio_send_data,
                     success: function( response ) {
                         $( '.wpcf7-response-output' ).css( 'display', 'block' );
+                        redirect_woo_order_received( api_response );
                     }
                 });
             <?php else: ?>
@@ -207,19 +208,21 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 				location = url;
 			} else {
 				window.open( url, '_blank' );
-			}			
+			}		
+			redirect_woo_order_received( api_response );
             <?php endif; ?>
-            
-            if( api_response.woo_order != undefined ) {
-	            $( '.woocommerce-checkout-review-order-table' ).html('');
-	            var interval = window.setInterval( function(){
-		            document.location = api_response.redirect;
-		            clearInterval( interval );
-		        }, 3000 );
-            }
             
 		}
 	} );
+	function redirect_woo_order_received( api_response ){
+        if( api_response.woo_order != undefined ) {
+            $( '.woocommerce-checkout-review-order-table' ).html('');
+            var interval = window.setInterval( function(){
+	            document.location = api_response.redirect;
+	            clearInterval( interval );
+	        }, 3000 );
+        }            
+	}
 })(jQuery);
 </script>
 		<?php  
@@ -246,7 +249,13 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
             "To" => "whatsapp:+" . $_POST['to_number'],
         );
         if( !empty( $_POST['attachments'] ) ) {
-	        $inputs[ 'MediaUrl' ] = $_POST['attachments'];
+	        $inputs[ 'MediaUrl' ] = '';
+	        foreach( $_POST['attachments'] as $media ){
+		        if( $inputs[ 'MediaUrl' ] != '' ) {
+			        break;
+		        }
+		        $inputs[ 'MediaUrl' ] .= $media;
+	        }
         }
         $url = 'https://api.twilio.com/2010-04-01/Accounts/' . $this->twilio_sid . '/Messages.json';
         $curl = wp_remote_post( $url, array(

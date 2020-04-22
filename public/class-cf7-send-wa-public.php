@@ -215,7 +215,7 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 	            var interval = window.setInterval( function(){
 		            document.location = api_response.redirect;
 		            clearInterval( interval );
-		        }, 500 );
+		        }, 3000 );
             }
             
 		}

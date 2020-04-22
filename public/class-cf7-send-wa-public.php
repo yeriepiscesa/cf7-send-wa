@@ -240,19 +240,21 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 	 */
     public function send_twilio() {
         check_ajax_referer( 'cf7sendwa-twilio-action', 'security' );
-        $twilio = new \Twilio\Rest\Client( $this->twilio_sid, $this->twilio_token );
         $inputs = array(
-            "body" => $_POST['message'],
-            "from" => "whatsapp:+" . get_option( 'cf7sendwa_twilio_from', '14155238886' )
+            "Body" => $_POST['message'],
+            "From" => "whatsapp:+" . get_option( 'cf7sendwa_twilio_from', '14155238886' ),
+            "To" => "whatsapp:+" . $_POST['to_number'],
         );
         if( !empty( $_POST['attachments'] ) ) {
-	        $inputs[ 'mediaUrl' ] = $_POST['attachments'];
+	        $inputs[ 'MediaUrl' ] = $_POST['attachments'];
         }
-        $message = $twilio->messages
-                 ->create(
-                    "whatsapp:+" . $_POST['to_number'],
-                    $inputs
-                 );
+        $url = 'https://api.twilio.com/2010-04-01/Accounts/' . $this->twilio_sid . '/Messages.json';
+        $curl = wp_remote_post( $url, array(
+	    	'body' => $inputs,
+	    	'headers' => array(
+				'Authorization' => 'Basic ' . base64_encode($this->twilio_sid . ':' . $this->twilio_token)
+	    	)    
+        ) );
         wp_die();
     }
 

@@ -148,7 +148,9 @@ class Cf7_Send_Wa {
 	}
 	
 	private function define_global_hooks(){
+		
 		add_filter( 'posts_where', array( $this, 'title_like_posts_where' ), 10, 2 );
+		
 	}
 	
 	public function title_like_posts_where( $where, $wp_query ) {
@@ -203,8 +205,11 @@ class Cf7_Send_Wa {
         
         /* woocommerce integration */
 		if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+			$this->loader->add_action( 'wpcf7_init', $plugin_public, 'woo_checkout_cart_tag' );
 	        $this->loader->add_action( 'wpcf7_before_send_mail', $plugin_public, 'create_woo_order', 20, 1 );
 			$this->loader->add_filter( 'template_include', $plugin_public, 'switch_woo_checkout', 50 );
+			$this->loader->add_filter( 'wpcf7_display_message', $plugin_public, 'set_validation_error', 50, 2 );
+			$this->loader->add_filter( 'wpcf7_validate_cf7sendwa_woo_checkout', $plugin_public, 'validate_cart_exists', 20, 2 );
 		}        
 
 	}

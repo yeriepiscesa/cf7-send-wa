@@ -53,6 +53,7 @@ class Cf7_Send_Wa_Public {
     protected $woo_shippings = null;
     protected $woo_order_id = null;
     protected $woo_order = false;
+    protected $woo_cart_empty = false;
     
     protected $attachments = array();
 
@@ -68,7 +69,6 @@ class Cf7_Send_Wa_Public {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 		add_shortcode( 'contact-form-7-wa', array( $this, 'render_contact_form' ) );
-		add_shortcode( 'cf7sendwa_woo_checkout', array( $this, 'render_woo_cart' ) );
         
         $use_twilio = get_option( 'cf7sendwa_use_twilio', '0' );
         if( $use_twilio == '1' ) {
@@ -134,107 +134,7 @@ class Cf7_Send_Wa_Public {
         }        
 		return $html;
 	}
-    
-	public function render_script_footer() {
-		if( !empty( $this->ids ) && !$this->script_loaded ) : ob_start(); ?>
-<script type="text/javascript">
-var cf7wa_ids = <?php echo json_encode( $this->ids ); ?>; 
-var cf7wa_numbers = <?php echo json_encode( $this->numbers ); ?>; 
-var cf7wa_bodies = <?php echo json_encode( $this->bodies ) ?>;
-<?php if( $this->use_twilio ): ?>
-var cf7wa_security = '<?php echo wp_create_nonce( 'cf7sendwa-twilio-action' ); ?>';
-var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
-<?php endif; ?>
-(function( $ ){
-	document.addEventListener( 'wpcf7mailsent', function( event ) {
-		var the_id = event.detail.contactFormId;
-		if( _.indexOf( cf7wa_ids, the_id ) ) {
-			var inputs = event.detail.inputs;
-			var api_response = event.detail.apiResponse;
-			var the_text = cf7wa_bodies[the_id];
-			var input_array = {};
-			$.each( inputs, function( index, detail ) {
-				the_text = the_text.replace( '[' + detail.name + ']', detail.value );
-				if( detail.name.indexOf( '[]' ) >= 0 ) {
-					var _key = detail.name.replace('[]','');
-					if( input_array[ _key ] == undefined ) {
-						input_array[ _key ] = [];
-					}
-					input_array[ _key ].push( detail.value );
-				}
-			} );	
-			_.each( input_array, function( val, key, list ){
-				the_text = the_text.replace( '[' + key + ']', val.join(", ") );
-			} );
-			
-			<?php include 'partials/woo-order-details.php'; ?>
-			
-			var the_phone = cf7wa_numbers[ the_id ];
-            <?php if( $this->use_twilio ): ?>
-                $( '.wpcf7-response-output' ).css( 'display', 'none' );
-                var twilio_send_data = {
-                    'action': 'send_twilio', 'to_number': the_phone, 
-                    'message': the_text, 'security': cf7wa_security 
-                };
-				if( api_response.attachments != undefined ) {
-					if( api_response.attachments.length ) {
-						twilio_send_data.attachments = api_response.attachments;
-					}
-                }
-                $.ajax({
-                    url: cf7wa_ajaxurl,
-                    type: 'POST',
-                    data: twilio_send_data,
-                    success: function( response ) {
-                        $( '.wpcf7-response-output' ).css( 'display', 'block' );
-                        redirect_woo_order_received( api_response );
-                    }
-                });
-            <?php else: ?>
-            if( api_response.attachments != undefined ) {
-		        if( api_response.attachments.length ) {
-			        the_text += "\n\n"+"*Attachments*";
-		            _.each( api_response.attachments, function( url, index, list ){
-			            the_text += "\n"+url;
-		            } );
-	            }
-            }
-            the_text = window.encodeURIComponent( the_text );
-			var url = 'https://api.whatsapp.com/send?phone=' + the_phone + '&text=' + the_text;
-			var isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
-			var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-			
-			if( isSafari && iOS ) {
-				location = url;
-			} else {
-				window.open( url, '_blank' );
-			}		
-			redirect_woo_order_received( api_response );
-            <?php endif; ?>
-            
-		}
-	} );
-	function redirect_woo_order_received( api_response ){
-        if( api_response.woo_order != undefined ) {
-            $( '.woocommerce-checkout-review-order-table' ).html('');
-            var interval = window.setInterval( function(){
-	            document.location = api_response.redirect;
-	            clearInterval( interval );
-	        }, 3000 );
-        }            
-	}
-})(jQuery);
-</script>
-		<?php  
-        $script = ob_get_contents();
-        $script = str_replace("\n"," ",$script);
-        $script = str_replace("\t"," ",$script);
-        ob_end_clean();
-        echo $script;
-        endif;
-		$this->script_loaded = true;
-	}  
-    
+        
     /*
 	 * Send message to Twilio API
 	 * @since	0.4.2
@@ -376,21 +276,24 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
     }
     
     /*
-	 * Render Woocommerce cart at checkout page
-	 * @since 0.6.0
+	 * Add custom tag [cf7sendwa_woo_checkout]
+	 * @since 0.6.4
 	 * @access public
 	 */
-    public function render_woo_cart() {
+	public function woo_checkout_cart_tag() {
+		wpcf7_add_form_tag( 'cf7sendwa_woo_checkout', array( $this, 'cf7sendwa_woo_checkout_render' ), array( 'name-attr' => true ) );		
+	}	
+	public function cf7sendwa_woo_checkout_render( $tag ) {
 	    $html = '';
         if( is_checkout() && get_option( 'cf7sendwa_woo_checkout', '' ) != '' ) {
 	        ob_start();
 	        include 'partials/cf7-send-wa-public-display.php';
-	        $html = ob_get_contents();
+	        $html .= ob_get_contents();
 	        ob_end_clean();
 		}			
-		return $html;    
-    }
-    
+		return $html;    		
+	}
+	    
     /**
 	 * Create Woocommerce Order 
 	 * @since 0.6.0
@@ -451,4 +354,133 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 			WC()->session->set('cart', array());
 		}
     }
+    
+    /**
+	 * Validate if cart exists for woocommerce order checkout 
+	 * @since 0.6.3
+	 * @access public
+	 */
+    public function validate_cart_exists( $result, $tag ) {
+		$submission = WPCF7_Submission::get_instance();
+		$woo_checkout_form = get_option( 'cf7sendwa_woo_checkout', '' );
+		if( $submission->get_contact_form()->id() == $woo_checkout_form ) {
+			if( WC()->cart->get_cart_contents_count() == 0 ) {
+				$tag->name = "cf7sendwa_woo_checkout_".$submission->get_contact_form()->id();
+				$this->woo_cart_empty = true;		
+				$result->invalidate( $tag, 'Empty Cart' );
+			}			
+		}
+	    return $result;
+    }
+    
+    /**
+	 * Error validation message on cart empty 
+	 * @since 0.6.3
+	 * @access public
+	 */
+    public function set_validation_error( $message, $status ) {
+	    if(  $this->woo_cart_empty && $status == 'validation_error' ) {
+	    	$message = apply_filters( 'cf7sendwa_empty_cart_message', __( 'Your cart is empty, please add one or more items to the cart', 'cf7sendwa' ) );
+	    }
+	    return $message;
+    }
+    
+	public function render_script_footer() {
+		if( !empty( $this->ids ) && !$this->script_loaded ) : ob_start(); ?>
+<script type="text/javascript">
+var cf7wa_ids = <?php echo json_encode( $this->ids ); ?>; 
+var cf7wa_numbers = <?php echo json_encode( $this->numbers ); ?>; 
+var cf7wa_bodies = <?php echo json_encode( $this->bodies ) ?>;
+<?php if( $this->use_twilio ): ?>
+var cf7wa_security = '<?php echo wp_create_nonce( 'cf7sendwa-twilio-action' ); ?>';
+var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
+<?php endif; ?>
+(function( $ ){
+	document.addEventListener( 'wpcf7mailsent', function( event ) {
+		var the_id = event.detail.contactFormId;
+		if( _.indexOf( cf7wa_ids, the_id ) ) {
+			var inputs = event.detail.inputs;
+			var api_response = event.detail.apiResponse;
+			var the_text = cf7wa_bodies[the_id];
+			var input_array = {};						
+			$.each( inputs, function( index, detail ) {
+				the_text = the_text.replace( '[' + detail.name + ']', detail.value );
+				if( detail.name.indexOf( '[]' ) >= 0 ) {
+					var _key = detail.name.replace('[]','');
+					if( input_array[ _key ] == undefined ) {
+						input_array[ _key ] = [];
+					}
+					input_array[ _key ].push( detail.value );
+				}
+			} );	
+			_.each( input_array, function( val, key, list ){
+				the_text = the_text.replace( '[' + key + ']', val.join(", ") );
+			} );			
+			<?php include 'partials/woo-order-details.php'; ?>			
+			var the_phone = cf7wa_numbers[ the_id ];
+            <?php if( $this->use_twilio ): ?>
+                $( '.wpcf7-response-output' ).css( 'display', 'none' );
+                var twilio_send_data = {
+                    'action': 'send_twilio', 'to_number': the_phone, 
+                    'message': the_text, 'security': cf7wa_security 
+                };
+				if( api_response.attachments != undefined ) {
+					if( api_response.attachments.length ) {
+						twilio_send_data.attachments = api_response.attachments;
+					}
+                }
+                $.ajax({
+                    url: cf7wa_ajaxurl,
+                    type: 'POST',
+                    data: twilio_send_data,
+                    success: function( response ) {
+                        $( '.wpcf7-response-output' ).css( 'display', 'block' );
+                        redirect_woo_order_received( api_response );
+                    }
+                });
+            <?php else: ?>
+            if( api_response.attachments != undefined ) {
+		        if( api_response.attachments.length ) {
+			        the_text += "\n\n"+"*Attachments*";
+		            _.each( api_response.attachments, function( url, index, list ){
+			            the_text += "\n"+url;
+		            } );
+	            }
+            }
+            the_text = window.encodeURIComponent( the_text );
+			var url = 'https://api.whatsapp.com/send?phone=' + the_phone + '&text=' + the_text;
+			var isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
+			var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+			
+			if( isSafari && iOS ) {
+				location = url;
+			} else {
+				window.open( url, '_blank' );
+			}		
+			redirect_woo_order_received( api_response );
+            <?php endif; ?>
+            
+		}
+	} );
+	function redirect_woo_order_received( api_response ){
+        if( api_response.woo_order != undefined ) {
+            $( '.woocommerce-checkout-review-order-table' ).html('');
+            var interval = window.setInterval( function(){
+	            document.location = api_response.redirect;
+	            clearInterval( interval );
+	        }, 3000 );
+        }            
+	}
+})(jQuery);
+</script>
+		<?php  
+        $script = ob_get_contents();
+        $script = str_replace("\n"," ",$script);
+        $script = str_replace("\t"," ",$script);
+        ob_end_clean();
+        echo $script;
+        endif;
+		$this->script_loaded = true;
+	}  
+    
 }

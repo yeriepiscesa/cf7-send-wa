@@ -169,7 +169,7 @@ class Cf7_Send_Wa_Admin {
 			'order' => 'ASC',
 		);   
 		if( $_POST['search'] != '' ) {
-			$args['post_title_like'] = $_POST['search'];
+			$args['cf7sendwa_post_title_like'] = $_POST['search'];
 		}
 		$query = new WP_Query( $args );
 		$data = array();

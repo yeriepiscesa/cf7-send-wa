@@ -131,6 +131,14 @@ class Cf7_Send_Wa_Admin {
             
             update_option( 'cf7sendwa_woo_checkout', $_POST['woo_checkout'] );
 
+            $full_cart = $_POST['full_cart'];
+            if( $full_cart != '1' ) $full_cart = '0';
+            update_option( 'cf7sendwa_fullcart', $full_cart );
+
+            $require_shipping = $_POST['require_shipping'];
+            if( $require_shipping != '1' ) $require_shipping = '0';
+            update_option( 'cf7sendwa_requireshipping', $require_shipping );
+
             $use_twilio = $_POST['use_twilio'];
             if( $use_twilio != '1' ) $use_twilio = '0';
             update_option( 'cf7sendwa_use_twilio', $_POST['use_twilio'] );
@@ -140,6 +148,8 @@ class Cf7_Send_Wa_Admin {
         }
         $whatsapp_number = get_option( 'cf7sendwa_number', '628123456789' );
         $disable_mail = get_option( 'cf7sendwa_disablemail', '0' );
+        $full_cart = get_option( 'cf7sendwa_fullcart', '0' );
+        $require_shipping = get_option( 'cf7sendwa_requireshipping', '0' );
         
         $woo_checkout = get_option( 'cf7sendwa_woo_checkout', '' );
         

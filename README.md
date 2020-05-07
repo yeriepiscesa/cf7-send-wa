@@ -7,6 +7,11 @@ For Twilio integration require PHP 7.2 or newer.
 - Download the stable version at https://solusipress.com/download/contact-form-7-send-to-whatsapp/
 - See the demo https://bisnisdemo.solusipress.com/contact-form-7-to-wa-test/
 
+## Relase 0.6.5
+- Add: Option to require shipping method for shippable cart.
+- Add: Option to make cart totals box in cart page full width.
+- Some bugs fixed
+
 ## Relase 0.6.4
 - Improvement: Access Twilio API using native WordPress remote post library instead of using Twilio SDK.
 - Improvement: Empty cart validation for woocommerce checkout.

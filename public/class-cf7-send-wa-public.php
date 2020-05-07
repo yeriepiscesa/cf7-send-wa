@@ -385,6 +385,55 @@ class Cf7_Send_Wa_Public {
 	    return $message;
     }
     
+    /**
+	 * Check if cart need for shipping
+	 * @since 0.6.5
+	 * @access public
+	 */
+    public function check_need_shipping() {
+		$woo_checkout_form = get_option( 'cf7sendwa_woo_checkout', '' );
+		if( $woo_checkout_form != '' && is_checkout() ) {
+			if( WC()->cart->needs_shipping() && get_option( 'cf7sendwa_requireshipping', '0' ) == '1' ) {
+				$shippings = cf7sendwa_woo_get_shippings();
+				if( empty( $shippings['lines'] ) ) {
+					wp_redirect( wc_get_cart_url() . '?cf7wa=need_shipping' );
+					die();					
+				}
+			}
+		}		    
+    }
+    
+    /**
+	 * Display custom WooCommerce notification 
+	 * @since 0.6.5
+	 * @access public
+	 */
+    public function woo_custom_notice() {
+	    if( isset( $_GET['cf7wa'] ) ){
+			switch( $_GET['cf7wa'] ){
+				case 'need_shipping':
+					$text = 'You must provide shipping method before checkout';
+					wc_add_notice( apply_filters( 'cf7sendwa_need_shipping_notice', $text ), 'notice' );
+					break;
+			}		    
+	    }
+    }
+    
+    /**
+	 * Display WooCommerce cart total in full width 
+	 * @since 0.6.5
+	 * @access public
+	 */
+    public function woo_custom_cart_total_css() {
+	    if( is_cart() && get_option( 'cf7sendwa_fullcart', '0' ) == '1' ) {
+			?><style type="text/css">
+.woocommerce .cart-collaterals .cart_totals, .woocommerce-page .cart-collaterals .cart_totals {
+	width: 100%;
+}			
+</style><?php
+		}
+    }
+    
 	public function render_script_footer() {
 		if( !empty( $this->ids ) && !$this->script_loaded ) : ob_start(); ?>
 <script type="text/javascript">

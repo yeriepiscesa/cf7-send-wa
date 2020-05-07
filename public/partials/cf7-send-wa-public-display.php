@@ -73,6 +73,9 @@
 							$s['label'] . ' ' . wc_price( $s['cost']+$s['tax_cost'] ).'</div>';
 				    }
 				    echo '<div class="cf7sendwa-customer-shipping">' . $this->woo_shippings['address'] . '</div>';
+				    if( WC()->cart->needs_shipping() ){
+					    echo apply_filters( 'cf7sendwa_change_shipping_link', '<a href="'.wc_get_cart_url().'">' . apply_filters( 'cf7sendwa_change_shipping_text_link', 'Change Shipping' ) . '</a>' );
+				    }
 				    ?>
 				</td>
 			</tr>

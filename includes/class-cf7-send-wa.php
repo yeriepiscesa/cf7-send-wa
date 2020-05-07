@@ -210,6 +210,10 @@ class Cf7_Send_Wa {
 			$this->loader->add_filter( 'template_include', $plugin_public, 'switch_woo_checkout', 50 );
 			$this->loader->add_filter( 'wpcf7_display_message', $plugin_public, 'set_validation_error', 50, 2 );
 			$this->loader->add_filter( 'wpcf7_validate_cf7sendwa_woo_checkout', $plugin_public, 'validate_cart_exists', 20, 2 );
+			
+			$this->loader->add_action( 'wp_head', $plugin_public, 'woo_custom_cart_total_css' );
+			$this->loader->add_action( 'template_redirect', $plugin_public, 'check_need_shipping' );
+			$this->loader->add_action( 'woocommerce_init', $plugin_public, 'woo_custom_notice' );
 		}        
 
 	}

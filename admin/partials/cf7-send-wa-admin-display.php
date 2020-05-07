@@ -67,6 +67,34 @@
 						<p class="description">Contact Form which contain [cf7sendwa_woo_checkout] tag</p>
 			        </td>
 		        </tr>
+		        <tr>
+			        <th scope="row"><label>Full Width Cart Totals</label></th>
+			        <td>
+				        <?php
+                        $checked3 = '';
+                        if( $full_cart == '1' ) {
+                            $checked3 = ' checked="checked"';
+                        }
+                        ?>
+                        <input type="checkbox" id="cf7sendwa_fullcart"<?= $checked3 ?>  
+                               name="full_cart" value="1">
+                        <p style="display:inline" class="description">When checked, Cart totals container will be 100% width (default to 50%)</p>
+			        </td>
+		        </tr>
+		        <tr>
+			        <th scope="row"><label>Require Shipping</label></th>
+			        <td>
+				        <?php
+                        $checked2 = '';
+                        if( $require_shipping == '1' ) {
+                            $checked2 = ' checked="checked"';
+                        }
+                        ?>
+                        <input type="checkbox" id="cf7sendwa_requireshipping"<?= $checked2 ?>  
+                               name="require_shipping" value="1">
+                        <p style="display:inline" class="description">When checked, shippable cart must have shipping method</p>
+			        </td>
+		        </tr>
 	        </tbody>
         </table>
         

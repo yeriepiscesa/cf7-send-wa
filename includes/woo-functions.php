@@ -205,7 +205,7 @@ function cf7sendwa_woo_create_order( $customer=null, $note=null, $posted_data=nu
     $checkout->create_order_tax_lines( $order, WC()->cart );
     $checkout->create_order_coupon_lines( $order, WC()->cart );	
 	
-	if( !is_null() && !empty( $posted_data ) ) {
+	if( !is_null( $posted_data ) && !empty( $posted_data ) ) {
 		foreach( $posted_data as $key=>$val ){
 			$order->add_meta_data( $key, $val );
 		}

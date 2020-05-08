@@ -48,6 +48,8 @@ class Cf7_Send_Wa_Public {
     protected $twilio_sid = null;
     protected $twilio_token = null;
     
+    protected $instance_count = 0;
+    
     protected $woo_is_active = false;
     protected $woo_cart = null;
     protected $woo_shippings = null;
@@ -90,6 +92,7 @@ class Cf7_Send_Wa_Public {
 	 */
 	public function enqueue_styles() {
 		wp_register_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/cf7-send-wa-public.css', array(), $this->version, 'all' );
+		wp_register_style( 'jquery-modal', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/jquery.modal.min.css' );
 	}
 
 	/**
@@ -99,6 +102,7 @@ class Cf7_Send_Wa_Public {
 	 */
 	public function enqueue_scripts() {
 		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cf7-send-wa-public.js', array( 'jquery' ), $this->version, false );
+		wp_register_script( 'jquery-modal', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/jquery.modal.min.js', array( 'jquery' ), '0.9.1', false );
 	}
     
     public function check_skip_mail( $skip_mail, $contact_form ) {
@@ -113,8 +117,28 @@ class Cf7_Send_Wa_Public {
     }
 
 	public function render_contact_form( $atts ) {
-        $html = '';
+		
+		$_atts = $atts;
+		$atts = shortcode_atts( array(
+			'popup' => 'false',
+			'popupdelay' => '2',
+			'buttontext' => 'Open Form',
+			'buttonicon' => 'fa fa-whatsapp',	
+			'buttonclass' => '',
+			'style' => '',
+			'class' => '',
+			'modalwidth' => '',
+		), $atts );
+		$atts = array_merge( $atts, $_atts );
+		
         wp_enqueue_script( 'underscore' );
+        
+        $is_popup = false;
+        if( $atts['popup'] == 'button' || $atts['popup'] == 'auto' ) {
+	    	wp_enqueue_style( 'jquery-modal' );
+	    	wp_enqueue_script( 'jquery-modal' );    
+			$is_popup = true;
+        }
         $shortcode = '[contact-form-7';
         if( isset( $atts['number'] ) && $atts['number'] != '' ) {
             $this->numbers[$atts['id']] = $atts['number'];
@@ -126,12 +150,54 @@ class Cf7_Send_Wa_Public {
             $shortcode .= ' ' . $key .'="' . $val . '"';
         }
         $shortcode .= ']';
-        $html = do_shortcode( $shortcode );
+        
+        $html = '';
+		$selector = '#cf7sendwa-frm'.$atts['id'].'_'.$this->incstance_count;
+        if( $is_popup ) {
+	        $_style = ''; $_class = '';
+	        if( trim( $atts['style'] ) != '' ) {
+		        $_style = $atts['style'];
+	        }
+	        if( trim( $atts['class'] ) != '' ) {
+		        $_class = ' '. $atts['class'];
+	        }
+	        $_width = '';
+	        if( $atts['modalwidth'] != '' && is_numeric( $atts['modalwidth'] ) ) {
+		        $_width = 'min-width: ' . $atts['modalwidth'] . 'px;';
+	        }
+	        $html .= '<div id="' . str_replace( '#', '', $selector) . '" class="modal'.$_class.'" style="'.$_width.'display:none;'.$_style.'">';
+	        $html .= '<div class="cf7sendwa-form-content">';
+	        if( isset( $atts['title'] ) && $atts['title'] != '' ) {
+		        $html .= '<h3 class="cf7sendwa-modal-title">'.$atts['title'].'</h3>';
+	        }
+        }
+        $html .= do_shortcode( $shortcode );
+        if( $is_popup ) {
+	        $html .= '</div></div>';
+	        if( $atts['popup'] == 'auto' ) {
+		        $_script = 'var _open = window.setInterval( function(){ $("'.$selector.'").modal(); window.clearInterval(_open); }, ' . $atts['popupdelay']*1000 . ' );';
+		        $html .= '<script type="text/javascript">( function($){ $(document).ready(function(){ '.$_script.' }); } )(jQuery);</script>';
+	        } else {
+		        $_bclass = 'button';
+		        if( $atts['buttonclass'] != '' ) {
+			        $_bclass = $atts['buttonclass'];
+		        }
+		        $html .= '<a href="'.$selector.'" rel="modal:open" class="'.$_bclass.'">';
+		        if( $atts['buttonicon'] != '' ) {
+		        	$html .= '<i class="'.$atts['buttonicon'].'"></i> ';
+		        }
+	        	$html .= $atts['buttontext'] .'</a>';
+	        }
+        }
+        
         array_push( $this->ids, intval($atts['id']) );
         $_mail = get_post_meta( $atts['id'], '_mail', true );
         if( $_mail && isset( $_mail['body'] ) ) {
             $this->bodies[$atts['id']] = $_mail['body'];
         }        
+        
+        $this->incstance_count++;
+        
 		return $html;
 	}
         

@@ -203,6 +203,9 @@ class Cf7_Send_Wa {
         $this->loader->add_action( 'wp_ajax_send_twilio', $plugin_public, 'send_twilio' );
         $this->loader->add_action( 'wp_ajax_nopriv_send_twilio', $plugin_public, 'send_twilio' );
         
+        $this->loader->add_action( 'wp_ajax_cf7sendwa_api', $plugin_public, 'cf7sendwa_api' );
+        $this->loader->add_action( 'wp_ajax_nopriv_cf7sendwa_api', $plugin_public, 'cf7sendwa_api' );
+        
         /* woocommerce integration */
 		if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 			$this->loader->add_action( 'wpcf7_init', $plugin_public, 'woo_checkout_cart_tag' );

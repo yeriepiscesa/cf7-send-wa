@@ -208,7 +208,7 @@ class Cf7_Send_Wa_Public {
 	 *
 	 */
     public function send_twilio() {
-        check_ajax_referer( 'cf7sendwa-twilio-action', 'security' );
+        check_ajax_referer( 'cf7sendwa-api-action', 'security' );
         $inputs = array(
             "Body" => $_POST['message'],
             "From" => "whatsapp:+" . get_option( 'cf7sendwa_twilio_from', '14155238886' ),
@@ -231,6 +231,25 @@ class Cf7_Send_Wa_Public {
 	    	)    
         ) );
         wp_die();
+    }
+    
+    /**
+	 * Send message to custom API
+	 * @since 0.7.1
+	 */
+    public function cf7sendwa_api() {
+        check_ajax_referer( 'cf7sendwa-api-action', 'security' );
+        $data = [
+	    	'body' => $_POST['message'],
+	    	'from' => get_option( 'cf7sendwa_twilio_from', '14155238886' ),
+	    	'to' => $_POST['to_number']    
+        ];
+        if( !empty( $_POST['attachments'] ) ) {
+	        $data['attachments'] = $_POST['attachments'];
+		}
+		$data = apply_filters( 'cf7sendwa_custom_api_data', $data );
+        do_action( 'cf7sendwa_custom_send_api', $data );
+        wp_die();        
     }
 
 	/**
@@ -501,19 +520,20 @@ class Cf7_Send_Wa_Public {
     }
     
 	public function render_script_footer() {
+		$cf7sendwa_is_custom_api = has_action( 'cf7sendwa_custom_send_api' );
 		if( !empty( $this->ids ) && !$this->script_loaded ) : ob_start(); ?>
 <script type="text/javascript">
 var cf7wa_ids = <?php echo json_encode( $this->ids ); ?>; 
 var cf7wa_numbers = <?php echo json_encode( $this->numbers ); ?>; 
 var cf7wa_bodies = <?php echo json_encode( $this->bodies ) ?>;
-<?php if( $this->use_twilio ): ?>
-var cf7wa_security = '<?php echo wp_create_nonce( 'cf7sendwa-twilio-action' ); ?>';
+<?php if( $this->use_twilio || $cf7sendwa_is_custom_api ): ?>
+var cf7wa_security = '<?php echo wp_create_nonce( 'cf7sendwa-api-action' ); ?>';
 var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 <?php endif; ?>
 (function( $ ){
 	document.addEventListener( 'wpcf7mailsent', function( event ) {
-		var the_id = event.detail.contactFormId;
-		if( _.indexOf( cf7wa_ids, the_id ) ) {
+		var the_id = event.detail.contactFormId;		
+		if( _.indexOf( cf7wa_ids, the_id ) ) {			
 			var inputs = event.detail.inputs;
 			var api_response = event.detail.apiResponse;
 			var the_text = cf7wa_bodies[the_id];
@@ -533,23 +553,30 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 			} );			
 			<?php include 'partials/woo-order-details.php'; ?>			
 			var the_phone = cf7wa_numbers[ the_id ];
-            <?php if( $this->use_twilio ): ?>
-                $( '.wpcf7-response-output' ).css( 'display', 'none' );
-                var twilio_send_data = {
-                    'action': 'send_twilio', 'to_number': the_phone, 
-                    'message': the_text, 'security': cf7wa_security 
-                };
+            <?php if( $this->use_twilio || $cf7sendwa_is_custom_api ): ?>  
+            	$( '.wpcf7-response-output' ).wrap( '<div id="cf7sendwa_element_'+the_id+'" style="display:none;"></div>' );              
+                var cf7sendwa_send_data = { 
+	                'to_number': the_phone, 
+	                'message': the_text, 
+	                'security': cf7wa_security,
+	                'cf7_inputs': inputs
+	            };
+                <?php if( $cf7sendwa_is_custom_api ): ?>
+                	cf7sendwa_send_data.action = 'cf7sendwa_api';
+                <?php else: ?>
+                	cf7sendwa_send_data.action = 'send_twilio';
+                <?php endif; ?>
 				if( api_response.attachments != undefined ) {
 					if( api_response.attachments.length ) {
-						twilio_send_data.attachments = api_response.attachments;
+						cf7sendwa_send_data.attachments = api_response.attachments;
 					}
                 }
                 $.ajax({
                     url: cf7wa_ajaxurl,
                     type: 'POST',
-                    data: twilio_send_data,
+                    data: cf7sendwa_send_data,
                     success: function( response ) {
-                        $( '.wpcf7-response-output' ).css( 'display', 'block' );
+                        $( '.wpcf7-response-output' ).unwrap();
                         redirect_woo_order_received( api_response );
                     }
                 });
@@ -565,8 +592,7 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
             the_text = window.encodeURIComponent( the_text );
 			var url = 'https://api.whatsapp.com/send?phone=' + the_phone + '&text=' + the_text;
 			var isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
-			var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-			
+			var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;			
 			if( isSafari && iOS ) {
 				location = url;
 			} else {

@@ -59,6 +59,10 @@ class Cf7_Send_Wa_Public {
     
     protected $attachments = array();
 
+	/* WooCommerce customer */
+	protected $customer = null;
+
+	
 	/**
 	 * Initialize the class and set its properties.
 	 *
@@ -104,7 +108,7 @@ class Cf7_Send_Wa_Public {
 		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cf7-send-wa-public.js', array( 'jquery' ), $this->version, false );
 		wp_register_script( 'jquery-modal', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/jquery.modal.min.js', array( 'jquery' ), '0.9.1', false );
 	}
-    
+	
     public function check_skip_mail( $skip_mail, $contact_form ) {
         if( get_option( 'cf7sendwa_disablemail', '0' ) == '1' ) {
             $skip_mail = true;
@@ -433,7 +437,14 @@ class Cf7_Send_Wa_Public {
 			$obj_order = cf7sendwa_woo_create_order( $order_address, $woo_settings['note'], $_posted_data );
 			$this->woo_order = true;
 			$this->woo_order_id = $obj_order->get_id();
-			$this->woo_order_received_url = $obj_order->get_checkout_order_received_url();
+			
+			$order_redirect = get_option( 'cf7sendwa_woo_order_redirect', '' );
+			if( $order_redirect == '' || $order_redirect == 'thankyou' ) {
+				$this->woo_order_received_url = $obj_order->get_checkout_order_received_url();
+			}
+			if( $order_redirect == 'payment' ) {
+				$this->woo_order_received_url = $obj_order->get_checkout_payment_url();
+			}
 			
 			WC()->cart->empty_cart();
 			WC()->session->set('cart', array());
@@ -518,6 +529,38 @@ class Cf7_Send_Wa_Public {
 </style><?php
 		}
     }
+    
+    /**
+	 * Load customer info on WooCommerce checkout
+	 * @since 0.8.0
+	 * @access public
+	 */
+	public function woo_checkout_load_customer_info( $scanned_tag, $replace ) {
+		if( is_checkout() && get_option( 'cf7sendwa_woo_checkout', '' ) != '' ) {
+	    	if( is_null( $this->customer ) && is_user_logged_in() ) {
+	        	$this->customer = new WC_Customer( get_current_user_id() );
+	        }
+			$contact_form = WPCF7_ContactForm::get_instance( get_option( 'cf7sendwa_woo_checkout' ) );
+			$fields = array( 'first_name', 'last_name', 'email', 'phone', 'address', 'order_note' );
+			$the_value = '';			
+			$cust_billing = $this->customer->billing;
+			foreach( $fields as $field ) {
+				$tag = $contact_form->additional_setting( 'woo_checkout_'.$field );
+				if( !empty($tag) && $scanned_tag['name'] == $tag[0] ) {
+					if( $field == 'address' ) {
+						$field = 'address_1';
+					}
+					$the_value = $cust_billing[ $field ];
+				}	
+			}
+			if( $scanned_tag['basetype'] != 'textarea') {
+				$scanned_tag['values'][] = $the_value;
+			} else {
+	 			$scanned_tag['content'] = $the_value;				
+			}
+		}
+		return $scanned_tag;
+	} 
     
 	public function render_script_footer() {
 		$cf7sendwa_is_custom_api = has_action( 'cf7sendwa_custom_send_api' );

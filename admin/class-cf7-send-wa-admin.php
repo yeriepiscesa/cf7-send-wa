@@ -130,6 +130,7 @@ class Cf7_Send_Wa_Admin {
             update_option( 'cf7sendwa_disablemail', $disable_mail );
             
             update_option( 'cf7sendwa_woo_checkout', $_POST['woo_checkout'] );
+            update_option( 'cf7sendwa_woo_order_redirect', $_POST['woo_order_redirect'] );
 
             $full_cart = $_POST['full_cart'];
             if( $full_cart != '1' ) $full_cart = '0';
@@ -152,14 +153,14 @@ class Cf7_Send_Wa_Admin {
         $require_shipping = get_option( 'cf7sendwa_requireshipping', '0' );
         
         $woo_checkout = get_option( 'cf7sendwa_woo_checkout', '' );
+        $woo_order_redirect = get_option( 'cf7sendwa_woo_order_redirect', '' );
         
         $use_twilio = get_option( 'cf7sendwa_use_twilio', '0' );
         $twilio_sid = get_option( 'cf7sendwa_twilio_sid', '' );
         $twilio_token = get_option( 'cf7sendwa_twilio_token', '' );
         $twilio_from = get_option( 'cf7sendwa_twilio_from', '14155238886' );
         
-        include 'partials/cf7-send-wa-admin-display.php';
-        
+        include 'partials/cf7-send-wa-admin-display.php';        
     }
     
     /**

@@ -7,6 +7,10 @@ For Twilio integration require PHP 7.2 or newer.
 - Download the stable version at https://solusipress.com/download/contact-form-7-send-to-whatsapp/
 - See the demo https://bisnisdemo.solusipress.com/contact-form-7-to-wa-test/
 
+## Relase 0.8.0
+- Add: Save WooCommerce order for logged in customer.
+- Add: Option to redirect ( thank you or payment page ) after send WooCommerce order.
+
 ## Relase 0.7.1
 - Add: Custom whatsapp API via action hook.
 

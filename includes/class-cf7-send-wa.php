@@ -216,7 +216,10 @@ class Cf7_Send_Wa {
 			
 			$this->loader->add_action( 'wp_head', $plugin_public, 'woo_custom_cart_total_css' );
 			$this->loader->add_action( 'template_redirect', $plugin_public, 'check_need_shipping' );
+			
 			$this->loader->add_action( 'woocommerce_init', $plugin_public, 'woo_custom_notice' );
+			
+			$this->loader->add_filter( 'wpcf7_form_tag', $plugin_public, 'woo_checkout_load_customer_info', 10, 2 );
 		}        
 
 	}

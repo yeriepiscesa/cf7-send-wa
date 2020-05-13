@@ -244,7 +244,12 @@ function cf7sendwa_woo_create_order( $customer=null, $note=null, $posted_data=nu
 	if( !is_null( $note ) && $note != '' ) {
 		$order->add_order_note( $note, 1, true );
 	}
+	
+	$cust = WC()->customer;
     $order_id = $order->save();
+    if( $order_id && is_object($cust) && $cust->get_id() ) {
+		update_post_meta( $order_id, '_customer_user', $cust->get_id() );	    
+    }
 
     $mail_order = new WC_Email_New_Order();
     $mail_order->trigger( $order_id, $order );

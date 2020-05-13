@@ -95,6 +95,26 @@
                         <p style="display:inline" class="description">When checked, shippable cart must have shipping method</p>
 			        </td>
 		        </tr>
+		        <tr>
+			        <th scope="row"><label>After order redirect to</label></th>
+			        <td>
+				        <?php
+					    $t_checked = '';
+					    if( $woo_order_redirect == '' || $woo_order_redirect == 'thankyou' ) {
+						    $t_checked = ' checked="checked"';
+					    }    					    
+					    $p_checked = '';
+					    if( $woo_order_redirect == 'payment' ) {
+						    $p_checked = ' checked="checked"';
+					    }    
+					    ?>
+				        <input type="radio" name="woo_order_redirect" value="thankyou" id="redirect_thankyou"<?php echo $t_checked ?>> 
+				        	<label for="redirect_thankyou">Thank You Page</label>
+				        &nbsp;&nbsp;&nbsp;
+				        <input type="radio" name="woo_order_redirect" value="payment" id="redirect_payment"<?php echo $p_checked ?>> 
+				        	<label for="redirect_payment">Payment Page</label>
+			        </td>
+		        </tr>
 	        </tbody>
         </table>
         

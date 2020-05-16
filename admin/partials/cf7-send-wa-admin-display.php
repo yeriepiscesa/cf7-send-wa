@@ -107,12 +107,19 @@
 					    if( $woo_order_redirect == 'payment' ) {
 						    $p_checked = ' checked="checked"';
 					    }    
+					    $n_checked = '';
+					    if( $woo_order_redirect == 'none' ) {
+						    $n_checked = ' checked="checked"';
+					    }    
 					    ?>
 				        <input type="radio" name="woo_order_redirect" value="thankyou" id="redirect_thankyou"<?php echo $t_checked ?>> 
 				        	<label for="redirect_thankyou">Thank You Page</label>
 				        &nbsp;&nbsp;&nbsp;
 				        <input type="radio" name="woo_order_redirect" value="payment" id="redirect_payment"<?php echo $p_checked ?>> 
 				        	<label for="redirect_payment">Payment Page</label>
+				        &nbsp;&nbsp;&nbsp;
+				        <input type="radio" name="woo_order_redirect" value="none" id="redirect_none"<?php echo $n_checked ?>> 
+				        	<label for="redirect_none">Disable</label>
 			        </td>
 		        </tr>
 	        </tbody>

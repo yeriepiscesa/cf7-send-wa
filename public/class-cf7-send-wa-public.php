@@ -56,6 +56,10 @@ class Cf7_Send_Wa_Public {
     protected $woo_order_id = null;
     protected $woo_order = false;
     protected $woo_cart_empty = false;
+    protected $woo_order_links = array(
+	    'received' => null,
+	    'payment' => null
+    );
     
     protected $attachments = array();
 
@@ -75,6 +79,8 @@ class Cf7_Send_Wa_Public {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 		add_shortcode( 'contact-form-7-wa', array( $this, 'render_contact_form' ) );
+		add_shortcode( 'cf7sendwa-received-link', array( $this, 'render_woo_received_link' ) );
+		add_shortcode( 'cf7sendwa-payment-link', array( $this, 'render_woo_payment_link' ) );
         
         $use_twilio = get_option( 'cf7sendwa_use_twilio', '0' );
         if( $use_twilio == '1' ) {
@@ -340,11 +346,43 @@ class Cf7_Send_Wa_Public {
 		    $response['woo_order'] = $this->woo_order_id;
 		    $response['redirect'] = $this->woo_order_received_url;
 	    }
+	    $response['message'] = do_shortcode( $response['message'] );
 	    
 	    return $response;
     }
     
+    /**
+	 * Render order received link
+	 * @since 0.8.1
+	 * @access public
+	 */   
+    public function render_woo_received_link( $atts ) {
+	    $html = '';
+	    if( !is_null( $this->woo_order_links['received'] ) ) {
+			$atts = shortcode_atts( array(
+				'title' => 'Received Order',
+			), $atts );
+		    $html = '<a href="'.$this->woo_order_links['received'].'" class="cf7sendwa-links" target="_blank">' . $atts['title'] . '</a>';
+	    }
+	    return $html;
+    }
     
+    /**
+	 * Render order payment link
+	 * @since 0.8.1
+	 * @access public
+	 */   
+    public function render_woo_payment_link( $atts ) {
+	    $html = '';
+	    if( !is_null( $this->woo_order_links['payment'] ) ) {
+			$atts = shortcode_atts( array(
+				'title' => 'Pay Now',
+			), $atts );
+		    $html = '<a href="'.$this->woo_order_links['payment'].'" class="cf7sendwa-links" target="_blank">' . $atts['title'] . '</a>';
+	    }
+	    return $html;
+    }
+
     /*
 	 * Switch Woocommerce Checkout Page
 	 * @since 0.6.0
@@ -441,9 +479,12 @@ class Cf7_Send_Wa_Public {
 			$order_redirect = get_option( 'cf7sendwa_woo_order_redirect', '' );
 			if( $order_redirect == '' || $order_redirect == 'thankyou' ) {
 				$this->woo_order_received_url = $obj_order->get_checkout_order_received_url();
-			}
-			if( $order_redirect == 'payment' ) {
+			} elseif( $order_redirect == 'payment' ) {
 				$this->woo_order_received_url = $obj_order->get_checkout_payment_url();
+			} elseif( $order_redirect == 'none' ) {
+				$this->woo_order_received_url = 'none';	
+				$this->woo_order_links['received'] = $obj_order->get_checkout_order_received_url();
+				$this->woo_order_links['payment'] = $obj_order->get_checkout_payment_url();
 			}
 			
 			WC()->cart->empty_cart();
@@ -649,10 +690,12 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 	function redirect_woo_order_received( api_response ){
         if( api_response.woo_order != undefined ) {
             $( '.woocommerce-checkout-review-order-table' ).html('');
-            var interval = window.setInterval( function(){
-	            document.location = api_response.redirect;
-	            clearInterval( interval );
-	        }, 3000 );
+            if( api_response.redirect != 'none' ) {
+	            var interval = window.setInterval( function(){
+		            document.location = api_response.redirect;
+		            clearInterval( interval );
+		        }, 3000 );
+	        }
         }            
 	}
 })(jQuery);

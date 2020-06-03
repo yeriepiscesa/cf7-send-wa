@@ -28,8 +28,18 @@
 	 * Although scripts in the WordPress core, Plugins and Themes may be
 	 * practising this, we should strive to set a better example in our own work.
 	 */
+	 
+	$( document ).ready( function(){
+		function ThirdParty() {
+			var self = this;
+			self.provider = ko.observable(cf7sendwa.provider);
+		}
+		var thirdparty = new ThirdParty();
+		var element = $( '.sp-admin-page' )[0];
+		ko.applyBindings( thirdparty, element );
+	} )
 
-	 $( '.cf7-checkout-form' ).select2({
+	$( '.cf7-checkout-form' ).select2({
 		placeholder: "Select Contact Form", 
 		allowClear: true, 
 		ajax: {
@@ -44,6 +54,6 @@
 				};
 			}
 		}
-	 });
+	});
 
 })( jQuery );

@@ -44,9 +44,10 @@ class Cf7_Send_Wa_Public {
 	protected $script_loaded = false;
 	protected $bodies = array();
 	protected $numbers = array();
-    protected $use_twilio = false;
+    protected $provider = '';
     protected $twilio_sid = null;
     protected $twilio_token = null;
+    protected $fonnte_token = null;
     
     protected $instance_count = 0;
     
@@ -62,6 +63,7 @@ class Cf7_Send_Wa_Public {
     );
     
     protected $attachments = array();
+    protected $attachment_type = null;
 
 	/* WooCommerce customer */
 	protected $customer = null;
@@ -82,11 +84,15 @@ class Cf7_Send_Wa_Public {
 		add_shortcode( 'cf7sendwa-received-link', array( $this, 'render_woo_received_link' ) );
 		add_shortcode( 'cf7sendwa-payment-link', array( $this, 'render_woo_payment_link' ) );
         
-        $use_twilio = get_option( 'cf7sendwa_use_twilio', '0' );
-        if( $use_twilio == '1' ) {
-            $this->use_twilio = true;
+        $this->provider = get_option( 'cf7sendwa_provider', '' );
+        
+        if( $this->provider == 'twilio' ) {
             $this->twilio_sid = get_option( 'cf7sendwa_twilio_sid', '' );
             $this->twilio_token = get_option( 'cf7sendwa_twilio_token', '' );
+        }
+        
+        if( $this->provider == 'fonnte' ) {
+			$this->fonnte_token = get_option( 'cf7sendwa_fonnte_token', '' );     
         }
         
         if( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
@@ -212,6 +218,50 @@ class Cf7_Send_Wa_Public {
 	}
         
     /*
+	 * Send message to Fonnte API
+	 * @since	0.8.2
+	 * @access	public
+	 */
+	private function _send_fonte( $inputs ){
+        $url = 'https://fonnte.com/api/send_message.php';
+        $curl = wp_remote_post( $url, array(
+	    	'body' => $inputs,
+	    	'headers' => array(
+				'Authorization' => $this->fonnte_token
+	    	)    
+        ) );
+	}
+    public function send_fonnte() {
+        check_ajax_referer( 'cf7sendwa-api-action', 'security' );
+		$inputs = [
+		    'phone' => $_POST['to_number'],
+		    'type' => 'text',
+		    'text' => $_POST['message']
+		];  
+        $this->_send_fonte( $inputs );
+        if( !empty( $_POST['attachments'] ) ) {
+	        $inputs = [
+	        	'phone' => $_POST['to_number'],
+	        	'url' => $_POST['attachments'][0],
+	        ];
+			$mime_type = $_POST['attachment_type'];
+			if( strpos( $mime_type, 'image' ) >= 0 ) {
+				$type = 'image';
+			} elseif( strpos( $mime_type, 'video' ) >= 0 ) {
+				$type = 'video';
+			} elseif( strpos( $mime_type, 'audio' ) >= 0 ) {
+				$type = 'audio';
+			} else {
+				$type = 'file';
+			}
+	        $inputs['type'] = $type;
+			$this->_send_fonte( $inputs );	        
+        }
+        
+        wp_die();
+	}
+
+    /*
 	 * Send message to Twilio API
 	 * @since	0.4.2
 	 * @access	public
@@ -250,9 +300,8 @@ class Cf7_Send_Wa_Public {
     public function cf7sendwa_api() {
         check_ajax_referer( 'cf7sendwa-api-action', 'security' );
         $data = [
-	    	'body' => $_POST['message'],
-	    	'from' => get_option( 'cf7sendwa_twilio_from', '14155238886' ),
-	    	'to' => $_POST['to_number']    
+	    	'message' => $_POST['message'],
+	    	'to_number' => $_POST['to_number']    
         ];
         if( !empty( $_POST['attachments'] ) ) {
 	        $data['attachments'] = $_POST['attachments'];
@@ -290,6 +339,7 @@ class Cf7_Send_Wa_Public {
 				);		
 			    if( wp_insert_attachment( $post_info, $new_file_path, $parent_post_id ) ) {
 				    array_push( $this->attachments, $post_info['guid'] );
+				    $this->attachment_type = $post_info['post_mime_type'];
 			    }
 		    }
 	    }
@@ -340,6 +390,7 @@ class Cf7_Send_Wa_Public {
 	    
 	    if( !empty( $this->attachments ) ) {
 		    $response['attachments'] = $this->attachments;
+		    $response['attachment_type'] = $this->attachment_type;
 	    }
 	    
 	    if( $this->woo_order ) {
@@ -610,7 +661,7 @@ class Cf7_Send_Wa_Public {
 var cf7wa_ids = <?php echo json_encode( $this->ids ); ?>; 
 var cf7wa_numbers = <?php echo json_encode( $this->numbers ); ?>; 
 var cf7wa_bodies = <?php echo json_encode( $this->bodies ) ?>;
-<?php if( $this->use_twilio || $cf7sendwa_is_custom_api ): ?>
+<?php if( $this->provider != '' || $cf7sendwa_is_custom_api ): ?>
 var cf7wa_security = '<?php echo wp_create_nonce( 'cf7sendwa-api-action' ); ?>';
 var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 <?php endif; ?>
@@ -637,7 +688,7 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 			} );			
 			<?php include 'partials/woo-order-details.php'; ?>			
 			var the_phone = cf7wa_numbers[ the_id ];
-            <?php if( $this->use_twilio || $cf7sendwa_is_custom_api ): ?>  
+            <?php if( $this->provider != '' || $cf7sendwa_is_custom_api ): ?>  
             	$( '.wpcf7-response-output' ).wrap( '<div id="cf7sendwa_element_'+the_id+'" style="display:none;"></div>' );              
                 var cf7sendwa_send_data = { 
 	                'to_number': the_phone, 
@@ -648,7 +699,7 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
                 <?php if( $cf7sendwa_is_custom_api ): ?>
                 	cf7sendwa_send_data.action = 'cf7sendwa_api';
                 <?php else: ?>
-                	cf7sendwa_send_data.action = 'send_twilio';
+                	cf7sendwa_send_data.action = 'send_<?php echo $this->provider; ?>';
                 <?php endif; ?>
 				if( api_response.attachments != undefined ) {
 					if( api_response.attachments.length ) {

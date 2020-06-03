@@ -98,6 +98,7 @@ class Cf7_Send_Wa_Admin {
 		 */
 
 		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cf7-send-wa-admin.js', array( 'jquery' ), $this->version, false );
+		wp_register_script( 'knockout', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/knockout.js' );
 		wp_register_script( 'select2', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/select2.min.js' );
 
 	}
@@ -114,12 +115,8 @@ class Cf7_Send_Wa_Admin {
     public function wa_settings() {
 	    
 	    wp_enqueue_style( 'select2' );
+	    wp_enqueue_script( 'knockout' );
 	    wp_enqueue_script( 'select2' );
-	    wp_localize_script( $this->plugin_name, 'cf7sendwa', array(
-			'ajaxurl' => admin_url( 'admin-ajax.php' ),
-	        'security' => wp_create_nonce( 'cf7sendwa-settings' ),
-	    ) );
-	    wp_enqueue_script( $this->plugin_name );
         
         $settings_saved = false;
         if( isset( $_POST ) && !empty( $_POST ) ) {
@@ -140,13 +137,20 @@ class Cf7_Send_Wa_Admin {
             if( $require_shipping != '1' ) $require_shipping = '0';
             update_option( 'cf7sendwa_requireshipping', $require_shipping );
 
-            $use_twilio = $_POST['use_twilio'];
-            if( $use_twilio != '1' ) $use_twilio = '0';
-            update_option( 'cf7sendwa_use_twilio', $_POST['use_twilio'] );
+            update_option( 'cf7sendwa_provider', $_POST['provider'] );
             update_option( 'cf7sendwa_twilio_sid', $_POST['twilio_sid'] );
             update_option( 'cf7sendwa_twilio_token', $_POST['twilio_token'] );
             update_option( 'cf7sendwa_twilio_from', $_POST['twilio_from'] );
+            update_option( 'cf7sendwa_fonnte_token', $_POST['fonnte_token'] );
         }
+        
+	    wp_localize_script( $this->plugin_name, 'cf7sendwa', array(
+			'ajaxurl' => admin_url( 'admin-ajax.php' ),
+	        'security' => wp_create_nonce( 'cf7sendwa-settings' ),
+	        'provider' => get_option( 'cf7sendwa_provider', '' )
+	    ) );
+	    wp_enqueue_script( $this->plugin_name );
+        
         $whatsapp_number = get_option( 'cf7sendwa_number', '628123456789' );
         $disable_mail = get_option( 'cf7sendwa_disablemail', '0' );
         $full_cart = get_option( 'cf7sendwa_fullcart', '0' );
@@ -155,10 +159,11 @@ class Cf7_Send_Wa_Admin {
         $woo_checkout = get_option( 'cf7sendwa_woo_checkout', '' );
         $woo_order_redirect = get_option( 'cf7sendwa_woo_order_redirect', '' );
         
-        $use_twilio = get_option( 'cf7sendwa_use_twilio', '0' );
         $twilio_sid = get_option( 'cf7sendwa_twilio_sid', '' );
         $twilio_token = get_option( 'cf7sendwa_twilio_token', '' );
         $twilio_from = get_option( 'cf7sendwa_twilio_from', '14155238886' );
+
+        $fonnte_token = get_option( 'cf7sendwa_fonnte_token', '' );
         
         include 'partials/cf7-send-wa-admin-display.php';        
     }

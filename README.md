@@ -7,6 +7,10 @@ For Twilio integration require PHP 7.2 or newer.
 - Download the stable version at https://solusipress.com/download/contact-form-7-send-to-whatsapp/
 - See the demo https://bisnisdemo.solusipress.com/contact-form-7-to-wa-test/
 
+## Relase 0.8.2
+- Add: Add integration to Fonnte.
+- Bug Fixing for Custom WhatsApp API.
+
 ## Relase 0.8.1
 - Add: Option to disable redirect after WooCommerce checkout/order.
 - Add: Shortcode [cf7sendwa-received-link] and [cf7sendwa-payment-link] to be used in success message.

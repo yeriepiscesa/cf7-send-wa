@@ -125,47 +125,66 @@
 	        </tbody>
         </table>
         
-        <h3>Twilio Integration</h3>
-        <p>Please create <a href="https://www.twilio.com/try-twilio" target="_blank">Twilio Account</a> to get Account SID &amp; Auth Token.</p>
-		<table class="form-table">
-			<tbody>
-				<tr>
-					<th scope="row"><label for="cf7sendwa_twilio_sid">Account SID</label></th>
-                    <td><input type="text" name="twilio_sid" size="40" 
-                               id="cf7sendwa_twilio_sid"
-                               value="<?= $twilio_sid ?>"></td>
-                </tr>
-				<tr>
-					<th scope="row"><label for="cf7sendwa_twilio_token">Auth Token</label></th>
-                    <td><input type="text" name="twilio_token" size="40" 
-                               id="cf7sendwa_twilio_token"
-                               value="<?= $twilio_token ?>"></td>
-                </tr>
-				<tr>
-					<th scope="row"><label for="cf7sendwa_use_twilio">Use Twilio</label></th>
-					<td>
-                        <?php
-                        $checked2 = '';
-                        if( $use_twilio == '1' ) {
-                            $checked2 = ' checked="checked"';
-                        }
-                        ?>
-                        <input type="checkbox" id="cf7sendwa_use_twilio"<?= $checked2 ?>  
-                               name="use_twilio" value="1">
-                    </td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="cf7sendwa_twilio_from">WhatsApp From</label></th>
-                    <td><input type="text" name="twilio_from" size="20" 
-                               id="cf7sendwa_twilio_from"
-                               value="<?= $twilio_from ?>">
-                        <p class="description">
-                            Twilio valid number or your own WhatsApps' approved number.
-                        </p>
-                    </td>
-                </tr>
-            </tbody>
+        <h3>3rd Party Integration</h3>
+        <table class="form-table">
+	        <tbody>
+		        <tr>
+			        <th scope="row"><label for="">Provider</label></th>
+			        <td>
+				        <select name="provider" id="provider" data-bind="value: provider">
+					        <option value="">Select your Provider</option>
+					        <option value="twilio">Twilio</option>
+					        <option value="fonnte">Fonnte</option>
+				        </select>
+			        </td>
+		        </tr>
+	        </tbody>
         </table>
+        
+        <div id="cf7sendwa-twilio-settings" data-bind="visible: provider() == 'twilio'">
+	        <p>Please create <a href="https://www.twilio.com/try-twilio" target="_blank">Twilio Account</a> to get Account SID &amp; Auth Token.</p>
+			<table class="form-table">
+				<tbody>
+					<tr>
+						<th scope="row"><label for="cf7sendwa_twilio_sid">Account SID</label></th>
+	                    <td><input type="text" name="twilio_sid" size="40" 
+	                               id="cf7sendwa_twilio_sid"
+	                               value="<?= $twilio_sid ?>"></td>
+	                </tr>
+					<tr>
+						<th scope="row"><label for="cf7sendwa_twilio_token">Auth Token</label></th>
+	                    <td><input type="text" name="twilio_token" size="40" 
+	                               id="cf7sendwa_twilio_token"
+	                               value="<?= $twilio_token ?>"></td>
+	                </tr>
+					<tr>
+						<th scope="row"><label for="cf7sendwa_twilio_from">WhatsApp From</label></th>
+	                    <td><input type="text" name="twilio_from" size="20" 
+	                               id="cf7sendwa_twilio_from"
+	                               value="<?= $twilio_from ?>">
+	                        <p class="description">
+	                            Twilio valid number or your own WhatsApps' approved number.
+	                        </p>
+	                    </td>
+	                </tr>
+	            </tbody>
+	        </table>
+        </div>
+        
+        <div id="cf7sendwa-twilio-settings" data-bind="visible: provider() == 'fonnte'">
+	        <p>Please create <a href="https://fonnte.com/" target="_blank">Fonnte Account</a> to get Account Token.</p>
+			<table class="form-table">
+				<tbody>
+					<tr>
+						<th scope="row"><label for="cf7sendwa_fonnte_token">Token</label></th>
+	                    <td><input type="text" name="fonnte_token" size="40" 
+	                               id="cf7sendwa_fonnte_token"
+	                               value="<?= $fonnte_token ?>"></td>
+	                </tr>
+				</tbody>
+			</table>
+        </div>
+                
 		<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes"></p>		
     </form>
 </div>

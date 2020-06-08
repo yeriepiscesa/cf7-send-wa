@@ -54,6 +54,8 @@ class Cf7_Send_Wa_Public {
     
     protected $wablas_domain = null;
     protected $wablas_token = null;
+
+    protected $ruangwa_token = null;
     
     protected $instance_count = 0;
     
@@ -106,6 +108,9 @@ class Cf7_Send_Wa_Public {
 			$this->wablas_token = get_option( 'cf7sendwa_wablas_token', '' );     
         }
 
+        if( $this->provider == 'ruangwa' ) {
+			$this->ruangwa_token = get_option( 'cf7sendwa_ruangwa_token', '' );     
+        }
         
         if( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 	        $this->woo_is_active = true;
@@ -285,7 +290,7 @@ class Cf7_Send_Wa_Public {
 	    	'headers' => array(
 				'Authorization' => $this->wablas_token
 	    	)    
-        ) );        
+        ) );     
 	}
 	public function send_wablas() {
         check_ajax_referer( 'cf7sendwa-api-action', 'security' );
@@ -318,6 +323,49 @@ class Cf7_Send_Wa_Public {
         wp_die();
 	}
 
+    /*
+	 * Send message to RuangWA API
+	 * @since	0.8.3
+	 * @access	public
+	 */
+	private function _send_ruangwa( $inputs, $action='send-message' ){
+        $url = 'http://ruangwa.com/api/' . $action . '.php';
+        $inputs['token'] = $this->ruangwa_token;
+        $curl = wp_remote_post( $url, array(
+	    	'body' => $inputs
+        ) );        
+	}
+	public function send_ruangwa() {
+        check_ajax_referer( 'cf7sendwa-api-action', 'security' );
+		$inputs = [
+		    'phone' => $_POST['to_number'],
+		    'message' => $_POST['message']
+		];
+        $this->_send_ruangwa( $inputs );
+        if( !empty( $_POST['attachments'] ) ) {
+	        $inputs = [
+	        	'phone' => $_POST['to_number'],
+	        	'caption' => null,
+	        ];
+			$mime_type = $_POST['attachment_type'];
+			$action = '';
+			if( strpos( $mime_type, 'image' ) >= 0 ) {
+				$inputs['image'] = $_POST['attachments'][0];
+				$action = 'send-image';
+			} elseif( strpos( $mime_type, 'video' ) >= 0 ) {
+				$action = 'send-video';
+				$inputs['video'] = $_POST['attachments'][0];
+			} else {
+				$action = 'send-document';
+				$inputs['document'] = $_POST['attachments'][0];
+			}
+			if( $action != '' ) {
+				$this->_send_ruangwa( $inputs, $action );	        
+			}
+        }
+        wp_die();
+	}
+	
     /*
 	 * Send message to Twilio API
 	 * @since	0.4.2

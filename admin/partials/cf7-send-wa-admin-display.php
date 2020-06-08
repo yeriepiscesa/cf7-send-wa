@@ -135,7 +135,8 @@
 					        <option value="">Select your Provider</option>
 					        <option value="twilio">Twilio</option>
 					        <option value="fonnte">Fonnte</option>
-					        <option value="wablas">WA Blas</option>
+					        <option value="wablas">WABlas</option>
+					        <option value="ruangwa">RuangWA</option>
 				        </select>
 			        </td>
 		        </tr>
@@ -172,7 +173,7 @@
 	        </table>
         </div>
         
-        <div id="cf7sendwa-twilio-settings" data-bind="visible: provider() == 'fonnte'">
+        <div id="cf7sendwa-fonnte-settings" data-bind="visible: provider() == 'fonnte'">
 	        <p>Please create <a href="https://fonnte.com/" target="_blank">Fonnte Account</a> to get API Access.</p>
 			<table class="form-table">
 				<tbody>
@@ -186,7 +187,7 @@
 			</table>
         </div>
 
-        <div id="cf7sendwa-twilio-settings" data-bind="visible: provider() == 'wablas'">
+        <div id="cf7sendwa-wablas-settings" data-bind="visible: provider() == 'wablas'">
 	        <p>Please create <a href="https://wablas.com/" target="_blank">WABLAS Account</a> to get API Access.</p>
 			<table class="form-table">
 				<tbody>
@@ -205,6 +206,21 @@
 				</tbody>
 			</table>
         </div>
+
+        <div id="cf7sendwa-ruangwa-settings" data-bind="visible: provider() == 'ruangwa'">
+	        <p>Please create <a href="https://ruangwa.com/" target="_blank">RuangWA Account</a> to get API Access.</p>
+			<table class="form-table">
+				<tbody>
+					<tr>
+						<th scope="row"><label for="cf7sendwa_ruangwa_token">Token</label></th>
+	                    <td><input type="text" name="ruangwa_token" size="40" 
+	                               id="cf7sendwa_ruangwa_token"
+	                               value="<?= $ruangwa_token ?>"></td>
+	                </tr>
+				</tbody>
+			</table>
+        </div>
+
                 
 		<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes"></p>		
     </form>

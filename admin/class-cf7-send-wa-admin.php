@@ -144,6 +144,7 @@ class Cf7_Send_Wa_Admin {
             update_option( 'cf7sendwa_fonnte_token', $_POST['fonnte_token'] );
             update_option( 'cf7sendwa_wablas_token', $_POST['wablas_token'] );
             update_option( 'cf7sendwa_wablas_domain', $_POST['wablas_domain'] );
+            update_option( 'cf7sendwa_ruangwa_token', $_POST['ruangwa_token'] );
         }
         
 	    wp_localize_script( $this->plugin_name, 'cf7sendwa', array(
@@ -169,6 +170,8 @@ class Cf7_Send_Wa_Admin {
         
         $wablas_token = get_option( 'cf7sendwa_wablas_token', '' );
         $wablas_domain = get_option( 'cf7sendwa_wablas_domain', '' );
+
+        $ruangwa_token = get_option( 'cf7sendwa_ruangwa_token', '' );
 
         include 'partials/cf7-send-wa-admin-display.php';        
     }

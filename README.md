@@ -7,8 +7,14 @@ For Twilio integration require PHP 7.2 or newer.
 - Download the stable version at https://solusipress.com/download/contact-form-7-send-to-whatsapp/
 - See the demo https://bisnisdemo.solusipress.com/contact-form-7-to-wa-test/
 
+## Relase 0.8.3
+- Add: API integration to WABlas.
+- Add: API integration to RuangWA.
+- Some code cleanup.
+
+
 ## Relase 0.8.2
-- Add: Add integration to Fonnte.
+- Add: API integration to Fonnte.
 - Bug Fixing for Custom WhatsApp API.
 
 ## Relase 0.8.1

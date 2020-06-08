@@ -200,15 +200,11 @@ class Cf7_Send_Wa {
 		$this->loader->add_action( 'wp_footer', $plugin_public, 'render_script_footer', 99 );
 		$this->loader->add_filter( 'wpcf7_ajax_json_echo', $plugin_public, 'feedback_ajax_json_echo', 10, 2 );
         
-        $this->loader->add_action( 'wp_ajax_send_twilio', $plugin_public, 'send_twilio' );
-        $this->loader->add_action( 'wp_ajax_nopriv_send_twilio', $plugin_public, 'send_twilio' );
-
-        $this->loader->add_action( 'wp_ajax_send_fonnte', $plugin_public, 'send_fonnte' );
-        $this->loader->add_action( 'wp_ajax_nopriv_send_fonnte', $plugin_public, 'send_fonnte' );
-
-        $this->loader->add_action( 'wp_ajax_send_wablas', $plugin_public, 'send_wablas' );
-        $this->loader->add_action( 'wp_ajax_nopriv_send_wablas', $plugin_public, 'send_wablas' );
-        
+        $providers = [ 'twilio', 'fonnte', 'wablas', 'ruangwa' ];
+        foreach( $providers as $provider ) {
+	        $this->loader->add_action( 'wp_ajax_send_' . $provider, $plugin_public, 'send_' . $provider );
+	        $this->loader->add_action( 'wp_ajax_nopriv_send_' . $provider, $plugin_public, 'send_' . $provider );
+        }
         $this->loader->add_action( 'wp_ajax_cf7sendwa_api', $plugin_public, 'cf7sendwa_api' );
         $this->loader->add_action( 'wp_ajax_nopriv_cf7sendwa_api', $plugin_public, 'cf7sendwa_api' );
         

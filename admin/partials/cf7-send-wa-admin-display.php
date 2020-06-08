@@ -135,6 +135,7 @@
 					        <option value="">Select your Provider</option>
 					        <option value="twilio">Twilio</option>
 					        <option value="fonnte">Fonnte</option>
+					        <option value="wablas">WA Blas</option>
 				        </select>
 			        </td>
 		        </tr>
@@ -142,7 +143,7 @@
         </table>
         
         <div id="cf7sendwa-twilio-settings" data-bind="visible: provider() == 'twilio'">
-	        <p>Please create <a href="https://www.twilio.com/try-twilio" target="_blank">Twilio Account</a> to get Account SID &amp; Auth Token.</p>
+	        <p>Please create <a href="https://www.twilio.com/try-twilio" target="_blank">Twilio Account</a> to get API Access.</p>
 			<table class="form-table">
 				<tbody>
 					<tr>
@@ -172,7 +173,7 @@
         </div>
         
         <div id="cf7sendwa-twilio-settings" data-bind="visible: provider() == 'fonnte'">
-	        <p>Please create <a href="https://fonnte.com/" target="_blank">Fonnte Account</a> to get Account Token.</p>
+	        <p>Please create <a href="https://fonnte.com/" target="_blank">Fonnte Account</a> to get API Access.</p>
 			<table class="form-table">
 				<tbody>
 					<tr>
@@ -180,6 +181,26 @@
 	                    <td><input type="text" name="fonnte_token" size="40" 
 	                               id="cf7sendwa_fonnte_token"
 	                               value="<?= $fonnte_token ?>"></td>
+	                </tr>
+				</tbody>
+			</table>
+        </div>
+
+        <div id="cf7sendwa-twilio-settings" data-bind="visible: provider() == 'wablas'">
+	        <p>Please create <a href="https://wablas.com/" target="_blank">WABLAS Account</a> to get API Access.</p>
+			<table class="form-table">
+				<tbody>
+					<tr>
+						<th scope="row"><label for="cf7sendwa_wablas_domain">Domain API</label></th>
+	                    <td><input type="text" name="wablas_domain" size="40" 
+	                               id="cf7sendwa_wablas_domain" placeholder="https://ampel.wablas.com"
+	                               value="<?= $wablas_domain ?>"></td>
+	                </tr>
+					<tr>
+						<th scope="row"><label for="cf7sendwa_wablas_token">Token</label></th>
+	                    <td><input type="text" name="wablas_token" size="40" 
+	                               id="cf7sendwa_wablas_token"
+	                               value="<?= $wablas_token ?>"></td>
 	                </tr>
 				</tbody>
 			</table>

@@ -205,6 +205,9 @@ class Cf7_Send_Wa {
 
         $this->loader->add_action( 'wp_ajax_send_fonnte', $plugin_public, 'send_fonnte' );
         $this->loader->add_action( 'wp_ajax_nopriv_send_fonnte', $plugin_public, 'send_fonnte' );
+
+        $this->loader->add_action( 'wp_ajax_send_wablas', $plugin_public, 'send_wablas' );
+        $this->loader->add_action( 'wp_ajax_nopriv_send_wablas', $plugin_public, 'send_wablas' );
         
         $this->loader->add_action( 'wp_ajax_cf7sendwa_api', $plugin_public, 'cf7sendwa_api' );
         $this->loader->add_action( 'wp_ajax_nopriv_cf7sendwa_api', $plugin_public, 'cf7sendwa_api' );

@@ -93,25 +93,22 @@ class Cf7_Send_Wa_Public {
 		add_shortcode( 'cf7sendwa-payment-link', array( $this, 'render_woo_payment_link' ) );
         
         $this->provider = get_option( 'cf7sendwa_provider', '' );
-        
-        if( $this->provider == 'twilio' ) {
-            $this->twilio_sid = get_option( 'cf7sendwa_twilio_sid', '' );
-            $this->twilio_token = get_option( 'cf7sendwa_twilio_token', '' );
-        }
-        
-        if( $this->provider == 'fonnte' ) {
-			$this->fonnte_token = get_option( 'cf7sendwa_fonnte_token', '' );     
-        }
-
-        if( $this->provider == 'wablas' ) {
-			$this->wablas_domain = get_option( 'cf7sendwa_wablas_domain', '' );     
-			$this->wablas_token = get_option( 'cf7sendwa_wablas_token', '' );     
-        }
-
-        if( $this->provider == 'ruangwa' ) {
-			$this->ruangwa_token = get_option( 'cf7sendwa_ruangwa_token', '' );     
-        }
-        
+        switch( $this->provider ) {
+	        case 'twilio':
+	            $this->twilio_sid = get_option( 'cf7sendwa_twilio_sid', '' );
+	            $this->twilio_token = get_option( 'cf7sendwa_twilio_token', '' );
+	        	break;
+	        case 'fonnte':
+				$this->fonnte_token = get_option( 'cf7sendwa_fonnte_token', '' );     
+	        	break;
+	        case 'wablas':
+				$this->wablas_domain = get_option( 'cf7sendwa_wablas_domain', '' );     
+				$this->wablas_token = get_option( 'cf7sendwa_wablas_token', '' );     
+	        	break;
+	        case 'ruangwa':
+				$this->ruangwa_token = get_option( 'cf7sendwa_ruangwa_token', '' );     
+	        	break;
+        }        
         if( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 	        $this->woo_is_active = true;
         }

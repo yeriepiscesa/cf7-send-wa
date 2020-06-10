@@ -214,4 +214,93 @@ class Cf7_Send_Wa_Admin {
 		echo json_encode( $results );
 	    wp_die();
     }
+    
+    /**
+	 * WhatsApp setting panel
+	 * @since 0.9.0
+	 * @access public
+	 *
+	 */	   
+    public function whatsapp_panel( $panels ) {
+		$panels['cf7sendwa-settings-panel'] = array(
+			'title' => __( 'WhatsApp', 'cf7sendwa' ),
+			'callback' => array( $this, 'wpcf7_editor_panel_whatsapp' ),
+		);
+	    return $panels;
+    }
+    
+    /**
+	 * WhatsApp setting panel callback
+	 * @since 0.9.0
+	 * @access public
+	 *
+	 */	   
+    public function wpcf7_editor_panel_whatsapp( $post ) {
+	    
+		$this->editor_box_whatsapp( $post );
+	
+		echo '<br class="clear" />';
+	
+		$this->editor_box_whatsapp( $post, array(
+			'id' => 'wpcf7-whatsapp-2',
+			'name' => 'whatsapp_2',
+			'title' => __( 'WhatsApp Autorespond', 'cf7sendwa' ),
+			'use' => __( 'Use WhatsApp Autorespond', 'cf7sendwa' ),
+		) );
+    }
+    private function editor_box_whatsapp( $post, $args='' ) {
+	    $whatsapp_number = get_option( 'cf7sendwa_number', '628123456789' );
+		$args = wp_parse_args( $args, array(
+			'id' => 'wpcf7-whatsapp',
+			'name' => 'whatsapp',
+			'title' => __( 'WhatsApp Send', 'cf7sendwa' ),
+			'use' => null,
+		) );
+		$id = esc_attr( $args['id'] );
+		$whatsapp = wp_parse_args( $post->prop( $args['name'] ), array(
+			'active' => false,
+			'recipient' => '',
+			'body' => '',
+		) );
+	    include 'partials/cf7-send-wa-form-settings.php';
+    }
+    public function cf7_form_properties( $properties, $cf7 ) {
+		$properties = wp_parse_args( $properties, array(
+			'whatsapp' => array(),
+			'whatsapp_2' => array(),
+		) );	    
+	    return $properties;
+    }
+    public function wpcf7_collect_mail_tags_for_wa( $mailtags, $args, $contact_form ){
+	    $mailtags[] = 'woo-orderdetail';
+	    return $mailtags;
+    }
+    
+    /**
+	 * Save contact form custom settings
+	 * @since 0.9.0
+	 * @access public
+	 *
+	 */	   
+    public function save_contact_form_settings( $contact_form, $args, $context ) {
+		$args['whatsapp'] = isset( $_POST['wpcf7-whatsapp'] )
+			? $_POST['wpcf7-whatsapp'] : array();
+
+		$args['whatsapp_2'] = isset( $_POST['wpcf7-whatsapp-2'] )
+			? $_POST['wpcf7-whatsapp-2'] : array();
+			
+	    $args = wp_unslash( $args );
+		$properties = array();		
+		if ( null !== $args['whatsapp'] ) {
+			$properties['whatsapp'] = $args['whatsapp'];
+			$properties['whatsapp']['active'] = true;
+		}
+		if ( null !== $args['whatsapp_2'] ) {
+			$properties['whatsapp_2'] = $args['whatsapp_2'];
+		}
+	    $contact_form->set_properties( $properties );
+		if ( 'save' == $context ) {
+			$contact_form->save();
+		}
+    }
 }

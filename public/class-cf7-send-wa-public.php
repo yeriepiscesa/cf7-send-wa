@@ -174,7 +174,12 @@ class Cf7_Send_Wa_Public {
             $this->numbers[$atts['id']] = $atts['number'];
             unset( $atts['number'] );
         } else {
-            $this->numbers[$atts['id']] = get_option( 'cf7sendwa_number', '628123456789' );
+	        $wa = get_post_meta( $atts['id'], '_whatsapp', true );
+	        if( $wa['recipient'] != '' ) {
+		        $this->numbers[$atts['id']] = trim($wa['recipient']);
+	        } else {
+            	$this->numbers[$atts['id']] = get_option( 'cf7sendwa_number', '628123456789' );
+            }
         }
         foreach( $atts as $key=>$val ) {
             $shortcode .= ' ' . $key .'="' . $val . '"';
@@ -221,14 +226,66 @@ class Cf7_Send_Wa_Public {
         }
         
         array_push( $this->ids, intval($atts['id']) );
-        $_mail = get_post_meta( $atts['id'], '_mail', true );
-        if( $_mail && isset( $_mail['body'] ) ) {
-            $this->bodies[$atts['id']] = $_mail['body'];
-        }        
+        $_wa = get_post_meta( $atts['id'], '_whatsapp', true );
+        if( $_wa && isset( $_wa['body'] ) && trim($_wa['body']) != '' ) {
+	        $this->bodies[$atts['id']] = trim($_wa['body']);
+        } else {
+	        $_mail = get_post_meta( $atts['id'], '_mail', true );
+	        if( $_mail && isset( $_mail['body'] ) ) {
+	            $this->bodies[$atts['id']] = $_mail['body'];
+	        }        
+        }
         
         $this->incstance_count++;
         
 		return $html;
+	}
+	
+	
+    /*
+	 * Evaluate autorespond message
+	 * @since	0.9.0
+	 * @access	public
+	 */
+	private function autorespond_message( $data, $req_post ) {
+		$p = $req_post;
+		$message = '';
+		$wa = get_post_meta( $p['cf7_id'], '_whatsapp_2', true );
+		$input_array = array();
+		if( $wa && $wa['active'] == '1' ) {
+			$message = trim( $wa['body'] );
+			foreach( $p['cf7_inputs'] as $input ) {
+				$message = str_replace( '['.$input['name'].']', $input['value'], $message );
+				if( strpos( $input['name'], '[]' ) !== false ) {
+					$_key = str_replace( '[]', '', $input['name'] );
+					if( !isset( $input_array[ $_key ] ) ) {
+						$input_array[ $_key ] = [];
+					}
+					array_push( $input_array[ $_key ], $input['value'] );
+				}
+			}
+			if( !empty( $input_array ) ) {
+				foreach( $input_array as $key=>$val ) {
+					$message = str_replace( '['.$key.']', implode( ", ", $val ), $message );
+				}
+			}
+			$message = str_replace( '[woo-orderdetail]', $p['woo_order_detail'], $message );
+			if( $message != '' ) {
+				$data['to_number_2'] = $wa['recipient'];
+				foreach( $p['cf7_inputs'] as $input ) {
+					if( $data['to_number_2'] == '[' . $input['name'] . ']' ) {
+						$data['to_number_2'] = $input['value'];
+					}
+				}
+				$_tonumber = str_split( $data['to_number_2'] );
+				if( $_tonumber[0] == '0' ) {
+					unset($_tonumber[0]);
+					$data['to_number_2'] = '62' . implode( '', $_tonumber );
+				}
+				$data['message_2'] = $message;		
+			}
+		}
+		return $data;
 	}
         
     /*
@@ -244,6 +301,7 @@ class Cf7_Send_Wa_Public {
 				'Authorization' => $this->fonnte_token
 	    	)    
         ) );
+        do_action( 'cf7sendwa_after_send_fonnte', $url, $inputs );
 	}
     public function send_fonnte() {
         check_ajax_referer( 'cf7sendwa-api-action', 'security' );
@@ -272,6 +330,17 @@ class Cf7_Send_Wa_Public {
 			$this->_send_fonte( $inputs );	        
         }
         
+        /* autorespond */
+		$data = $this->autorespond_message( array(), $_POST );
+		if( !empty( $data ) ) {
+			$inputs = array(
+	            "phone" => $data['to_number_2'],
+				'type' => 'text',
+	            "text" => $data['message_2']
+			);
+	        $this->_send_fonte( $inputs );
+		}
+        
         wp_die();
 	}
 	
@@ -288,6 +357,7 @@ class Cf7_Send_Wa_Public {
 				'Authorization' => $this->wablas_token
 	    	)    
         ) );     
+        do_action( 'cf7sendwa_after_send_wablas', $url, $inputs );
 	}
 	public function send_wablas() {
         check_ajax_referer( 'cf7sendwa-api-action', 'security' );
@@ -317,6 +387,17 @@ class Cf7_Send_Wa_Public {
 				$this->_send_wablas( $inputs, $action );	        
 			}
         }
+        
+        /* autorespond */
+		$data = $this->autorespond_message( array(), $_POST );
+		if( !empty( $data ) ) {
+			$inputs = array(
+	            "phone" => $data['to_number_2'],
+	            "message" => $data['message_2']
+			);
+	        $this->_send_wablas( $inputs );
+		}
+		
         wp_die();
 	}
 
@@ -331,6 +412,7 @@ class Cf7_Send_Wa_Public {
         $curl = wp_remote_post( $url, array(
 	    	'body' => $inputs
         ) );        
+        do_action( 'cf7sendwa_after_send_ruangwa', $url, $inputs );
 	}
 	public function send_ruangwa() {
         check_ajax_referer( 'cf7sendwa-api-action', 'security' );
@@ -360,6 +442,17 @@ class Cf7_Send_Wa_Public {
 				$this->_send_ruangwa( $inputs, $action );	        
 			}
         }
+        
+        /* autorespond */
+		$data = $this->autorespond_message( array(), $_POST );
+		if( !empty( $data ) ) {
+			$inputs = array(
+	            "phone" => $data['to_number_2'],
+	            "message" => $data['message_2']
+			);
+	        $this->_send_ruangwa( $inputs );
+		}
+        
         wp_die();
 	}
 	
@@ -392,6 +485,24 @@ class Cf7_Send_Wa_Public {
 				'Authorization' => 'Basic ' . base64_encode($this->twilio_sid . ':' . $this->twilio_token)
 	    	)    
         ) );
+        
+        /* autorespond */
+		$data = $this->autorespond_message( array(), $_POST );
+		if( !empty( $data ) ) {
+			$inputs = array(
+	            "Body" => $data['message_2'],
+	            "From" => "whatsapp:+" . get_option( 'cf7sendwa_twilio_from', '14155238886' ),
+	            "To" => "whatsapp:+" . $data['to_number_2'],
+			);
+	        $curl = wp_remote_post( $url, array(
+		    	'body' => $inputs,
+		    	'headers' => array(
+					'Authorization' => 'Basic ' . base64_encode($this->twilio_sid . ':' . $this->twilio_token)
+		    	)    
+	        ) );
+		}
+		
+        do_action( 'cf7sendwa_after_send_twilio', $url, $inputs );
         wp_die();
     }
     
@@ -403,11 +514,13 @@ class Cf7_Send_Wa_Public {
         check_ajax_referer( 'cf7sendwa-api-action', 'security' );
         $data = [
 	    	'message' => $_POST['message'],
-	    	'to_number' => $_POST['to_number']    
+	    	'to_number' => $_POST['to_number'],
+	    	'cf7_inputs' => $_POST['cf7_inputs'],   
         ];
         if( !empty( $_POST['attachments'] ) ) {
 	        $data['attachments'] = $_POST['attachments'];
 		}
+		$data = $this->autorespond_message( $data, $_POST );
 		$data = apply_filters( 'cf7sendwa_custom_api_data', $data );
         do_action( 'cf7sendwa_custom_send_api', $data );
         wp_die();        
@@ -498,6 +611,7 @@ class Cf7_Send_Wa_Public {
 	    if( $this->woo_order ) {
 		    $response['woo_order'] = $this->woo_order_id;
 		    $response['redirect'] = $this->woo_order_received_url;
+		    $response['woo_links'] = $this->woo_order_links;
 	    }
 	    $response['message'] = do_shortcode( $response['message'] );
 	    
@@ -785,19 +899,32 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 					input_array[ _key ].push( detail.value );
 				}
 			} );	
-			_.each( input_array, function( val, key, list ){
+			_.each( input_array, function( val, key, list ) {
 				the_text = the_text.replace( '[' + key + ']', val.join(", ") );
 			} );			
-			<?php include 'partials/woo-order-details.php'; ?>			
+			<?php 
+			$woo_order = '';	
+			include 'partials/woo-order-details.php'; ?>			
 			var the_phone = cf7wa_numbers[ the_id ];
+			_.each( inputs, function( detail, index, list ){
+				if( '[' + detail.name + ']' == the_phone ) {
+					the_phone = detail.value;
+				}				
+			} );
             <?php if( $this->provider != '' || $cf7sendwa_is_custom_api ): ?>  
             	$( '.wpcf7-response-output' ).wrap( '<div id="cf7sendwa_element_'+the_id+'" style="display:none;"></div>' );              
                 var cf7sendwa_send_data = { 
 	                'to_number': the_phone, 
 	                'message': the_text, 
 	                'security': cf7wa_security,
-	                'cf7_inputs': inputs
+	                'cf7_id': the_id,
+	                'cf7_inputs': inputs,
+	                'woo_order_detail':'<?php echo $woo_order; ?>'
 	            };
+	            if( api_response.woo_order != undefined ) {
+		            cf7sendwa_send_data.order_id = api_response.woo_order;
+		            cf7sendwa_send_data.order_links = api_response.woo_links;
+	            }
                 <?php if( $cf7sendwa_is_custom_api ): ?>
                 	cf7sendwa_send_data.action = 'cf7sendwa_api';
                 <?php else: ?>

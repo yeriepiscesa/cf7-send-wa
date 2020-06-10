@@ -41,7 +41,8 @@ if ( $this->woo_is_active ) {
 		}
 		$txt .= "\\n";
 		$txt .= "*TOTAL* " . cf7sendwa_wc_price( WC()->cart->total );
-		echo "var woo_order = '" . $txt . "';";
+		$woo_order = $txt;
+		echo "var woo_order = '" . $woo_order . "';";
 		echo "the_text = the_text.replace( '[woo-orderdetail]', woo_order );";
 	}
 }

@@ -178,6 +178,10 @@ class Cf7_Send_Wa {
         $this->loader->add_action( 'wp_ajax_select_contact_form', $plugin_admin, 'contact_forms_lookup' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'create_menu' );
 		$this->loader->add_filter( 'wpcf7_contact_form_shortcode', $plugin_admin, 'cf7_extended_shortcode', 10, 3 );
+		$this->loader->add_filter( 'wpcf7_editor_panels', $plugin_admin, 'whatsapp_panel' );
+		$this->loader->add_filter( 'wpcf7_collect_mail_tags', $plugin_admin, 'wpcf7_collect_mail_tags_for_wa', 10, 3 );
+		$this->loader->add_filter( 'wpcf7_contact_form_properties', $plugin_admin, 'cf7_form_properties', 10, 2 );
+		$this->loader->add_action( 'wpcf7_save_contact_form', $plugin_admin, 'save_contact_form_settings', 10, 3 );
 
 	}
 

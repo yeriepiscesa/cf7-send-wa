@@ -939,6 +939,12 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 						cf7sendwa_send_data.attachments = api_response.attachments;
 					}
                 }
+                
+                var frm_id = $(event.target).attr('id');
+                var $btn = $( '#'+frm_id ).find( 'button' );
+                var btn_text = $btn.html();
+                $btn.attr( 'disabled', true );
+                $btn.html( btn_text + '&nbsp;<img src="<?php echo plugin_dir_url( dirname(__FILE__) ) .'includes/assets/img/ajax-loader.gif' ; ?>">' );
                 $.ajax({
                     url: cf7wa_ajaxurl,
                     type: 'POST',
@@ -946,6 +952,8 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
                     success: function( response ) {
                         $( '.wpcf7-response-output' ).unwrap();
                         redirect_woo_order_received( api_response );
+						$btn.attr( 'disabled', false );
+						$btn.html( btn_text );
                     }
                 });
             <?php else: ?>

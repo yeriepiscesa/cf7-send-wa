@@ -271,16 +271,20 @@ class Cf7_Send_Wa_Public {
 			}
 			$message = str_replace( '[woo-orderdetail]', $p['woo_order_detail'], $message );
 			if( $message != '' ) {
-				$data['to_number_2'] = $wa['recipient'];
-				foreach( $p['cf7_inputs'] as $input ) {
-					if( $data['to_number_2'] == '[' . $input['name'] . ']' ) {
-						$data['to_number_2'] = $input['value'];
+				if( isset($wa['recipient']) && $wa['recipient'] != '' ) {
+					$data['to_number_2'] = $wa['recipient'];
+					foreach( $p['cf7_inputs'] as $input ) {
+						if( $data['to_number_2'] == '[' . $input['name'] . ']' ) {
+							$data['to_number_2'] = $input['value'];
+						}
 					}
-				}
-				$_tonumber = str_split( $data['to_number_2'] );
-				if( $_tonumber[0] == '0' ) {
-					unset($_tonumber[0]);
-					$data['to_number_2'] = '62' . implode( '', $_tonumber );
+					$_tonumber = str_split( $data['to_number_2'] );
+					if( $_tonumber[0] == '0' ) {
+						unset($_tonumber[0]);
+						$data['to_number_2'] = '62' . implode( '', $_tonumber );
+					}
+				} else {
+					$data['to_number_2'] = get_option( 'cf7sendwa_number', '' );					
 				}
 				$data['message_2'] = $message;		
 			}

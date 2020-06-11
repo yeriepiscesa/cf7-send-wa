@@ -175,7 +175,7 @@ class Cf7_Send_Wa_Public {
             unset( $atts['number'] );
         } else {
 	        $wa = get_post_meta( $atts['id'], '_whatsapp', true );
-	        if( $wa['recipient'] != '' ) {
+	        if( $wa && $wa['recipient'] != '' ) {
 		        $this->numbers[$atts['id']] = trim($wa['recipient']);
 	        } else {
             	$this->numbers[$atts['id']] = get_option( 'cf7sendwa_number', '628123456789' );

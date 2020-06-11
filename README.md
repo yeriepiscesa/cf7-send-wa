@@ -6,6 +6,9 @@ This is a WordPress plugin, require Contact Form 7 plugin to be activated.
 - Download the stable version at https://solusipress.com/download/contact-form-7-send-to-whatsapp/
 - See the demo https://bisnisdemo.solusipress.com/contact-form-7-to-wa-test/
 
+## Relase 0.9.1
+- Fix: Warning illegal offset, when WhatsApp tab not in use
+
 ## Relase 0.9.0
 - Add: Autorespond for WhatsApp API users.
 - Add: WhatsApp template Tab

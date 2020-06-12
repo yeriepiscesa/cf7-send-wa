@@ -121,7 +121,8 @@ function cf7sendwa_woo_get_shippings(){
 		'address' => null,
 		'total' => $shipping_total
 	);
-
+	
+	$shipping_dest = null;
 	foreach( $shipping_packages as $package_id => $package ) {
 		if ( WC()->session->__isset( 'shipping_for_package_'.$package_id ) ) {
 			$pckg = WC()->session->get( 'shipping_for_package_'.$package_id );
@@ -135,6 +136,7 @@ function cf7sendwa_woo_get_shippings(){
 			            'cost' => $cost,
 			            'tax_cost' => $tax_cost
 		            ) );
+		            $shipping_dest = $package['destination'];
 				}
 			}
 		}
@@ -145,19 +147,27 @@ function cf7sendwa_woo_get_shippings(){
 		'address_2' => '',
 		'postcode' => '',
 	);
-	if( isset( $customer['city'] ) && $customer['city'] != '' ) {
-		$address_parts['city'] = $customer['city'];
-		$_addr = $customer['city'];
-	}
-	if( isset( $customer['address_2'] ) && $customer['address_2'] != '' ) {
-		$address_parts['address_2'] = $customer['address_2'];
+	if( !is_null( $shipping_dest ) ) {
+		$_addr = $shipping_dest['city'];
 		if( $_addr != '' ) $_addr .= ', ';
-		$_addr .= $customer['address_2'];
-	}
-	if( isset( $customer['postcode'] ) && $customer['postcode'] != '' ) {
-		$address_parts['postcode'] = $customer['postcode'];
+		$_addr .= $shipping_dest['address_2'];
 		if( $_addr != '' ) $_addr .= ' ';
-		$_addr .= $customer['postcode'];
+		$_addr .= $shipping_dest['postcode'];
+	} else {
+		if( isset( $customer['city'] ) && $customer['city'] != '' ) {
+			$address_parts['city'] = $customer['city'];
+			$_addr = $customer['city'];
+		}
+		if( isset( $customer['address_2'] ) && $customer['address_2'] != '' ) {
+			$address_parts['address_2'] = $customer['address_2'];
+			if( $_addr != '' ) $_addr .= ', ';
+			$_addr .= $customer['address_2'];
+		}
+		if( isset( $customer['postcode'] ) && $customer['postcode'] != '' ) {
+			$address_parts['postcode'] = $customer['postcode'];
+			if( $_addr != '' ) $_addr .= ' ';
+			$_addr .= $customer['postcode'];
+		}
 	}
 	$return['address'] = $_addr;
 	$return['address_parts'] = $address_parts;

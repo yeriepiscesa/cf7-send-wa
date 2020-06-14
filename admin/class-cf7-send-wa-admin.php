@@ -125,6 +125,7 @@ class Cf7_Send_Wa_Admin {
             $disable_mail = $_POST['disable_send_mail'];
             if( $disable_mail != '1' ) $disable_mail = '0';
             update_option( 'cf7sendwa_disablemail', $disable_mail );
+            update_option( 'cf7sendwa_country', $_POST['default_country'] );
             
             update_option( 'cf7sendwa_woo_checkout', $_POST['woo_checkout'] );
             update_option( 'cf7sendwa_woo_order_redirect', $_POST['woo_order_redirect'] );
@@ -155,6 +156,7 @@ class Cf7_Send_Wa_Admin {
 	    wp_enqueue_script( $this->plugin_name );
         
         $whatsapp_number = get_option( 'cf7sendwa_number', '628123456789' );
+        $default_country = get_option( 'cf7sendwa_country' );
         $disable_mail = get_option( 'cf7sendwa_disablemail', '0' );
         $full_cart = get_option( 'cf7sendwa_fullcart', '0' );
         $require_shipping = get_option( 'cf7sendwa_requireshipping', '0' );

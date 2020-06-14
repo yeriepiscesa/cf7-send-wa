@@ -915,6 +915,9 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 					the_phone = detail.value;
 				}				
 			} );
+            if( the_phone.substr(0, 1) == '0' ) {
+                the_phone = '62'+ the_phone.substring(1);
+            }
             <?php if( $this->provider != '' || $cf7sendwa_is_custom_api ): ?>  
             	$( '.wpcf7-response-output' ).wrap( '<div id="cf7sendwa_element_'+the_id+'" style="display:none;"></div>' );              
                 var cf7sendwa_send_data = { 

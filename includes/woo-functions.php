@@ -37,6 +37,28 @@ function cf7sendwa_wc_price( $price, $args=array() ) {
 	return apply_filters( 'cf7sendwa_wc_price', $return, $price, $args, $unformatted_price );	
 	return $price;
 }	
+
+/**
+ * Get Product Categories
+ * @since 0.9.3
+ */	
+function cf7sendwa_woo_list_categories( $category ) {
+    $orderby = 'name';
+    $order = 'asc';
+    $hide_empty = true ;
+    $cat_args = array(
+        'orderby'    => $orderby,
+        'order'      => $order,
+        'hide_empty' => $hide_empty,
+    );
+    if( $category != '' ) {
+        $cat_args['slug'] = $category;
+    }
+    $product_categories = get_terms( 'product_cat', $cat_args );    
+    return $product_categories;
+}
+
+
 /**
  * Get Cart Items
  * @since 0.6.0

@@ -61,6 +61,9 @@ class Cf7_Send_Wa_Public {
     
     protected $woo_is_active = false;
     protected $woo_cart = null;
+    
+    protected $quickshop_rendered = false;
+    
     protected $woo_shippings = null;
     protected $woo_order_id = null;
     protected $woo_order = false;
@@ -123,6 +126,7 @@ class Cf7_Send_Wa_Public {
 	public function enqueue_styles() {
 		wp_register_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/cf7-send-wa-public.css', array(), $this->version, 'all' );
 		wp_register_style( 'jquery-modal', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/jquery.modal.min.css' );
+		wp_register_style( 'select2', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/select2.min.css' );
 	}
 
 	/**
@@ -133,6 +137,8 @@ class Cf7_Send_Wa_Public {
 	public function enqueue_scripts() {
 		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cf7-send-wa-public.js', array( 'jquery' ), $this->version, false );
 		wp_register_script( 'jquery-modal', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/jquery.modal.min.js', array( 'jquery' ), '0.9.1', false );
+		wp_register_script( 'knockout', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/knockout.js' );
+		wp_register_script( 'select2', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/select2.min.js' );
 	}
 	
     public function check_skip_mail( $skip_mail, $contact_form ) {
@@ -673,21 +679,42 @@ class Cf7_Send_Wa_Public {
 	    return $template;
     }
     
+    public function custom_cf7_tags() {
+	    $this->woo_checkout_cart_tag();
+	    $this->woo_quickshop_tag();
+    }
+    
     /*
 	 * Add custom tag [cf7sendwa_woo_checkout]
 	 * @since 0.6.4
 	 * @access public
 	 */
 	public function woo_checkout_cart_tag() {
-		wpcf7_add_form_tag( 'cf7sendwa_woo_checkout', array( $this, 'cf7sendwa_woo_checkout_render' ), array( 'name-attr' => true ) );		
+		//wpcf7_add_form_tag( 'cf7sendwa_woo_checkout', array( $this, 'cf7sendwa_woo_checkout_render' ), array( 'name-attr' => true ) );		
+		add_shortcode( 'cf7sendwa_woo_checkout', array( $this, 'cf7sendwa_woo_checkout_render' ) ); // backwards compatibility
+		add_shortcode( 'cf7sendwa-checkout', array( $this, 'cf7sendwa_woo_checkout_render' ) );
 	}	
-	public function cf7sendwa_woo_checkout_render( $tag ) {
+	public function cf7sendwa_woo_checkout_render( $atts ) {
 	    $html = '';
         if( is_checkout() && get_option( 'cf7sendwa_woo_checkout', '' ) != '' ) {
 	        ob_start();
 	        include 'partials/cf7-send-wa-public-display.php';
 	        $html .= ob_get_contents();
 	        ob_end_clean();
+		} else {
+			if( $this->quickshop_rendered ) {
+				
+				$atts = shortcode_atts( array(
+					'add-to-cart' => 'no', // or yes
+				), $atts, 'cf7sendwa-checkout');
+				$html = '';
+				ob_start();
+				include 'partials/cf7-send-wa-quickshop-checkout.php';
+				$html = ob_get_contents();
+				ob_end_clean();
+			} else {
+				$html = 'No quickshop rendered before checkout tag!';
+			}
 		}			
 		return $html;    		
 	}
@@ -698,8 +725,15 @@ class Cf7_Send_Wa_Public {
 	 * @access public
 	 */
     public function create_woo_order( $contact_form ) {
+	    
 		$woo_checkout_form = get_option( 'cf7sendwa_woo_checkout', '' );	    
-		if( $contact_form->id() == $woo_checkout_form ) {
+		// instant checkout from quickshop
+		$woo_quickshop = false;
+		if( isset( $_POST['quickshop_cart'] ) ) {
+			$cart = json_decode( str_replace( "\\", "", $_POST['quickshop_cart'] ), true );
+			$woo_quickshop = true;
+		}
+		if( $contact_form->id() == $woo_checkout_form || $woo_quickshop ) {
 			$submission = WPCF7_Submission::get_instance();
 			if ( ! $submission || ! $posted_data = $submission->get_posted_data() ) {
 				return;
@@ -725,6 +759,7 @@ class Cf7_Send_Wa_Public {
 				'address' => !empty( $f5 ) ? $f5[0]:'',
 				'note' => !empty( $f6 ) ? $f6[0]:''
 			);
+			
 			$woo_order = array();
 			foreach( $woo_settings as $key=>$val ){
 				if( isset( $posted_data[ $val ] ) ) {
@@ -732,18 +767,81 @@ class Cf7_Send_Wa_Public {
 					unset( $_posted_data[$val] );
 				}
 			}
-			$shipping = cf7sendwa_woo_get_shippings();
+			
 			$order_address = array(
 	            'first_name' => $woo_order[ 'first_name' ],
 	            'last_name'  => $woo_order[ 'last_name' ],
 	            'email'      => $woo_order[ 'email' ],
 	            'phone'      => $woo_order[ 'phone' ],
 	            'address_1'  => $woo_order[ 'address' ],
-	            'address_2'  => $shipping['address_parts']['address_2'], 
-	            'city'       => $shipping['address_parts']['city'],
-	            'postcode'   => $shipping['address_parts']['postcode'],
 	        );
-			$obj_order = cf7sendwa_woo_create_order( $order_address, $woo_settings['note'], $_posted_data );
+	        
+	        if( $woo_quickshop ) {
+				$customer = WC()->session->get( 'customer' );
+				if( is_array( $customer ) && !empty( $customer ) ) {
+					if( trim($order_address['address_1']) == '' ) {
+						if( $customer['shipping_address_1'] == '' ) {
+							$order_address['address_1'] = $customer['address_1'];
+						} else {
+							$order_address['address_1'] = $customer['shipping_address_1'];
+						}
+					}	
+					if( trim($order_address['email']) == '' ) {
+						$order_address['email'] = $customer['email'];
+					}			
+				}
+			} else {
+				$shipping = cf7sendwa_woo_get_shippings();
+				$order_address['address_2'] = $shipping['address_parts']['address_2'];
+				$order_address['city'] = $shipping['address_parts']['city'];
+				$order_address['postcode'] = $shipping['address_parts']['postcode'];
+			}
+	        
+	        if( $woo_quickshop ) {
+		        
+				$obj_order = new WC_Order();
+				$obj_order->set_created_via( 'contact-form-7' );
+			    $obj_order->set_customer_ip_address( WC_Geolocation::get_ip_address() );
+			    $obj_order->set_customer_user_agent( wc_get_user_agent() );
+				if( !isset( $order_address['address_1'] ) || 
+				    ( isset( $order_address['address_1'] ) && trim($order_address['address_1']) == '' ) ) {
+					$order_address['address_1'] = $shipping['address'];					
+				}
+				$obj_order->set_address( $order_address, 'billing' );
+			    $obj_order->set_address( $order_address, 'shipping' );
+			    
+				foreach( $cart['items'] as $item ) {
+					$_args = array();
+					$_product = get_product( $item['prop']['product_id'] );
+					if( $item['prop']['product_type'] == 'variation' ) {
+						$_args['variation'] = $item['prop']['pa'];
+						$_product = get_product( $item['prop']['variation_id'] );
+					}
+					$obj_order->add_product( $_product, $item['qty'], $_args );
+				}	
+				$obj_order->calculate_totals();	
+										
+			    $order_id = $obj_order->get_id();
+				if( isset( $woo_order['note'] ) && $woo_order['note'] != '' ) {
+					$obj_order->add_order_note( $woo_order['note'], 1, true );
+				}
+				
+				$cust = WC()->customer;
+			    if( $order_id && is_object($cust) && $cust->get_id() ) {
+					update_post_meta( $order_id, '_customer_user', $cust->get_id() );	    
+			    }
+			    
+			    $mail_order = new WC_Email_New_Order();
+			    $mail_order->trigger( $order_id, $obj_order );
+			    if( isset($order_address['email']) && is_email( $order_address['email'] ) ) {
+				    $mail = new WC_Email_Customer_Invoice();
+				    $mail->trigger( $order_id, $obj_order );
+			    }
+				
+	        } else {
+				$obj_order = cf7sendwa_woo_create_order( $order_address, $woo_settings['note'], $_posted_data );
+			}
+			
 			$this->woo_order = true;
 			$this->woo_order_id = $obj_order->get_id();
 			
@@ -758,9 +856,12 @@ class Cf7_Send_Wa_Public {
 				$this->woo_order_links['payment'] = $obj_order->get_checkout_payment_url();
 			}
 			
-			WC()->cart->empty_cart();
-			WC()->session->set('cart', array());
+			if( !$woo_quickshop ) {
+				WC()->cart->empty_cart();
+				WC()->session->set('cart', array());
+			}
 		}
+
     }
     
     /**
@@ -873,7 +974,91 @@ class Cf7_Send_Wa_Public {
 		}
 		return $scanned_tag;
 	} 
+	
+	/*
+     * Get list product for Quick Shop 
+     * @since 0.10.0
+     * @access public
+     */
+	public function web_list_product() {
+		if( $this->woo_is_active ) {
+	        $args = array(
+	            'status' => 'publish',
+	            'type' => [ 'simple', 'variable' ],
+	            'limit' => 10,
+	            'page' => 1,
+	            'paginate' => true,
+	            'orderby' => 'date',
+	            'order' => 'DESC'            
+	        );
+	        if( isset( $_POST['args'] ) ) {
+		        $args = array_merge( $args, $_POST['args'] );
+	        }
+	        $products = Cf7_Send_Wa_Products::list_all( $args );
+	        include 'partials/woo-product-list-item.php';
+		}
+		die();
+	}
     
+    /*
+	 * Add custom tag [cf7sendwa_woo_quickshop]
+	 * @since 0.6.4
+	 * @access public
+	 */
+	public function woo_quickshop_tag() {
+		add_shortcode( 'cf7sendwa-quickshop', array( $this, 'cf7sendwa_woo_quickshop_render' ) );
+	}	
+	public function cf7sendwa_woo_quickshop_render( $atts ) {
+		
+		if( !$this->quickshop_rendered ) {
+			
+		    $atts = shortcode_atts( array(
+				'category' => '',
+		        'heading' => 'yes', // or 'no'
+		        'enable_filter' => 'no',
+		        'products' => '',
+		        'sticky_top' => '0'
+			), $atts, 'cf7sendwa-quickshop' );
+			
+		    $product_categories = array();
+		    $categories = cf7sendwa_woo_list_categories( $atts['category'] );
+		    foreach( $categories as $cat ) {
+		        array_push( $product_categories, [
+		            'id' => $cat->term_id,
+		            'slug' => $cat->slug,
+		            'name' => $cat->name,
+		        ] );
+		    }
+		    wp_enqueue_style( $this->plugin_name );
+			wp_enqueue_script( 'underscore' );
+			wp_enqueue_script( 'knockout' );
+			wp_localize_script( $this->plugin_name, 'cf7sendwa', array(
+				'base_url'			 => home_url( '/' ),
+				'ajaxurl'			 => admin_url( 'admin-ajax.php' ), 
+				'is_mobile'			 => wp_is_mobile() ? '1':'0',
+		        'currency' 			 => get_woocommerce_currency_symbol(),
+		        'decimal_separator'  => wc_get_price_decimal_separator(),
+		        'thousand_separator' => wc_get_price_thousand_separator(),
+		        'decimals'           => wc_get_price_decimals(),
+		        'price_format'       => get_woocommerce_price_format(),
+		        'categories'         => $product_categories,
+		        'security' 			 => wp_create_nonce( 'cf7sendwa-rest-request-nonce' ),
+				'products' 			 => $atts['products'],
+			) );
+			wp_enqueue_script( $this->plugin_name );
+		    $html = '';
+		    ob_start();
+		    include 'partials/woo-product-list.php';
+		    $html = ob_get_contents();
+		    ob_end_clean();
+		    $this->quickshop_rendered = true;
+		} else {
+			$html = 'Cannot use multiple quick shop in a page.';
+		}    
+		
+		return $html;    		
+	}
+
 	public function render_script_footer() {
 		$cf7sendwa_is_custom_api = has_action( 'cf7sendwa_custom_send_api' );
 		if( !empty( $this->ids ) && !$this->script_loaded ) : ob_start(); ?>
@@ -886,6 +1071,26 @@ var cf7wa_security = '<?php echo wp_create_nonce( 'cf7sendwa-api-action' ); ?>';
 var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 <?php endif; ?>
 (function( $ ){
+	<?php if( $this->quickshop_rendered ): ?>
+	function quickshop_get_cart_text() {
+		var vm = ko.toJS(Woo_QuickShop_Cart.getVM());
+		var wa_txt = '';
+		if( vm ) {
+			_.each( vm.items, function( item, index, list ){
+				if( wa_txt != '' ) {
+					wa_txt += "\n";
+				}
+				var title = item.title;
+				if( item.subtitle != '' ) {
+					title = item.title + ' - ' + item.subtitle;
+				}
+				wa_txt += title + ' @ ' + item.price_html + 'x' + item.qty + ' => ' + item.subtotal_html;
+			} );
+			wa_txt += "\n" + '*TOTAL* ' + vm.price_total;
+		}	
+		return wa_txt;
+	}
+	<?php endif; ?>
 	document.addEventListener( 'wpcf7mailsent', function( event ) {
 		var the_id = event.detail.contactFormId;		
 		if( _.indexOf( cf7wa_ids, the_id ) ) {			
@@ -907,8 +1112,13 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 				the_text = the_text.replace( '[' + key + ']', val.join(", ") );
 			} );			
 			<?php 
-			$woo_order = '';	
-			include 'partials/woo-order-details.php'; ?>			
+			$woo_order = '';
+			if( $this->quickshop_rendered ) {
+				?>the_text = the_text.replace( '[woo-orderdetail]', quickshop_get_cart_text() ); <?php
+			} else {					
+				include 'partials/woo-order-details.php'; 
+			}
+			?>
 			var the_phone = cf7wa_numbers[ the_id ];
 			_.each( inputs, function( detail, index, list ){
 				if( '[' + detail.name + ']' == the_phone ) {
@@ -925,6 +1135,11 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 	                'cf7_inputs': inputs,
 	                'woo_order_detail':'<?php echo $woo_order; ?>'
 	            };
+	            
+	            <?php if( $this->quickshop_rendered ): ?>
+	            cf7sendwa_send_data.woo_order_detail = quickshop_get_cart_text();
+	            <?php endif; ?>
+	            
 	            if( api_response.woo_order != undefined ) {
 		            cf7sendwa_send_data.order_id = api_response.woo_order;
 		            cf7sendwa_send_data.order_links = api_response.woo_links;
@@ -977,6 +1192,13 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 			redirect_woo_order_received( api_response );
             <?php endif; ?>
             
+		}
+		if( $( '#cf7sendwa_quickshop_cart' ) && $( '#cf7sendwa_quickshop_cart' ).val() != '' ) {
+			var vm = Woo_QuickShop_Cart.getVM();
+			vm.items.removeAll();
+			$( '.item-subtotal' ).each( function(index){
+				$( this ).html( 'Rp 0' );
+			} );
 		}
 	} );
 	function redirect_woo_order_received( api_response ){

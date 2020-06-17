@@ -100,8 +100,11 @@ class Cf7_Send_Wa {
 	 */
 	private function load_dependencies() {
 
+		/* global functions */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/functions.php';
 		/* woocommerce integration */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/woo-functions.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cf7-send-wa-products.php';
 		
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
@@ -196,8 +199,8 @@ class Cf7_Send_Wa {
 
 		$plugin_public = new Cf7_Send_Wa_Public( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles', 90 );
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts', 90 );
         
         $this->loader->add_filter( 'wpcf7_skip_mail', $plugin_public, 'check_skip_mail', 20, 2 );
         $this->loader->add_action( 'wpcf7_before_send_mail', $plugin_public, 'prepare_attachments', 15, 1 );
@@ -214,18 +217,18 @@ class Cf7_Send_Wa {
         
         /* woocommerce integration */
 		if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
-			$this->loader->add_action( 'wpcf7_init', $plugin_public, 'woo_checkout_cart_tag' );
+			$this->loader->add_action( 'wpcf7_init', $plugin_public, 'custom_cf7_tags' );
 	        $this->loader->add_action( 'wpcf7_before_send_mail', $plugin_public, 'create_woo_order', 20, 1 );
 			$this->loader->add_filter( 'template_include', $plugin_public, 'switch_woo_checkout', 50 );
 			$this->loader->add_filter( 'wpcf7_display_message', $plugin_public, 'set_validation_error', 50, 2 );
 			$this->loader->add_filter( 'wpcf7_validate_cf7sendwa_woo_checkout', $plugin_public, 'validate_cart_exists', 20, 2 );
-			
 			$this->loader->add_action( 'wp_head', $plugin_public, 'woo_custom_cart_total_css' );
 			$this->loader->add_action( 'template_redirect', $plugin_public, 'check_need_shipping' );
-			
 			$this->loader->add_action( 'woocommerce_init', $plugin_public, 'woo_custom_notice' );
-			
 			$this->loader->add_filter( 'wpcf7_form_tag', $plugin_public, 'woo_checkout_load_customer_info', 10, 2 );
+			
+			$this->loader->add_action( 'wp_ajax_cf7sendwa_products', $plugin_public, 'web_list_product' );
+			$this->loader->add_action( 'wp_ajax_nopriv_cf7sendwa_products', $plugin_public, 'web_list_product' );
 		}        
 
 	}

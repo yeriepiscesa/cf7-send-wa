@@ -35,6 +35,17 @@
                     </td>
 				</tr>
 				<tr>
+                    <th scope="row"><label for="cf7sendwa_country">Default Country Code</label></th>
+                    <td><input type="text" id="cf7sendwa_country" 
+                               placeholder="62" 
+                               name="default_country" size="3"
+                               value="<?= $default_country ?>">
+                        <p class="description">
+                            Default country code to use, when your user not defined country code on mobile number entry.
+                        </p>
+                    </td>
+                </tr>
+				<tr>
 					<th scope="row"><label for="cf7sendwa_disablemail">Disable mail sending</label></th>
 					<td>
                         <?php

@@ -287,7 +287,7 @@ class Cf7_Send_Wa_Public {
 					$_tonumber = str_split( $data['to_number_2'] );
 					if( $_tonumber[0] == '0' ) {
 						unset($_tonumber[0]);
-						$data['to_number_2'] = '62' . implode( '', $_tonumber );
+						$data['to_number_2'] = get_option( 'cf7sendwa_country', '62' ) . implode( '', $_tonumber );						
 					}
 				} else {
 					$data['to_number_2'] = get_option( 'cf7sendwa_number', '' );					
@@ -1064,6 +1064,7 @@ class Cf7_Send_Wa_Public {
 		if( !empty( $this->ids ) && !$this->script_loaded ) : ob_start(); ?>
 <script type="text/javascript">
 var cf7wa_ids = <?php echo json_encode( $this->ids ); ?>; 
+var cf7wa_country = '<?php echo get_option( 'cf7sendwa_country', '62' ); ?>';
 var cf7wa_numbers = <?php echo json_encode( $this->numbers ); ?>; 
 var cf7wa_bodies = <?php echo json_encode( $this->bodies ) ?>;
 <?php if( $this->provider != '' || $cf7sendwa_is_custom_api ): ?>
@@ -1125,6 +1126,11 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 					the_phone = detail.value;
 				}				
 			} );
+			
+			if( the_phone.substr(0, 1) == '0' ) {
+                the_phone = cf7wa_country + the_phone.substring(1);
+            }
+            			
             <?php if( $this->provider != '' || $cf7sendwa_is_custom_api ): ?>  
             	$( '.wpcf7-response-output' ).wrap( '<div id="cf7sendwa_element_'+the_id+'" style="display:none;"></div>' );              
                 var cf7sendwa_send_data = { 

@@ -177,6 +177,33 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 			}
 		} );
 		
+		// add to cart from quickshop
+		$( 'body' ).on( 'click', '.cf7sendwa-add-to-cart', function(evt){
+			var quickshop = ko.toJS( vm );	
+			$( '#cf7sendwa_quickshop_cart' ).val( ko.toJSON(vm) );
+			if( quickshop && quickshop.total > 0 ) {
+				// do add to cart
+				$( '.cf7sendwa-quickshop-checkout-container' ).loading( { message: 'Processing' } );
+				$.ajax( {
+					url: cf7sendwa.ajaxurl,
+					type: 'POST',
+					dataType: 'json',
+					data: {
+						'action':'cf7sendwa_add_to_cart',
+						'quickshop_cart': $( '#cf7sendwa_quickshop_cart' ).val(),
+						'security': cf7sendwa.security
+					},
+					success: function(response){
+						$( '.cf7sendwa-quickshop-checkout-container' ).loading('toggle');
+						if( response ) {
+							$( '.cf7sendwa-quickshop-checkout-container' ).loading( { message: 'Redirecting...' } );	
+							document.location = response.cart_url;
+						}
+					}
+				} );
+			}
+		} );
+		
     } );
     function load_products( el_id, cat_slug, callback ) {
 		$.ajax( {

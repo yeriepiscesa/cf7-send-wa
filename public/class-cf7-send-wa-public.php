@@ -999,6 +999,41 @@ class Cf7_Send_Wa_Public {
 		}
 		die();
 	}
+	
+	/*
+     * Add to cart for Quick Shop 
+     * @since 0.10.0
+     * @access public
+     */
+	public function quickshop_add_to_cart() {
+		if( $this->woo_is_active ) {
+			$added = 0;
+			if( isset( $_POST['quickshop_cart'] ) ) {
+				$cart = json_decode( str_replace( "\\", "", $_POST['quickshop_cart'] ), true );
+				foreach( $cart['items'] as $item ) {
+					$_variation_id = null;
+					$_variation = null;
+					$_product_id = $item['prop']['product_id'];
+					if( $item['prop']['product_type'] == 'variation' ) {
+						$_variation = $item['prop']['pa'];
+						$_variation_id = $item['prop']['variation_id'];
+					}
+					WC()->cart->add_to_cart( $_product_id, $item['qty'], $_variation_id, $_variation );
+					$added++;
+				}			
+			}
+			
+			if( $added > 0 ) {
+				global $woocommerce;
+				$cart_page_url = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : $woocommerce->cart->get_cart_url();				
+				$result = array(
+					'cart_url' => $cart_page_url
+				);	
+				echo json_encode( $result );
+			}
+		}
+		die();		
+	}
     
     /*
 	 * Add custom tag [cf7sendwa_woo_quickshop]

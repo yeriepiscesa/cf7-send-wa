@@ -89,9 +89,9 @@ class Cf7_Send_Wa_Products {
             $_includes = explode( ',', $args['includes'] );
             $args['include'] = $_includes;
         }
-        //if( get_option( 'solusipress_pos_show_instock' ) == 'yes' ) {
+        if( get_option( 'quickshop_outofstock', '0' ) == '0' ) {
             $args['stock_status'] = 'instock';
-        //}
+        }
         $wc_products = wc_get_products( $args );
         $data = [];
         

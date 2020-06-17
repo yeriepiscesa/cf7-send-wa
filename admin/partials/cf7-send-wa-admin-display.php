@@ -135,6 +135,54 @@
 		        </tr>
 	        </tbody>
         </table>
+
+	    <h3>Quick Shop Options</h3>
+        <table class="form-table">
+	        <tbody>
+		        <tr>
+			        <th scope="row"><label for="quickshop_excerpt">Show Excerpt</label></th>
+			        <td>
+				        <?php
+                        $checked4 = '';
+                        if( $quickshop_excerpt == '1' ) {
+                            $checked4 = ' checked="checked"';
+                        }
+					    ?>				        
+                        <input type="checkbox" id="quickshop_excerpt"<?= $checked4 ?>  
+                               name="quickshop_excerpt" value="1">
+                        <p style="display:inline" class="description">Show product's short description</p>       
+			        </td>
+		        </tr>
+		        <tr>
+			        <th scope="row"><label for="quickshop_outofstock">Show Out of Stock</label></th>
+			        <td>
+				        <?php
+                        $checked5 = '';
+                        if( $quickshop_outofstock == '1' ) {
+                            $checked5 = ' checked="checked"';
+                        }
+					    ?>				        
+                        <input type="checkbox" id="quickshop_outofstock"<?= $checked5 ?>  
+                               name="quickshop_outofstock" value="1">
+                        <p style="display:inline" class="description">When checked, out of stock product will be displayed</p>       
+			        </td>
+		        </tr>
+		        <tr>
+			        <th scope="row"><label for="quickshop_unsemantic">Unload Unsemantic CSS Grid</label></th>
+			        <td>
+				        <?php
+                        $checked6 = '';
+                        if( $quickshop_unsemantic == '1' ) {
+                            $checked6 = ' checked="checked"';
+                        }
+					    ?>				        
+                        <input type="checkbox" id="quickshop_unsemantic"<?= $checked6 ?>  
+                               name="quickshop_unsemantic" value="1">
+                        <p style="display:inline" class="description">Check if your theme using Unsemantic CSS Grid (eg. GeneratePress)</p>
+			        </td>
+		        </tr>
+	        </tbody>
+        </table>
         
         <h3>3rd Party Integration</h3>
         <table class="form-table">

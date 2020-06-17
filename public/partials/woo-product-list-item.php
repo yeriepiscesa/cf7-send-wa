@@ -10,8 +10,13 @@
 			<div class="grid-<?php echo $grid1 ?> tablet-grid-100 mobile-grid-100 item-block">
 				<img src="<?php echo $product['prop']['images'][0]['src']; ?>" width="120" align="left">
 				<div class="product-item-info">
-					<h4><?php echo $product['name']; ?></h4>
-					<div class="product-excerpt"><?php echo $product['prop']['short_description'] ?></div>
+					<h4><?php echo $product['name']; ?></h4>					
+					<?php
+					$quickshop_excerpt = get_option( 'quickshop_excerpt', '0' );						
+					if( $quickshop_excerpt == '1' ) {
+						echo '<div class="product-excerpt">' . $product['prop']['short_description'] . '</div>';	
+					}
+					?>
 					<?php echo $product['prop']['price_html'] ?>
 					<span class="stock-status <?php echo $product['prop']['stock_status']; ?>"><?php echo $product['prop']['stock_status']; ?></span>
 				</div>

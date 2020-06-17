@@ -124,6 +124,7 @@ class Cf7_Send_Wa_Public {
 	 * @since    0.3.0
 	 */
 	public function enqueue_styles() {
+		wp_register_style( 'unsemantic-grid', plugin_dir_url( __FILE__ ) . 'css/unsemantic.grid.css' );
 		wp_register_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/cf7-send-wa-public.css', array(), $this->version, 'all' );
 		wp_register_style( 'jquery-modal', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/jquery.modal.min.css' );
 		wp_register_style( 'select2', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/select2.min.css' );
@@ -1064,6 +1065,10 @@ class Cf7_Send_Wa_Public {
 		            'name' => $cat->name,
 		        ] );
 		    }
+	        $quickshop_unsemantic = get_option( 'quickshop_unsemantic', '0' );
+			if( $quickshop_unsemantic == '0' ) {		    
+		    	wp_enqueue_style( 'unsemantic-grid' );
+		    }
 		    wp_enqueue_style( $this->plugin_name );
 			wp_enqueue_script( 'underscore' );
 			wp_enqueue_script( 'knockout' );
@@ -1078,9 +1083,10 @@ class Cf7_Send_Wa_Public {
 		        'price_format'       => get_woocommerce_price_format(),
 		        'categories'         => $product_categories,
 		        'security' 			 => wp_create_nonce( 'cf7sendwa-rest-request-nonce' ),
-				'products' 			 => $atts['products'],
+				'quickshop_atts' 	 => $atts,
 			) );
 			wp_enqueue_script( $this->plugin_name );
+			
 		    $html = '';
 		    ob_start();
 		    include 'partials/woo-product-list.php';

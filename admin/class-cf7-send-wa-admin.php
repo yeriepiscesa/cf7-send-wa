@@ -138,6 +138,18 @@ class Cf7_Send_Wa_Admin {
             if( $require_shipping != '1' ) $require_shipping = '0';
             update_option( 'cf7sendwa_requireshipping', $require_shipping );
 
+            $quickshop_excerpt = $_POST['quickshop_excerpt'];
+            if( $quickshop_excerpt != '1' ) $quickshop_excerpt = '0';
+            update_option( 'quickshop_excerpt', $quickshop_excerpt );
+
+            $quickshop_outofstock = $_POST['quickshop_outofstock'];
+            if( $quickshop_outofstock != '1' ) $quickshop_outofstock = '0';
+            update_option( 'quickshop_outofstock', $quickshop_outofstock );
+
+            $quickshop_unsemantic = $_POST['quickshop_unsemantic'];
+            if( $quickshop_unsemantic != '1' ) $quickshop_unsemantic = '0';
+            update_option( 'quickshop_unsemantic', $quickshop_unsemantic );
+
             update_option( 'cf7sendwa_provider', $_POST['provider'] );
             update_option( 'cf7sendwa_twilio_sid', $_POST['twilio_sid'] );
             update_option( 'cf7sendwa_twilio_token', $_POST['twilio_token'] );
@@ -160,6 +172,10 @@ class Cf7_Send_Wa_Admin {
         $disable_mail = get_option( 'cf7sendwa_disablemail', '0' );
         $full_cart = get_option( 'cf7sendwa_fullcart', '0' );
         $require_shipping = get_option( 'cf7sendwa_requireshipping', '0' );
+
+        $quickshop_excerpt = get_option( 'quickshop_excerpt', '0' );
+        $quickshop_outofstock = get_option( 'quickshop_outofstock', '0' );
+        $quickshop_unsemantic = get_option( 'quickshop_unsemantic', '0' );
         
         $woo_checkout = get_option( 'cf7sendwa_woo_checkout', '' );
         $woo_order_redirect = get_option( 'cf7sendwa_woo_order_redirect', '' );

@@ -1038,7 +1038,7 @@ class Cf7_Send_Wa_Public {
 	}	
 	public function cf7sendwa_woo_quickshop_render( $atts ) {
 		
-		if( !$this->quickshop_rendered ) {
+		if( !is_checkout() && !$this->quickshop_rendered ) {
 			
 		    $atts = shortcode_atts( array(
 				'category' => '',

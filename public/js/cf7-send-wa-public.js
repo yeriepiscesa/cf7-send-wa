@@ -29,6 +29,7 @@ String.prototype.getDecimals || (String.prototype.getDecimals = function() {
 /* Main Class */
 function Woo_QuickShop_Cart() {
 	var self = this;
+	self.products = ko.observableArray();
 	self.items = ko.observableArray();
 	self.total = ko.pureComputed( function(){
 		var total = 0;
@@ -40,6 +41,12 @@ function Woo_QuickShop_Cart() {
 	self.price_total = ko.pureComputed( function(){			
 		return 'Rp ' + jQuery.number( self.total(), cf7sendwa.decimals, cf7sendwa.decimal_separator, cf7sendwa.thousand_separator );
 	} );
+}
+function Woo_QuickShop_ProductItem( cls, catId, title ) {
+	var self = this;
+	self.cls = cls; // class container
+	self.catId = catId; // category container id
+	self.title = title; // product title
 }
 function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 	var self = this;
@@ -103,6 +110,7 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 					if( data_count < 1 ) {
 						$( '#'+el_id ).remove();
 					}	
+					$( '#'+ el_id +'.product-cat-container' ).css( 'min-height', '0px' );
 				} );
 			} );
 		}
@@ -180,16 +188,41 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 		} );
 		$( 'body' ).on( 'click', '.wpcf7-form-control.wpcf7-submit', function(evt){
 			var quickshop = ko.toJS( vm );
-			$( '#cf7sendwa_quickshop_cart' ).val( ko.toJSON(vm) );
+			delete quickshop.products;
+			$( '#cf7sendwa_quickshop_cart' ).val( ko.toJSON(quickshop) );
 			if( quickshop && quickshop.total <= 0 ) {
 				evt.preventDefault();
+			}
+		} );
+		
+		// text filter 
+		$( '#cf7sendwa_woo_text_filter' ).keyup( function( evt ){
+			var text = $(this).val();
+			if( (evt.which >= 65 && evt.which <= 90) || (evt.which >= 48 && evt.which <= 57) ) {				
+				if( text.length >= 3 ) {
+					var matches = _.filter( ko.toJS(vm.products()), function(item){
+						var r = item.title.toLowerCase().search( text.toLowerCase() ) > -1 ? true : false;
+						return r;
+					} );
+					if( matches.length > 0 ) {
+						$( '#cf7sendwa-quickshop-container .product-item' ).hide();
+						_.each( matches, function(item, index, list){
+							$( '#cf7sendwa-quickshop-container ' + item.cls ).show();
+						} );
+					} else {
+						$( '#cf7sendwa-quickshop-container .product-item' ).hide();
+					}
+				} 
+			} else if( text == '' ) {
+				$( '#cf7sendwa-quickshop-container .product-item' ).show();
 			}
 		} );
 		
 		// add to cart from quickshop
 		$( 'body' ).on( 'click', '.cf7sendwa-add-to-cart', function(evt){
 			var quickshop = ko.toJS( vm );	
-			$( '#cf7sendwa_quickshop_cart' ).val( ko.toJSON(vm) );
+			delete quickshop.products;
+			$( '#cf7sendwa_quickshop_cart' ).val( ko.toJSON(quickshop) );
 			if( quickshop && quickshop.total > 0 ) {
 				// do add to cart
 				$( '.cf7sendwa-quickshop-checkout-container' ).loading( { message: 'Processing' } );
@@ -243,6 +276,20 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 				
 				if( typeof callback == 'function' ) {
 					callback( el_id, cat_slug, data_count );
+					// add to item 
+					var catId = '';
+					var $container = $( '#'+el_id ).closest( '.product-cat-container' );
+					if( $container.length ) {
+						catId = $container.attr( 'id' );
+					}
+					$( '#'+el_id+' .product-items .product-item:not(.variations)' ).each( function(index){
+						var $h4 = $(this).find( '.product-item-info h4' );
+						var cls = $(this).attr('class');
+						var clsArr = cls.split(" ");
+						cls = "."+clsArr.join(".");
+						var title = $h4.text();
+						vm.products.push( new Woo_QuickShop_ProductItem( cls, catId, title ) );
+					} );					
 					// fetch next page 
 					if( $( '#' + el_id  +' .quickshop-load-more' ).length ) {
 						var $next = $( '#' + el_id  +' .quickshop-load-more' );

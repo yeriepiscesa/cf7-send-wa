@@ -983,17 +983,9 @@ class Cf7_Send_Wa_Public {
      */
 	public function web_list_product() {
 		if( $this->woo_is_active ) {
-	        $args = array(
-	            'status' => 'publish',
-	            'type' => [ 'simple', 'variable' ],
-	            'limit' => 10,
-	            'page' => 1,
-	            'paginate' => true,
-	            'orderby' => 'date',
-	            'order' => 'DESC'            
-	        );
+			$args = array();
 	        if( isset( $_POST['args'] ) ) {
-		        $args = array_merge( $args, $_POST['args'] );
+		        $args = $_POST['args'];
 	        }
 	        $products = Cf7_Send_Wa_Products::list_all( $args );
 	        include 'partials/woo-product-list-item.php';

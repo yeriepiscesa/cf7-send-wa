@@ -85,18 +85,27 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 	
 	$( document ).ready( function() {
 		ko.applyBindings( vm );
-		$( '.product-cat-container' ).each( function( index, element ){
-			var $el = $( element );	
-			var el_id = $el.attr('id');
-			var cat_slug = el_id.replace( 'cat-', '' );		
-			$('#'+el_id).loading();
-			load_products( el_id, cat_slug, function(el_id, cat_slug, data_count, response){
-				$( '#'+el_id ).loading( 'toggle' );
-				if( data_count < 1 ) {
-					$( '#'+el_id ).remove();
-				}	
+		if( $( '#quickshop-products' ).length ) {
+			var $qs = $( '#quickshop-products' );
+			$qs.loading();
+			var el_id = $qs.attr("id");
+			load_products( el_id, '', function(el_id, cat_slug, data_count){
+				$qs.loading( 'stop' );
 			} );
-		} );
+		} else {
+			$( '.product-cat-container' ).each( function( index, element ){
+				var $el = $( element );	
+				var el_id = $el.attr('id');
+				var cat_slug = el_id.replace( 'cat-', '' );		
+				$('#'+el_id).loading();
+				load_products( el_id, cat_slug, function(el_id, cat_slug, data_count){
+					$( '#'+el_id ).loading( 'stop' );
+					if( data_count < 1 ) {
+						$( '#'+el_id ).remove();
+					}	
+				} );
+			} );
+		}
 		
 		var html_hidden = '<input type="hidden" name="quickshop_cart" id="cf7sendwa_quickshop_cart" value="">';
 		if( $( '.wpcf7-submit' ).length ) {
@@ -206,15 +215,16 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 		
     } );
     function load_products( el_id, cat_slug, callback ) {
+	    if( cat_slug != '' ) {
+		    cf7sendwa.quickshop_atts.category = cat_slug;
+	    }
 		$.ajax( {
 			url: cf7sendwa.ajaxurl,
 			type: 'POST',
 			dataType: 'html',
 			data: { 
 				'action':'cf7sendwa_products', 
-				'args': {
-					'category': cat_slug
-				},
+				'args': cf7sendwa.quickshop_atts,
 				'security': cf7sendwa.security 
 			},
 			success: function( response ) {
@@ -232,7 +242,16 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 				$( '#'+el_id+' .item-subtotal' ).html( cf7sendwa.currency + ' 0' );
 				
 				if( typeof callback == 'function' ) {
-					callback( el_id, cat_slug, data_count, response );
+					callback( el_id, cat_slug, data_count );
+					// fetch next page 
+					if( $( '#' + el_id  +' .quickshop-load-more' ).length ) {
+						var $next = $( '#' + el_id  +' .quickshop-load-more' );
+						var page = $next.attr( 'data-next' );
+						cf7sendwa.quickshop_atts.page = page;
+						$next.remove();
+						load_products( el_id, cat_slug, callback );
+					}
+					
 				}
 			}
 		} );

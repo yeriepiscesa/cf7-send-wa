@@ -1,4 +1,4 @@
-<div class="product-items" data-total="<?php echo $products['total'] ?>" data-page="<?php echo $products['page'] ?>">
+<div class="product-items" data-total="<?php echo $products['total'] ?>">
 	<?php foreach( $products['results'] as $product ): 
 				$grid1 = '60';
 				$grid2 = '40';
@@ -86,6 +86,11 @@
 				</div>
 			<?php endforeach; ?>
 		<?php endif; ?>		
-		
+
 	<?php endforeach; ?>
 </div>
+<?php 
+if( $products['pages'] > $products['page'] ) {
+	echo '<div class="quickshop-load-more" data-next="' . ($products['page']+1) . '">...</div>';
+}
+?>

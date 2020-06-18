@@ -52,7 +52,7 @@ function cf7sendwa_woo_list_categories( $category ) {
         'hide_empty' => $hide_empty,
     );
     if( $category != '' ) {
-        $cat_args['slug'] = $category;
+        $cat_args['slug'] = explode(",",$category);
     }
     $product_categories = get_terms( 'product_cat', $cat_args );    
     return $product_categories;

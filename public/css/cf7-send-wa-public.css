@@ -63,6 +63,7 @@ input[type=button].sp-woopos-minus {
 #cf7sendwa-quickshop-container .product-item {
 	margin-bottom: 10px;
 	padding: 10px;
+	position: relative;
 }
 #cf7sendwa-quickshop-container .product-item .item-price {
 	padding-top: 5px;

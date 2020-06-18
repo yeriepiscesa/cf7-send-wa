@@ -74,19 +74,19 @@ class Cf7_Send_Wa_Products {
         $defaults = [
             'status' => 'publish',
             'type' => [ 'simple', 'variable' ],
-            'limit' => $args['limit'],
-            'page' => $args['page'],
+            'limit' => 20,
+            'page' => 1,
             'paginate' => true,
             'orderby' => 'date',
             'order' => 'DESC'            
         ];
-		
 		$args = array_merge( $defaults, $args );        
-        if( isset( $args['category'] ) ) {
-            $args['category'] = [ $args['category'] ];
+        if( isset( $args['category'] ) && $args['category'] != '' ) {
+            $_category = explode( ',', $args['category'] );
+            $args['category'] = $_category;
         }
-        if( isset( $args['includes'] ) ) {
-            $_includes = explode( ',', $args['includes'] );
+        if( isset( $args['products'] ) && $args['products'] != '' ) {
+            $_includes = explode( ',', $args['products'] );
             $args['include'] = $_includes;
         }
         if( get_option( 'quickshop_outofstock', '0' ) == '0' ) {
@@ -181,6 +181,7 @@ class Cf7_Send_Wa_Products {
         
         return [
             'total' => $wc_products->total,
+            'page' => $args['page'],
             'pages' => $wc_products->max_num_pages,
             'category' => $cat_id,
             'results' => $data

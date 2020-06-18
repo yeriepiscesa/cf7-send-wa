@@ -77,9 +77,13 @@ class Cf7_Send_Wa_Products {
             'limit' => 20,
             'page' => 1,
             'paginate' => true,
-            'orderby' => 'date',
-            'order' => 'DESC'            
         ];
+        if( !isset( $args['orderby'] ) || ( isset( $args['orderby'] ) && $args['orderby'] == '' ) ) {
+	        $defaults['orderby'] = 'meta_value_num';
+			$defaults['meta_key'] = '_price';
+		}
+        $defaults['order'] = 'ASC';            
+
 		$args = array_merge( $defaults, $args );        
         if( isset( $args['category'] ) && $args['category'] != '' ) {
             $_category = explode( ',', $args['category'] );

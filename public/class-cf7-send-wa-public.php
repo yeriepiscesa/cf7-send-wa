@@ -1060,11 +1060,15 @@ class Cf7_Send_Wa_Public {
 			if( $quickshop_unsemantic == '0' ) {		    
 		    	wp_enqueue_style( 'unsemantic-grid' );
 		    }
-			wp_enqueue_style( 'select2' );
+			
+			if( $atts['filter'] == 'yes' ) {
+				wp_enqueue_style( 'select2' );
+				wp_enqueue_script( 'select2' );
+			}
+			
 		    wp_enqueue_style( $this->plugin_name );
 			wp_enqueue_script( 'underscore' );
 			wp_enqueue_script( 'knockout' );
-			wp_enqueue_script( 'select2' );
 			wp_localize_script( $this->plugin_name, 'cf7sendwa', array(
 				'base_url'			 => home_url( '/' ),
 				'ajaxurl'			 => admin_url( 'admin-ajax.php' ), 

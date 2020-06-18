@@ -1042,8 +1042,7 @@ class Cf7_Send_Wa_Public {
 			
 		    $atts = shortcode_atts( array(
 				'category' => '',
-		        'heading' => 'yes', // or 'no'
-		        'enable_filter' => 'no',
+		        'filter' => 'no',
 		        'products' => '',
 		        'sticky_top' => '0'
 			), $atts, 'cf7sendwa-quickshop' );
@@ -1061,9 +1060,11 @@ class Cf7_Send_Wa_Public {
 			if( $quickshop_unsemantic == '0' ) {		    
 		    	wp_enqueue_style( 'unsemantic-grid' );
 		    }
+			wp_enqueue_style( 'select2' );
 		    wp_enqueue_style( $this->plugin_name );
 			wp_enqueue_script( 'underscore' );
 			wp_enqueue_script( 'knockout' );
+			wp_enqueue_script( 'select2' );
 			wp_localize_script( $this->plugin_name, 'cf7sendwa', array(
 				'base_url'			 => home_url( '/' ),
 				'ajaxurl'			 => admin_url( 'admin-ajax.php' ), 

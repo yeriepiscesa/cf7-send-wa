@@ -113,9 +113,6 @@ input[type=button].sp-woopos-minus {
 	font-size: 0.875em;
 	border-top:1px solid #eee;
 	border-bottom:1px solid #eee;
-	/*max-width:1000px;
-	margin-left: auto;
-	margin-right: auto;*/
 	background: #fff;
 }
 button.cf7sendwa-add-to-cart { width: 100%; font-size: 0.875em; }
@@ -130,21 +127,48 @@ button.cf7sendwa-add-to-cart { width: 100%; font-size: 0.875em; }
 	text-align: right;
 }
 .cf7sendwa-woo-filter {
-	background-color: #f9f9f9;
-	padding: 20px;
-	margin-bottom: 25px;
+	padding: 20px 3px;
+	margin-bottom: 30px;
+	background: transparent;
 }
+.cf7sendwa-woo-categories { width:100%; font-family: inherit; font-size: inherit; }
 .cf7sendwa-woo-filter input[type="text"] {
 	width: 100%;
 	border:0px;
-	border-bottom: 1px solid #333;
+	border-bottom: 1px solid #ccc;
 	border-radius: 0px;
-	padding: 10px 0px;	
+	padding: 8px 0px 4px;	
 	background-color: transparent;
 	font-family: inherit;
 	font-size: inherit;
 }
+.select2-container--default .select2-results__option {
+	font-size: 0.850em;
+}
+.cf7sendwa-woo-filter .select2-container {
+	margin-top:7px;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+	border:0px;
+}
+@media only screen and (max-width: 750px) {
+	.cf7sendwa-woo-filter .filter-block:nth-child(2) input[type="text"] {
+		margin-top: 20px;
+	}
+	.cf7sendwa-woo-filter .grid-50.filter-block	{
+		padding:0px;
+	}
+}
+@media only screen and (min-width: 750px) {
+	.cf7sendwa-woo-filter .filter-block:first-child {
+		padding-left:0px;
+	}
+	.cf7sendwa-woo-filter .filter-block:last-child {
+		padding-right:0px;
+	}
+}
 @media only screen and (min-width: 600px) {
+	
     #cf7sendwa-quickshop-container .product-item {
         padding-left: 0px!important;
         padding-right: 0px!important;

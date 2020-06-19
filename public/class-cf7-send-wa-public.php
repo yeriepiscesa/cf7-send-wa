@@ -826,7 +826,7 @@ class Cf7_Send_Wa_Public {
 										
 			    $order_id = $obj_order->get_id();
 				if( isset( $woo_order['note'] ) && $woo_order['note'] != '' ) {
-					$obj_order->add_order_note( $woo_order['note'], 1, true );
+					$obj_order->add_order_note( $woo_order['note'], 0, true );
 				}
 				
 				$cust = WC()->customer;

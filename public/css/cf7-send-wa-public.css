@@ -48,13 +48,14 @@ input[type=button].sp-woopos-minus {
  outline: none; }
 
 #cf7sendwa-quickshop-container * {
-	font-size: 0.965em;	
+	font-size: 1em;	
 } 
 #cf7sendwa-quickshop-container .category-title {
 	font-weight: 600;
 	border-bottom: 1px solid #eee;
 	padding: 0px 0px 10px;
 	margin-bottom: 10px;
+	font-size: 1.3em;
 } 
 #cf7sendwa-quickshop-container .product-cat-container {
 	margin-bottom: 20px;
@@ -112,12 +113,12 @@ input[type=button].sp-woopos-minus {
 .cf7sendwa-quickshop-checkout {
 	padding:20px 15px;
 	margin-bottom: 20px;
-	font-size: 0.875em;
+	font-size: 0.975em;
 	border-top:1px solid #eee;
 	border-bottom:1px solid #eee;
 	background: #fff;
 }
-button.cf7sendwa-add-to-cart { width: 100%; font-size: 0.875em; }
+button.cf7sendwa-add-to-cart { width: 100%; font-size: 0.975em; }
 .cf7sendwa-quickshop-checkout .table-cart { margin-bottom: 0px; }
 .cf7sendwa-quickshop-checkout .table-cart,
 .cf7sendwa-quickshop-checkout .table-cart tr td { border:0px; vertical-align: top; }
@@ -145,7 +146,7 @@ button.cf7sendwa-add-to-cart { width: 100%; font-size: 0.875em; }
 	font-size: inherit;
 }
 .select2-container--default .select2-results__option {
-	font-size: 0.850em;
+	font-size: 0.975em;
 }
 .cf7sendwa-woo-filter .select2-container {
 	margin-top:7px;
@@ -167,10 +168,10 @@ button.cf7sendwa-add-to-cart { width: 100%; font-size: 0.875em; }
     font-size: 18px;
     font-weight: 500;
 }
-.product-item-detail .product-item-description { font-size: 90%; color: #666; margin-top:10px; }
+.product-item-detail .product-item-description { color: #666; margin-top:10px; }
 .product-item-detail .product-item-description p { margin-bottom: 0px; }
 .product-item-detail-description {
-	font-size: 90%; color: #666; padding: 20px;
+	color: #666; padding: 20px;
 }
 .product-item-detail .detail-image {
     background:#000;

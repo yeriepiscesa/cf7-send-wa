@@ -40,10 +40,10 @@
 					<div class="item-subtotal"></div>
 				</div>
 				<?php else: ?>
-				<a class="button variant-option-button" data-var-id="<?php echo $product['prop']['id']; ?>" href="javascript:void(0);">
+				<button class="button variant-option-button" data-var-id="<?php echo $product['prop']['id']; ?>">
 					<span class="angle-down"><i class="fa fa-angle-down"></i> <?php echo __( 'Select Options', 'cf7sendwa' ) ?></span>
 					<span class="angle-up"><i class="fa fa-angle-up"></i> <?php echo __( 'Hide Options', 'cf7sendwa' ) ?></span>
-				</a>
+				</button>
 				<?php endif; ?>
 			</div>
 			<textarea style="display:none;" class="woo-product-prop"><?php echo json_encode($product['prop']); ?></textarea>

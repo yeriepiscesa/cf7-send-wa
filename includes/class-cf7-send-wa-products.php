@@ -18,11 +18,11 @@ class Cf7_Send_Wa_Products {
     public static function attributes_info( $product ) {
         
         $attributes = $product->get_attributes();
-        $display_result = '<table class="sp-product-attributes"><tbody>';        
+        $display_result = '<table class="quickshop-product-attributes"><tbody>';        
         if( $product->has_weight() ) {
             $wu = get_option('woocommerce_weight_unit');
             $display_result .= '<tr class="woocommerce-product-attributes-item">';
-            $display_result .= '<td class="label">Berat</td>';
+            $display_result .= '<td class="label">' . apply_filters( 'quickshop_weight_label', __('Weight', 'cf7sendwa') ) . '</td>';
             $display_result .= '<td>' . $product->get_weight() . $wu . '</td>';
             $display_result .= '</tr>';
         }
@@ -70,6 +70,9 @@ class Cf7_Send_Wa_Products {
     
     public static function list_all( $args=array() ) {
         
+        foreach( $args as $k=>$v ) {
+	        if( $v == '' ) unset($args[$k]);
+        }
         $ts = self::tax_settings();
         $defaults = [
             'status' => 'publish',
@@ -78,13 +81,15 @@ class Cf7_Send_Wa_Products {
             'page' => 1,
             'paginate' => true,
         ];
-        if( !isset( $args['orderby'] ) || ( isset( $args['orderby'] ) && $args['orderby'] == '' ) ) {
+        if( !isset( $args['orderby'] ) || (isset($args['orderby']) && $args['orderby'] == 'price') ) {
 	        $defaults['orderby'] = 'meta_value_num';
 			$defaults['meta_key'] = '_price';
+			unset($args['orderby']);
 		}
         $defaults['order'] = 'ASC';            
 
-		$args = array_merge( $defaults, $args );        
+		$args = array_merge( $defaults, $args );
+
         if( isset( $args['category'] ) && $args['category'] != '' ) {
             $_category = explode( ',', $args['category'] );
             $args['category'] = $_category;

@@ -40,4 +40,24 @@
 		}
 	}
 	?>
+	
+	<div data-bind="template:{name:'product-detail', data: viewdetail}"></div>
+	<script type="text/html" id="product-detail">
+		<div id="cf7sendwa-product-detail" class="product-item-detail grid-parent modal" style="max-width: 700px; padding:0px;">
+		    <div class="sp-product-detail ">
+		        <div class="detail-image grid-50 mobile-grid-100 fotorama" data-bind="html:images">
+		        </div>
+		        <div class="detail-content grid-50 mobile-grid-100 product-item-detail-desc">
+		            <h2 data-bind="text: title"></h2>
+		            <div data-bind="html: price"></div>
+		            <div data-bind="html: excerpt" class="product-item-description"></div>
+		            <div data-bind="html: attributes"></div>
+		            <span data-bind="text: stock" class="stock-status"></span>
+		        </div>
+				<div class="grid-100 product-item-detail-description" data-bind="html: description">
+				</div>	     
+		    </div>    
+		</div>
+	</script>	
+	
 </div>

@@ -91,7 +91,9 @@ input[type=button].sp-woopos-minus {
 #cf7sendwa-quickshop-container .variations .product-item-info {
 	padding:5px;
 }
-#cf7sendwa-quickshop-container .stock-status {
+#cf7sendwa-quickshop-container .stock-status,
+#cf7sendwa-product-detail .stock-status {
+	font-size: 80%;
 	color:#ccc;
 }
 #cf7sendwa-quickshop-container .stock-status.outofstock {
@@ -151,6 +153,59 @@ button.cf7sendwa-add-to-cart { width: 100%; font-size: 0.875em; }
 .select2-container--default .select2-selection--single .select2-selection__rendered {
 	border:0px;
 }
+
+/* product detail */
+#cf7sendwa-quickshop-container .woo-link-detail { color: #000; }
+.product-item-detail {
+    background: #f9f9f9;
+}
+.product-item-detail h2 {
+    font-weight: 700;
+    padding-top:25px;
+}
+.product-item-detail-desc .woocommerce-Price-amount {
+    font-size: 18px;
+    font-weight: 500;
+}
+.product-item-detail .product-item-description { font-size: 90%; color: #666; margin-top:10px; }
+.product-item-detail .product-item-description p { margin-bottom: 0px; }
+.product-item-detail-description {
+	font-size: 90%; color: #666; padding: 20px;
+}
+.product-item-detail .detail-image {
+    background:#000;
+    padding:0px;
+    margin:0px;
+}
+.product-item-detail .detail-content {
+    padding-bottom: 25px;
+}
+.product-item-detail-desc {
+    padding: 20px;
+}
+.product-item-detail-desc h3 {
+    font-weight: 700;
+    font-size: 20px;
+}
+table.quickshop-product-attributes {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 100%;
+    font-size: 85%;
+    border:0px;
+}
+table.quickshop-product-attributes td.label {
+    font-weight: bold;
+    width: auto;
+}
+table.quickshop-product-attributes td {
+	border: 0px;
+    font-weight: normal;
+    width: auto;
+    padding:5px;
+    border-bottom: 1px solid #eee;
+}
+
 @media only screen and (max-width: 750px) {
 	.cf7sendwa-woo-filter .filter-block:nth-child(2) input[type="text"] {
 		margin-top: 20px;

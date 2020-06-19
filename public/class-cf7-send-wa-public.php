@@ -128,6 +128,7 @@ class Cf7_Send_Wa_Public {
 		wp_register_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/cf7-send-wa-public.css', array(), $this->version, 'all' );
 		wp_register_style( 'jquery-modal', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/jquery.modal.min.css' );
 		wp_register_style( 'select2', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/select2.min.css' );
+		wp_register_style( 'fotorama', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/fotorama.min.css' );
 	}
 
 	/**
@@ -140,6 +141,7 @@ class Cf7_Send_Wa_Public {
 		wp_register_script( 'jquery-modal', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/jquery.modal.min.js', array( 'jquery' ), '0.9.1', false );
 		wp_register_script( 'knockout', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/knockout.js' );
 		wp_register_script( 'select2', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/select2.min.js' );
+		wp_register_script( 'fotorama', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/fotorama.min.js' );
 	}
 	
     public function check_skip_mail( $skip_mail, $contact_form ) {
@@ -813,10 +815,10 @@ class Cf7_Send_Wa_Public {
 			    
 				foreach( $cart['items'] as $item ) {
 					$_args = array();
-					$_product = get_product( $item['prop']['product_id'] );
+					$_product = wc_get_product( $item['prop']['product_id'] );
 					if( $item['prop']['product_type'] == 'variation' ) {
 						$_args['variation'] = $item['prop']['pa'];
-						$_product = get_product( $item['prop']['variation_id'] );
+						$_product = wc_get_product( $item['prop']['variation_id'] );
 					}
 					$obj_order->add_product( $_product, $item['qty'], $_args );
 				}	
@@ -1044,7 +1046,10 @@ class Cf7_Send_Wa_Public {
 				'category' => '',
 		        'filter' => 'no',
 		        'products' => '',
-		        'sticky_top' => '0'
+		        'detail' => 'yes',
+		        'sticky_top' => '0',
+		        'orderby' => '',
+		        'order' => ''
 			), $atts, 'cf7sendwa-quickshop' );
 			
 		    $product_categories = array();
@@ -1064,6 +1069,12 @@ class Cf7_Send_Wa_Public {
 			if( $atts['filter'] == 'yes' ) {
 				wp_enqueue_style( 'select2' );
 				wp_enqueue_script( 'select2' );
+			}
+			if( $atts['detail'] == 'yes' ) {
+				wp_enqueue_style( 'fotorama' );
+				wp_enqueue_script( 'fotorama' );
+		    	wp_enqueue_style( 'jquery-modal' );
+		    	wp_enqueue_script( 'jquery-modal' );    
 			}
 			
 		    wp_enqueue_style( $this->plugin_name );

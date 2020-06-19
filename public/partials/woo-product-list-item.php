@@ -8,9 +8,9 @@
 				} ?>
 		<div class="product-item prd-<?php echo $product['prop']['id']; ?>">			
 			<div class="grid-<?php echo $grid1 ?> tablet-grid-100 mobile-grid-100 item-block">
-				<img src="<?php echo $product['prop']['images'][0]['src']; ?>" width="120" align="left">
+				<a href="#" class="woo-link-detail"><img src="<?php echo $product['prop']['images'][0]['src']; ?>" width="120" align="left" border="0"></a>
 				<div class="product-item-info">
-					<h4><?php echo $product['name']; ?></h4>					
+					<h4><a href="#" class="woo-link-detail"><?php echo $product['name']; ?></a></h4>					
 					<?php
 					$quickshop_excerpt = get_option( 'quickshop_excerpt', '0' );						
 					if( $quickshop_excerpt == '1' ) {
@@ -18,7 +18,10 @@
 					}
 					?>
 					<?php echo $product['prop']['price_html'] ?>
+					
+					<?php if( get_option( 'quickshop_outofstock', '0' ) == '1' ) : ?>
 					<span class="stock-status <?php echo $product['prop']['stock_status']; ?>"><?php echo $product['prop']['stock_status']; ?></span>
+					<?php endif; ?>
 				</div>
 			</div>
 			<div class="grid-<?php echo $grid2 ?> tablet-grid-100 mobile-grid-100 grid-parent item-block item-price">
@@ -43,6 +46,7 @@
 				</a>
 				<?php endif; ?>
 			</div>
+			<textarea style="display:none;" class="woo-product-prop"><?php echo json_encode($product['prop']); ?></textarea>
 		</div>
 
 		<?php if( $product['prop']['type'] == 'variable' ): ?>
@@ -52,7 +56,10 @@
 						<div class="product-item-info">
 							<h4><?php echo $prd['name']; ?></h4>
 							<?php echo $prd['prop']['price_html'] ?>
+									
+							<?php if( get_option( 'quickshop_outofstock', '0' ) == '1' ) : ?>
 							<span class="stock-status <?php echo $prd['prop']['stock_status']; ?>"><?php echo $prd['prop']['stock_status']; ?></span>
+							<?php endif; ?>
 						</div>
 					</div>
 					<div class="grid-50 tablet-grid-100 mobile-grid-100 grid-parent item-block item-price">

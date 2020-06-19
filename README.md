@@ -6,6 +6,11 @@ This is a WordPress plugin, require Contact Form 7 plugin to be activated.
 - Download the stable version at https://solusipress.com/download/contact-form-7-send-to-whatsapp/
 - See the demo https://bisnisdemo.solusipress.com/contact-form-7-to-wa-test/
 
+## Release 0.10.0
+- Add : Product list inside your Contact Form for quick shop.
+- Add : Use quick shop outside the contact form.
+- Code optimizations and cleanups. 
+
 ## Release 0.9.3
 - Improvement: Convert mobile number entry when user not defined country code 
 - Improvement: Add option to set default country code

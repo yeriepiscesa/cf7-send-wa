@@ -276,35 +276,37 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
     
     $( 'body' ).on( 'click', '.woo-link-detail', function(evt){
 	    evt.preventDefault();
-	    var selector = $(this).attr( 'data-el-cls' );
-		var detail = _.find( ko.toJS(vm.products()), function(item){
-			return item.cls == selector;
-		} );	    
-		var view = (function( detail ){
-			var obj = {};
-			obj.title = detail.title;
-			obj.price = detail.prop.price_html;
-			obj.excerpt = detail.prop.short_description;
-			obj.description = detail.prop.full_description;
-			
-			var img = '';
-			if( detail.prop.images.length ) {
-				var img_src = detail.prop.images[0].src;	
-				img = '<img src="'+ img_src +'">';
-				if( detail.prop.gallery.length ) {
-					_.each( detail.prop.gallery, function( item ){
-						img += '<img src="' + item + '">';
-					} );
+	    if( cf7sendwa.quickshop_atts.detail == 'yes' ) {
+		    var selector = $(this).attr( 'data-el-cls' );
+			var detail = _.find( ko.toJS(vm.products()), function(item){
+				return item.cls == selector;
+			} );	    
+			var view = (function( detail ){
+				var obj = {};
+				obj.title = detail.title;
+				obj.price = detail.prop.price_html;
+				obj.excerpt = detail.prop.short_description;
+				obj.description = detail.prop.full_description;
+				
+				var img = '';
+				if( detail.prop.images.length ) {
+					var img_src = detail.prop.images[0].src;	
+					img = '<img src="'+ img_src +'">';
+					if( detail.prop.gallery.length ) {
+						_.each( detail.prop.gallery, function( item ){
+							img += '<img src="' + item + '">';
+						} );
+					}
 				}
-			}
-			obj.images = img;
-			obj.attributes = detail.prop.attributes;
-			obj.stock = detail.prop.stock_status;
-			return obj;
-		})(detail);
-		vm.viewdetail( view );
-	    $('#cf7sendwa-product-detail').modal();
-	    $('#cf7sendwa-product-detail .fotorama' ).fotorama();
+				obj.images = img;
+				obj.attributes = detail.prop.attributes;
+				obj.stock = detail.prop.stock_status;
+				return obj;
+			})(detail);
+			vm.viewdetail( view );
+		    $('#cf7sendwa-product-detail').modal();
+		    $('#cf7sendwa-product-detail .fotorama' ).fotorama();
+		}
     } );
     
     function load_products( el_id, cat_slug, callback ) {

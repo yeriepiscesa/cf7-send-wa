@@ -134,55 +134,9 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 			$( '.cf7sendwa-quickshop-checkout' ).parent().append( html_hidden ).append( button_html );
 		}
 		
-		$( 'body' ).on( 'change', '.product-item .qty', function(evt){
-			var qty = parseInt( $(this).val() );
-			var stock_status = $( this ).attr( 'data-stock' );
-			if( stock_status == 'outofstock' ) {
-				$(this).val(0);
-				return false;	
-			}
-			var price = parseFloat( $(this).attr( 'data-price' ) );
-			var $item = $(this).closest( '.item-price' );
-			var subtotal = price * qty;
-			var el_subtotal = $item.find( '.item-subtotal' );
-			el_subtotal.html( cf7sendwa.currency+' '+jQuery.number(subtotal, cf7sendwa.decimals, cf7sendwa.decimal_separator, cf7sendwa.thousand_separator) );
-
-			var id = $(this).prop( 'id' );
-			var match = ko.utils.arrayFirst(vm.items(), function(item) {
-			    return id === item.id;
-			});
-			if( !match && qty > 0 ){
-				var $product = $( this ).closest( '.product-item' ).find( '.product-item-info h4' );
-				var product_title = $product.text();
-				var subtitle = '';
-				var pa = $(this).attr( 'data-pa' );
-				var pa_terms = {};
-				if( pa ) {
-					pa = jQuery.parseJSON( decodeURIComponent( pa ) );
-					_.each(pa, function(item, index, list){
-						_.each( item, function(val,key){
-							pa_terms[key] = val;
-						} );
-					});
-					var $prd_parent = $( '.product-item.prd-' + $(this).attr( 'data-product_id' ) + ' .product-item-info h4' );
-					subtitle = product_title;
-					product_title = $prd_parent.text();
-				}
-				var prop = {
-					'product_id': $( this ).attr( 'data-product_id' ),
-					'product_type': $( this ).attr( 'data-product_type' ),
-					'variation_id': $( this ).attr( 'data-variation_id' ),
-					'pa': pa_terms
-				};
-				var cart_item = new Woo_QuickShop_Cart_Item( id, product_title, subtitle, qty, price, prop );				
-				vm.items.push(cart_item);
-			} else if(match) {
-				match.qty(qty);
-				if( match.qty() == 0 ) {
-					vm.items.remove(match);
-				}
-			}
-		} );
+		$( 'body' ).on( 'change', '.product-item .qty', product_qty_change );
+		$( 'body' ).on( 'keyup', '.product-item .qty', product_qty_change );
+		
 		$( 'body' ).on( 'click', '.variant-option-button', function(evt){
 			evt.preventDefault();
 			var var_id = $(this).attr('data-var-id');
@@ -285,6 +239,60 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 	    }
 	    
     } );
+    
+    function product_qty_change( evt ) {
+		var qty = parseInt( $(this).val() );
+		if( isNaN(qty) ) {
+			qty = 0;
+			$(this).val(qty);
+		}
+		var stock_status = $( this ).attr( 'data-stock' );
+		if( stock_status == 'outofstock' ) {
+			$(this).val(0);
+			return false;	
+		}
+		var price = parseFloat( $(this).attr( 'data-price' ) );
+		var $item = $(this).closest( '.item-price' );
+		var subtotal = price * qty;
+		var el_subtotal = $item.find( '.item-subtotal' );
+		el_subtotal.html( cf7sendwa.currency+' '+jQuery.number(subtotal, cf7sendwa.decimals, cf7sendwa.decimal_separator, cf7sendwa.thousand_separator) );
+
+		var id = $(this).prop( 'id' );
+		var match = ko.utils.arrayFirst(vm.items(), function(item) {
+		    return id === item.id;
+		});
+		if( !match && qty > 0 ){
+			var $product = $( this ).closest( '.product-item' ).find( '.product-item-info h4' );
+			var product_title = $product.text();
+			var subtitle = '';
+			var pa = $(this).attr( 'data-pa' );
+			var pa_terms = {};
+			if( pa ) {
+				pa = jQuery.parseJSON( decodeURIComponent( pa ) );
+				_.each(pa, function(item, index, list){
+					_.each( item, function(val,key){
+						pa_terms[key] = val;
+					} );
+				});
+				var $prd_parent = $( '.product-item.prd-' + $(this).attr( 'data-product_id' ) + ' .product-item-info h4' );
+				subtitle = product_title;
+				product_title = $prd_parent.text();
+			}
+			var prop = {
+				'product_id': $( this ).attr( 'data-product_id' ),
+				'product_type': $( this ).attr( 'data-product_type' ),
+				'variation_id': $( this ).attr( 'data-variation_id' ),
+				'pa': pa_terms
+			};
+			var cart_item = new Woo_QuickShop_Cart_Item( id, product_title, subtitle, qty, price, prop );				
+			vm.items.push(cart_item);
+		} else if(match) {
+			match.qty(qty);
+			if( match.qty() == 0 ) {
+				vm.items.remove(match);
+			}
+		}
+    }
     
     $( 'body' ).on( 'click', '.woo-link-detail', function(evt){
 	    evt.preventDefault();

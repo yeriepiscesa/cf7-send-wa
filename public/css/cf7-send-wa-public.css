@@ -130,6 +130,7 @@ button.cf7sendwa-add-to-cart { width: 100%; font-size: 0.975em; }
 	text-align: right;
 }
 a.cf7sendwa-checkout-item-remove { font-size: 0.80em; color:#972a2a; }
+a.cf7sendwa-checkout-item-title{ color: #000; text-decoration: none; }
 .cf7sendwa-woo-filter {
 	padding: 20px 3px;
 	margin-bottom: 30px;

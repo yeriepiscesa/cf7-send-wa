@@ -17,7 +17,7 @@ if( $atts['max-width'] != '' ) {
 				<tbody data-bind="foreach:items">
 					<tr>
 						<td width="60%" class="cart-item">
-							<div data-bind="text:title"></div>
+							<a class="cf7sendwa-checkout-item-title" href="#" data-bind="click:$parent.gotoItem"><span data-bind="text:title"></span></a>
 							<div data-bind="text:subtitle"></div>
 							<span data-bind="text:qty"></span>x 
 							<span data-bind="html:price_html"></span>

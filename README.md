@@ -6,6 +6,13 @@ This is a WordPress plugin, require Contact Form 7 plugin to be activated.
 - Download the stable version at https://solusipress.com/download/contact-form-7-send-to-whatsapp/
 - See the demo https://bisnisdemo.solusipress.com/contact-form-7-to-wa-test/
 
+## Release 0.10.1
+- Improve : Add sticky option on checkout item summary
+- Improve : Add remove item on checkout summary
+- Improve : Option to make quantity editable 
+- Improve : Add scroll to product when checkout's item summary clicked
+- Code optimization and cleanups
+
 ## Release 0.10.0
 - Add : Product list inside your Contact Form for quick shop.
 - Add : Use quick shop outside the contact form.

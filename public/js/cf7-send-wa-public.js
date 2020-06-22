@@ -86,7 +86,6 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
                    .css( 'width', '40%' )
                    .css( 'border', '0px' );
         $( '#'+id ).attr( 'step', '1' )
-                   .attr( 'readonly', 'readonly' );		
         $( '#'+id ).addClass( 'input-text qty text' );
         $( '#'+id ).wrap( '<div class="quantity buttons_added"></div>' );		
         $( '#'+id ).parent().prepend( '<input type="button" data-bind="enable: qty_btn_enable_minus" value="-" class="button sp-woopos-minus">' );
@@ -272,6 +271,19 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 			}
 		} );
 		
+	    if( cf7sendwa_sticky != undefined ) { // sticky checkout
+		    var prop = {
+			    getWidthFrom:'#cf7sendwa-checkout'
+		    };
+		    if( cf7sendwa_sticky.topSpacing != undefined ) {
+			    prop.topSpacing = parseInt(cf7sendwa_sticky.topSpacing);
+		    }
+		    if( cf7sendwa_sticky.bottomSpacing != undefined ) {
+			    prop.bottomSpacing = parseInt(cf7sendwa_sticky.bottomSpacing);
+		    }
+		    $( '.cf7sendwa-quickshop-checkout-container' ).sticky(prop);
+	    }
+	    
     } );
     
     $( 'body' ).on( 'click', '.woo-link-detail', function(evt){

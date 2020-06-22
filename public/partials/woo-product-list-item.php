@@ -27,7 +27,13 @@
 			<div class="grid-<?php echo $grid2 ?> tablet-grid-100 mobile-grid-100 grid-parent item-block item-price">
 				<?php if( $product['prop']['type'] != 'variable' ): ?>
 				<div class="grid-50 mobile-grid-50 tablet-grid-50">
-					<input type="number" name="item_qty" step="1" readonly="readonly" value="0" 
+					<?php
+					$n_readonly = '';
+					if( $args['editableqty'] == 'no' ) {
+						$n_readonly = ' readonly="readonly"';
+					}						
+					?>
+					<input type="number" name="item_qty" step="1"<?php echo $n_readonly ?> value="0" 
 						data-stock="<?php echo $product['prop']['stock_status'] ?>"
 						data-price="<?php echo $product['prop']['price'] ?>" 
 						data-product_type="<?php echo $product['prop']['type'] ?>"
@@ -75,8 +81,12 @@
 								}
 							}	
 							$qty_id =  'prd-qty-'.$prd['prop']['variation_id'].'-'.$var_txt;
+							$n_readonly = '';
+							if( $args['editableqty'] == 'no' ) {
+								$n_readonly = ' readonly="readonly"';
+							}
 							?>
-							<input type="number" name="item_qty" step="1" readonly="readonly" value="0" 
+							<input type="number" name="item_qty" step="1"<?php echo $n_readonly; ?> value="0" 
 								data-stock="<?php echo $prd['prop']['stock_status'] ?>"
 								data-price="<?php echo $prd['prop']['price'] ?>" 
 								data-product_type="<?php echo $prd['prop']['type'] ?>"

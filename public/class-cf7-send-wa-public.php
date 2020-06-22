@@ -142,6 +142,7 @@ class Cf7_Send_Wa_Public {
 		wp_register_script( 'knockout', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/knockout.js' );
 		wp_register_script( 'select2', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/select2.min.js' );
 		wp_register_script( 'fotorama', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/fotorama.min.js' );
+		wp_register_script( 'sticky', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/jquery.sticky.js' );
 	}
 	
     public function check_skip_mail( $skip_mail, $contact_form ) {
@@ -706,11 +707,27 @@ class Cf7_Send_Wa_Public {
 	        ob_end_clean();
 		} else {
 			if( $this->quickshop_rendered ) {
-				
 				$atts = shortcode_atts( array(
-					'add-to-cart' => 'no', // or yes
+					'add-to-cart' => 'no', // or yes,
+					'sticky' => 'no', // or yes
+					'max-width' => '',
+					'top' => '',
+					'bottom' => '',
 				), $atts, 'cf7sendwa-checkout');
 				$html = '';
+				if( $atts['sticky'] != 'no' ) {
+					$_arr = array(
+						'style' => $atts['sticky']
+					);
+					if( $atts['top'] != '' ) {
+						$_arr['topSpacing'] = $atts['top'];
+					}
+					if( $atts['bottom'] != '' ) {
+						$_arr['bottomSpacing'] = $atts['bottom'];
+					}
+					wp_localize_script( $this->plugin_name, 'cf7sendwa_sticky', $_arr );
+					wp_enqueue_script( 'sticky' );
+				}
 				ob_start();
 				include 'partials/cf7-send-wa-quickshop-checkout.php';
 				$html = ob_get_contents();
@@ -1047,7 +1064,7 @@ class Cf7_Send_Wa_Public {
 		        'filter' => 'no',
 		        'products' => '',
 		        'detail' => 'yes',
-		        'sticky_top' => '0',
+		        'editableqty' => 'no',
 		        'orderby' => '',
 		        'order' => ''
 			), $atts, 'cf7sendwa-quickshop' );

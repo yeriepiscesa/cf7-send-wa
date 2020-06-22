@@ -122,9 +122,9 @@ button.cf7sendwa-add-to-cart { width: 100%; font-size: 0.975em; }
 .cf7sendwa-quickshop-checkout .table-cart { margin-bottom: 0px; }
 .cf7sendwa-quickshop-checkout .table-cart,
 .cf7sendwa-quickshop-checkout .table-cart tr td { border:0px; vertical-align: top; }
-.cf7sendwa-quickshop-checkout .table-cart tfoot tr td { font-weight: 600; }
+.cf7sendwa-quickshop-checkout .table-cart thead tr td { font-weight: 600; }
 .cf7sendwa-quickshop-checkout .table-cart tbody tr td {
-	border-bottom: 1px dotted #ccc;
+	border-top: 1px dotted #ccc;
 }
 .cf7sendwa-quickshop-checkout .table-cart .cart-nominal {
 	text-align: right;

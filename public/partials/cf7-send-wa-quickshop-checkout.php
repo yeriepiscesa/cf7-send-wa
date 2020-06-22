@@ -22,7 +22,10 @@ if( $atts['max-width'] != '' ) {
 							<span data-bind="text:qty"></span>x 
 							<span data-bind="html:price_html"></span>
 						</td>
-						<td width="40%" class="cart-nominal" data-bind="html:subtotal_html"></td>
+						<td width="40%" class="cart-nominal">
+							<div data-bind="html:subtotal_html"></div>
+							<a class="cf7sendwa-checkout-item-remove" href="#" data-bind="click: $parent.removeItem"><i class="fa fa-window-close"></i> Remove</a>
+						</td>
 					</tr>
 				</tbody>
 			</table>

@@ -42,6 +42,15 @@ function Woo_QuickShop_Cart() {
 		return 'Rp ' + jQuery.number( self.total(), cf7sendwa.decimals, cf7sendwa.decimal_separator, cf7sendwa.thousand_separator );
 	} );
 	
+	self.removeItem = function(e){
+		if( this.constructor.name == 'Woo_QuickShop_Cart_Item' ) {
+			var id = this.id;
+            self.items.remove( this );
+            jQuery('#'+id).val(0);
+            jQuery('#'+id).trigger( 'change' );
+        }
+	}
+	
 	self.viewdetail = ko.observable({
 		title:'Product Title',
 		images: '',

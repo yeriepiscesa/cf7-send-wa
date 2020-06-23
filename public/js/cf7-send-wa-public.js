@@ -386,25 +386,53 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 				
 				if( typeof callback == 'function' ) {
 					callback( el_id, cat_slug, data_count );
-					// add to item 
-					var catId = '';
-					var $container = $( '#'+el_id ).closest( '.product-cat-container' );
-					if( $container.length ) {
-						catId = $container.attr( 'id' );
+				}
+				// add to item 
+				var catId = '';
+				var $container = $( '#'+el_id ).closest( '.product-cat-container' );
+				if( $container.length ) {
+					catId = $container.attr( 'id' );
+				}
+				if( cf7sendwa.quickshop_atts.filter == 'yes' || cf7sendwa.quickshop_atts.detail == 'yes' ) {
+					$( '#'+el_id+' .product-items .product-item:not(.variations)' ).each( function(index){
+						var $h4 = $(this).find( '.product-item-info h4' );
+						var cls = $(this).attr('class');
+						var clsArr = cls.split(" ");
+						cls = "."+clsArr.join(".");
+						var title = $h4.text();
+						var $prop = $(this).find( '.woo-product-prop' );
+						$( cls ).find( 'a.woo-link-detail' ).attr( 'data-el-cls', cls );
+						vm.products.push( new Woo_QuickShop_ProductItem( cls, catId, title, jQuery.parseJSON($prop.val()) ) );
+						$prop.remove();
+					} );				
+				}	
+				
+				if( cf7sendwa.quickshop_atts.paging == 'loadmore' ) {
+					if( cf7sendwa.quickshop_atts.page == undefined ) {
+						cf7sendwa.quickshop_atts.page = 1;
 					}
-					if( cf7sendwa.quickshop_atts.filter == 'yes' || cf7sendwa.quickshop_atts.detail == 'yes' ) {
-						$( '#'+el_id+' .product-items .product-item:not(.variations)' ).each( function(index){
-							var $h4 = $(this).find( '.product-item-info h4' );
-							var cls = $(this).attr('class');
-							var clsArr = cls.split(" ");
-							cls = "."+clsArr.join(".");
-							var title = $h4.text();
-							var $prop = $(this).find( '.woo-product-prop' );
-							$( cls ).find( 'a.woo-link-detail' ).attr( 'data-el-cls', cls );
-							vm.products.push( new Woo_QuickShop_ProductItem( cls, catId, title, jQuery.parseJSON($prop.val()) ) );
-							$prop.remove();
-						} );				
-					}	
+					$( '#'+cat_slug+'-page-'+cf7sendwa.quickshop_atts.page ).click( function(evt){
+						evt.preventDefault();
+						var $link = $(this);
+						var link_id = $link.attr('id');
+						var page = $link.attr( 'data-next' );
+						var $cat_item = $link.closest('.product-cat-container');
+						var el_id = $cat_item.attr('id');
+						if( el_id != undefined ) {
+							var cat_slug = el_id.replace( 'cat-', '' );
+							var loader_id = link_id+'-loader';
+							$link.after( '<div id="'+loader_id+'">&nbsp;</div>' );
+							$( '#'+loader_id ).css( 'height', '50px' );
+							$link.remove();
+							$( '#'+loader_id ).loading();
+							cf7sendwa.quickshop_atts.page = page;
+							load_products( el_id, cat_slug, function(){
+								$( '#'+loader_id ).loading('toggle');
+								$( '#'+loader_id ).remove();
+							} );
+						}
+					} );
+				} else if( cf7sendwa.quickshop_atts.paging == 'auto' ) {
 					// fetch next page 
 					if( $( '#' + el_id  +' .quickshop-load-more' ).length ) {
 						var $next = $( '#' + el_id  +' .quickshop-load-more' );
@@ -413,10 +441,9 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 						$next.remove();
 						load_products( el_id, cat_slug, callback );
 					}
-					
 				}
 			}
-		} );		
+		} );
     }
     
 	// select2

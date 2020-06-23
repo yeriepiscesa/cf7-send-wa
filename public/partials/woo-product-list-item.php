@@ -107,7 +107,13 @@
 	<?php endforeach; ?>
 </div>
 <?php 
-if( $products['pages'] > $products['page'] ) {
-	echo '<div class="quickshop-load-more" data-next="' . ($products['page']+1) . '">...</div>';
+if( $args['paging'] != 'disable' ) {	
+	if( $args['paging'] == 'auto' && $products['pages'] > $products['page'] ) {
+		echo '<div class="quickshop-load-more" data-next="' . ($products['page']+1) . '">...</div>';
+	} elseif( $args['paging'] == 'loadmore' && $products['pages'] > $products['page'] ) {
+		echo '<a id="' . $args['category'] . '-page-' .$products['page']. '" href="#" class="button quickshop-load-more-link" data-next="' . ($products['page']+1) . '">Load More</a>';		
+	} elseif( $args['paging'] == 'numbers' ) {
+		echo 'paging here';		
+	}
 }
 ?>

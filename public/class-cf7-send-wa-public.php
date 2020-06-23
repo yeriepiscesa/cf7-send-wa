@@ -114,6 +114,14 @@ class Cf7_Send_Wa_Public {
         }        
         if( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 	        $this->woo_is_active = true;
+	        // REST API CALL
+			add_action( 'rest_api_init', function () {
+			    register_rest_route( 'cf7sendwa/v1', '/products', array(
+			        'method' => 'GET',
+			        'callback' => array( $this, 'api_list_product' )
+			    ) );
+			} );
+	        
         }
 
 	}
@@ -1011,6 +1019,16 @@ class Cf7_Send_Wa_Public {
 		}
 		die();
 	}
+	/*
+     * Get list product using REST API
+     * @since 0.10.2
+     * @access public
+     */
+	public function api_list_product($request) {
+		$args = $request->get_params();
+		$products = Cf7_Send_Wa_Products::list_all( $args );
+		return $products;
+	}
 	
 	/*
      * Add to cart for Quick Shop 
@@ -1066,7 +1084,9 @@ class Cf7_Send_Wa_Public {
 		        'detail' => 'yes',
 		        'editableqty' => 'no',
 		        'orderby' => '',
-		        'order' => ''
+		        'order' => '',
+		        'limit' => '10',
+		        'paging' => 'auto',
 			), $atts, 'cf7sendwa-quickshop' );
 			
 		    $product_categories = array();

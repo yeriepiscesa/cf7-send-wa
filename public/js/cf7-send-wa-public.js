@@ -159,8 +159,12 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 		if( $( '.cf7sendwa-cf7-container' ).length ) {
 			$( '.cf7sendwa-cf7-container .wpcf7-submit' ).parent().append( html_hidden );
 		} else if( $( '.cf7sendwa-quickshop-checkout' ).length ) {
-			var button_html = '<button class="button cf7sendwa-add-to-cart">Add to Cart</button>';
-			$( '.cf7sendwa-quickshop-checkout' ).parent().append( html_hidden ).append( button_html );
+			var button_html = '<button class="button cf7sendwa-add-to-cart">' + cf7sendwa_qsreview.cart_label + '</button>';
+			var button_container_selector = '.cf7sendwa-quickshop-checkout';
+			if( cf7sendwa_qsreview.button_append_to != '' ) {
+				button_container_selector = cf7sendwa_qsreview.button_append_to;
+			}
+			$( button_container_selector ).parent().append( html_hidden ).append( button_html );
 		}
 		$( 'body' ).on( 'change', '.product-item .qty', product_qty_change );
 		$( 'body' ).on( 'keyup', '.product-item .qty', product_qty_change );
@@ -229,13 +233,19 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 		
 		// add to cart from quickshop
 		$( 'body' ).on( 'click', '.cf7sendwa-add-to-cart', function(evt){
+			var $this_button = $(this);
+			$this_button.prop('disabled', true);;			
 			var quickshop = ko.toJS( vm );	
 			delete quickshop.products;
 			delete quickshop.viewdetail;
-			$( '#cf7sendwa_quickshop_cart' ).val( ko.toJSON(quickshop) );
+			$( '#cf7sendwa_quickshop_cart' ).val( ko.toJSON(quickshop) );			
 			if( quickshop && quickshop.total > 0 ) {
 				// do add to cart
-				$( '.cf7sendwa-quickshop-checkout-container' ).loading( { message: 'Processing' } );
+				var loader_selector = '.cf7sendwa-quickshop-checkout-container';
+				if( cf7sendwa_qsreview.loader_selector != '' ) {
+					loader_selector = cf7sendwa_qsreview.loader_selector;
+				}
+				$( loader_selector ).loading( { message: 'Processing...' } );
 				$.ajax( {
 					url: cf7sendwa.ajaxurl,
 					type: 'POST',
@@ -243,28 +253,33 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 					data: {
 						'action':'cf7sendwa_add_to_cart',
 						'quickshop_cart': $( '#cf7sendwa_quickshop_cart' ).val(),
-						'security': cf7sendwa.security
+						'security': cf7sendwa.security,
+						'redirect': cf7sendwa_qsreview.redirect
 					},
 					success: function(response){
-						$( '.cf7sendwa-quickshop-checkout-container' ).loading('toggle');
+						$( loader_selector ).loading('toggle');
 						if( response ) {
-							$( '.cf7sendwa-quickshop-checkout-container' ).loading( { message: 'Redirecting...' } );	
-							document.location = response.cart_url;
-						}
+							$( loader_selector ).loading( { message: 'Redirecting...' } );	
+							document.location = response.redirect_url;
+						} else {
+							$this_button.prop('disabled', false);;	
+						}						
 					}
 				} );
+			} else {
+				$this_button.prop('disabled', false);;
 			}
 		} );
 		
-	    if( typeof cf7sendwa_sticky !== 'undefined' ) { // sticky checkout
+	    if( cf7sendwa_qsreview.sticky == 'yes' ) { // sticky checkout
 		    var prop = {
 			    getWidthFrom:'#cf7sendwa-checkout'
 		    };
-		    if( cf7sendwa_sticky.topSpacing != undefined ) {
-			    prop.topSpacing = parseInt(cf7sendwa_sticky.topSpacing);
+		    if( cf7sendwa_qsreview.top != '' ) {
+			    prop.topSpacing = parseInt(cf7sendwa_qsreview.top);
 		    }
-		    if( cf7sendwa_sticky.bottomSpacing != undefined ) {
-			    prop.bottomSpacing = parseInt(cf7sendwa_sticky.bottomSpacing);
+		    if( cf7sendwa_qsreview.bottom != '' ) {
+			    prop.bottomSpacing = parseInt(cf7sendwa_qsreview.bottom);
 		    }
 		    $( '.cf7sendwa-quickshop-checkout-container' ).sticky(prop);
 	    }

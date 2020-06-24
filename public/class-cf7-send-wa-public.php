@@ -686,7 +686,7 @@ class Cf7_Send_Wa_Public {
 	        $this->woo_shippings = cf7sendwa_woo_get_shippings();
             remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20 );
             add_filter( 'woocommerce_show_page_title', '__return_false' );
-	        $template = plugin_dir_path( __FILE__ ) . 'template-checkout.php';
+	        $template = apply_filters( 'cf7sendwa_product_checkout_template', plugin_dir_path( __FILE__ ) . 'template-checkout.php' );
 	        
         }
 	    return $template;
@@ -717,28 +717,22 @@ class Cf7_Send_Wa_Public {
 		} else {
 			if( $this->quickshop_rendered ) {
 				$atts = shortcode_atts( array(
-					'add-to-cart' => 'no', // or yes,
+					'cart_label' => 'Add to Cart', 
 					'sticky' => 'no', // or yes
 					'max-width' => '',
 					'top' => '',
 					'bottom' => '',
+					'redirect' => 'cart',
+					'button_append_to' => '',
+					'loader_selector' => ''
 				), $atts, 'cf7sendwa-checkout');
 				$html = '';
-				if( $atts['sticky'] != 'no' ) {
-					$_arr = array(
-						'style' => $atts['sticky']
-					);
-					if( $atts['top'] != '' ) {
-						$_arr['topSpacing'] = $atts['top'];
-					}
-					if( $atts['bottom'] != '' ) {
-						$_arr['bottomSpacing'] = $atts['bottom'];
-					}
-					wp_localize_script( $this->plugin_name, 'cf7sendwa_sticky', $_arr );
+				wp_localize_script( $this->plugin_name, 'cf7sendwa_qsreview', $atts );
+				if( $atts['sticky'] == 'yes' ) {
 					wp_enqueue_script( 'sticky' );
 				}
 				ob_start();
-				include 'partials/cf7-send-wa-quickshop-checkout.php';
+				include apply_filters( 'cf7sendwa_order_review_template', 'partials/cf7-send-wa-quickshop-checkout.php' );
 				$html = ob_get_contents();
 				ob_end_clean();
 			} else {
@@ -1056,9 +1050,13 @@ class Cf7_Send_Wa_Public {
 			
 			if( $added > 0 ) {
 				global $woocommerce;
-				$cart_page_url = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : $woocommerce->cart->get_cart_url();				
+				if( $_POST['redirect'] == 'checkout' ){
+					$redirect_page_url = function_exists( 'wc_get_checkout_url' ) ? wc_get_checkout_url() : $woocommerce->cart->wc_get_checkout_url();				
+				} else {
+					$redirect_page_url = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : $woocommerce->cart->get_cart_url();				
+				}
 				$result = array(
-					'cart_url' => $cart_page_url
+					'redirect_url' => $redirect_page_url
 				);	
 				echo json_encode( $result );
 			}

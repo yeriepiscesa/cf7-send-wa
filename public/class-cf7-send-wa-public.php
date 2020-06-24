@@ -114,14 +114,15 @@ class Cf7_Send_Wa_Public {
         }        
         if( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 	        $this->woo_is_active = true;
-	        // REST API CALL
+	        // REST API CALL ( Next Features )
+	        /* 
 			add_action( 'rest_api_init', function () {
 			    register_rest_route( 'cf7sendwa/v1', '/products', array(
 			        'method' => 'GET',
 			        'callback' => array( $this, 'api_list_product' )
 			    ) );
 			} );
-	        
+	        */
         }
 
 	}

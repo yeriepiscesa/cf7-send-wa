@@ -142,6 +142,10 @@ class Cf7_Send_Wa_Admin {
             if( $quickshop_excerpt != '1' ) $quickshop_excerpt = '0';
             update_option( 'quickshop_excerpt', $quickshop_excerpt );
 
+            $quickshop_sku = $_POST['quickshop_sku'];
+            if( $quickshop_sku != '1' ) $quickshop_sku = '0';
+            update_option( 'quickshop_sku', $quickshop_sku );
+
             $quickshop_outofstock = $_POST['quickshop_outofstock'];
             if( $quickshop_outofstock != '1' ) $quickshop_outofstock = '0';
             update_option( 'quickshop_outofstock', $quickshop_outofstock );
@@ -174,6 +178,7 @@ class Cf7_Send_Wa_Admin {
         $require_shipping = get_option( 'cf7sendwa_requireshipping', '0' );
 
         $quickshop_excerpt = get_option( 'quickshop_excerpt', '0' );
+        $quickshop_sku = get_option( 'quickshop_sku', '0' );
         $quickshop_outofstock = get_option( 'quickshop_outofstock', '0' );
         $quickshop_unsemantic = get_option( 'quickshop_unsemantic', '0' );
         

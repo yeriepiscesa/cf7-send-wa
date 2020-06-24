@@ -145,7 +145,7 @@ class Cf7_Send_Wa_Public {
 	 * @since    0.3.0
 	 */
 	public function enqueue_scripts() {
-		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cf7-send-wa-public.js', array( 'jquery' ), $this->version, false );
+		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cf7-send-wa-public.js', array( 'jquery' ), $this->version, true );
 		wp_register_script( 'jquery-modal', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/jquery.modal.min.js', array( 'jquery' ), '0.9.1', false );
 		wp_register_script( 'knockout', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/knockout.js' );
 		wp_register_script( 'select2', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/select2.min.js' );
@@ -224,7 +224,7 @@ class Cf7_Send_Wa_Public {
 		        $html .= '<h3 class="cf7sendwa-modal-title">'.$atts['title'].'</h3>';
 	        }
         }
-        $html .= do_shortcode( $shortcode );
+        $html .= '<div class="cf7sendwa-cf7-container">'. do_shortcode( $shortcode ) . '</div>';
         if( $is_popup ) {
 	        $html .= '</div></div>';
 	        if( $atts['popup'] == 'auto' ) {
@@ -1133,10 +1133,11 @@ class Cf7_Send_Wa_Public {
 			wp_localize_script( $this->plugin_name, 'cf7sendwa', $_arr );
 			wp_enqueue_script( $this->plugin_name );
 			
+		    do_action( 'cf7sendwa_before_product_list', $_arr );
+
 		    $html = '';
 		    ob_start();
-		    do_action( 'cf7sendwa_before_product_list', $_arr );
-		    include 'partials/woo-product-list.php';
+		    include apply_filters( 'cf7sendwa_product_list_template', 'partials/woo-product-list.php' );
 		    $html = ob_get_contents();
 		    ob_end_clean();
 		    $this->quickshop_rendered = true;

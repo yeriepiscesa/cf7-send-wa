@@ -54,7 +54,6 @@ function Woo_QuickShop_Cart() {
 			var id = this.id;
 			var $target = jQuery( '#'+id ).closest( '.product-item' );
 			jQuery( 'body' ).scrollTo( $target, 400, {offset:-50} );
-			
 			var _x = window.setInterval(function(){
 				$target.fadeOut(250).fadeIn(250);
 				window.clearInterval( _x );
@@ -72,6 +71,7 @@ function Woo_QuickShop_Cart() {
 	
 	self.viewdetail = ko.observable({
 		title:'Product Title',
+		sku:'',
 		images: '',
 		price: '',
 		excerpt:'',
@@ -120,6 +120,7 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
         $( '#'+id ).parent().append( '<input type="button" data-bind="enable: qty_btn_enable_add" value="+" class="button sp-woopos-plus">' );
     } 
 	
+	var ajax_search_txt = '';
 	var qty_buttons = [];
 	var vm = new Woo_QuickShop_Cart();
     $.extend( Woo_QuickShop_Cart, {
@@ -155,15 +156,17 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 		}
 		
 		var html_hidden = '<input type="hidden" name="quickshop_cart" id="cf7sendwa_quickshop_cart" value="">';
-		if( $( '.wpcf7-submit' ).length ) {
-			$( '.wpcf7-submit' ).parent().append( html_hidden );
+		if( $( '.cf7sendwa-cf7-container' ).length ) {
+			$( '.cf7sendwa-cf7-container .wpcf7-submit' ).parent().append( html_hidden );
 		} else if( $( '.cf7sendwa-quickshop-checkout' ).length ) {
 			var button_html = '<button class="button cf7sendwa-add-to-cart">Add to Cart</button>';
 			$( '.cf7sendwa-quickshop-checkout' ).parent().append( html_hidden ).append( button_html );
 		}
-		
 		$( 'body' ).on( 'change', '.product-item .qty', product_qty_change );
 		$( 'body' ).on( 'keyup', '.product-item .qty', product_qty_change );
+		$( 'body' ).on( 'focus', '.product-item .qty', function(evt){
+            $(this).select();
+        } );
 		
 		$( 'body' ).on( 'click', '.variant-option-button', function(evt){
 			evt.preventDefault();
@@ -266,6 +269,20 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 		    $( '.cf7sendwa-quickshop-checkout-container' ).sticky(prop);
 	    }
 	    
+	    if( $( '#cf7sendwa_woo_ajax_filter' ).length ) {
+			$( '#cf7sendwa_woo_ajax_filter' ).keydown(function(evt){
+				if( evt.which == 13 ) {
+					evt.preventDefault();
+					var text = $(this).val();
+					do_ajax_search( text );
+				}						
+			});
+			$( '#cf7sendwa_woo_ajax_filter_button' ).click( function(evt){
+				var text = $( '#cf7sendwa_woo_ajax_filter' ).val();
+				do_ajax_search( text );
+			} );
+	    }
+	    
     } );
     
     function product_qty_change( evt ) {
@@ -332,6 +349,7 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 			var view = (function( detail ){
 				var obj = {};
 				obj.title = detail.title;
+				obj.sku = '<span class="cf7sendwa-product-sku-label">SKU: </span>' + detail.prop.sku;
 				obj.price = detail.prop.price_html;
 				obj.excerpt = detail.prop.short_description;
 				obj.description = detail.prop.full_description;
@@ -361,6 +379,10 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 	    if( cat_slug != '' ) {
 		    cf7sendwa.quickshop_atts.category = cat_slug;
 	    }
+	    var products_page = 1;
+	    if( _.has( cf7sendwa.quickshop_atts, 'page' ) ) {
+		    products_page = cf7sendwa.quickshop_atts.page;
+	    }
 		$.ajax( {
 			url: cf7sendwa.ajaxurl,
 			type: 'POST',
@@ -368,21 +390,41 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 			data: { 
 				'action':'cf7sendwa_products', 
 				'args': cf7sendwa.quickshop_atts,
-				'security': cf7sendwa.security 
+				'security': cf7sendwa.security,
+				'cf7sendwa_search': ajax_search_txt
 			},
 			success: function( response ) {
 				$( '#'+el_id ).append( response );	
 				var data_count = parseInt( $( '#'+el_id + ' .product-items' ).attr( 'data-total' ) );	
-				$( '#'+el_id+' .qty' ).each( function(index, element) {
+				
+				var _cart = {};
+				var _cart_subtot = {};
+				if( vm.items().length ){
+					var __cart = ko.toJS( vm.items );
+					_.each( __cart, function( item, index, list ){
+						_cart[ item.id ] = item.qty;	
+						_cart_subtot[ item.id ] = item.subtotal_html;
+					} );
+				}
+				
+				$( '#'+el_id+' .item-subtotal' ).html( cf7sendwa.currency + ' 0' );
+				$( '#'+el_id+' .product-items.page-'+ products_page + ' .qty' ).each( function(index, element) {
 					var qty_id = $(element).attr('id');
 					if( _.indexOf( qty_buttons, qty_id ) == -1 ) {
 						wrap_spinner( qty_id );
 						qty_buttons.push( qty_id );
+						if( _cart[qty_id] != undefined ) {
+							$( '#'+qty_id ).val( _cart[qty_id] );
+							var $item = $('#'+qty_id).closest( '.item-price' );
+							$item.find( '.item-subtotal' ).html( _cart_subtot[qty_id] );
+						}
+					} else {
+						var $prd_item = $(element).closest( '.product-item' );
+						$prd_item.remove();
 					}
 				} );		
 				$( '#'+el_id+' .variations' ).hide();
 				$( '#'+el_id+' .variant-option-button .angle-up' ).hide();
-				$( '#'+el_id+' .item-subtotal' ).html( cf7sendwa.currency + ' 0' );
 				
 				if( typeof callback == 'function' ) {
 					callback( el_id, cat_slug, data_count );
@@ -445,11 +487,37 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 			}
 		} );
     }
-    
+	function do_ajax_search( txt ) {
+		ajax_search_txt = txt;
+		qty_buttons = [];
+		cf7sendwa.quickshop_atts.page = 1;
+		$( '.product-items' ).remove();
+		$( '.cf7sendwa-quickshop-paging' ).remove();
+		if( $( '#quickshop-products' ).length ) {
+			var $qs = $( '#quickshop-products' );
+			$qs.loading();
+			var el_id = $qs.attr("id");
+			load_products( el_id, '', function(el_id, cat_slug, data_count){
+				$qs.loading( 'stop' );
+			} );
+		} else {
+			$( '.product-cat-container' ).each( function( index, element ){
+				var $el = $( element );	
+				var el_id = $el.attr('id');
+				var cat_slug = el_id.replace( 'cat-', '' );		
+				$('#'+el_id).loading();
+				load_products( el_id, cat_slug, function(el_id, cat_slug, data_count){
+					$( '#'+el_id ).loading( 'stop' );
+					$( '#'+ el_id +'.product-cat-container' ).css( 'min-height', '0px' );
+				} );
+			} );
+		}
+	}
 	// select2
 	$( '.cf7sendwa-woo-categories' ).select2( {
 		placeholder: "Select Category", 
 		allowClear: true
 	} );
+	
     	
 })( jQuery );

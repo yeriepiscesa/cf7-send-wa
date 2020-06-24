@@ -157,8 +157,16 @@ a.cf7sendwa-checkout-item-title{ color: #000; text-decoration: none; }
 .select2-container--default .select2-selection--single .select2-selection__rendered {
 	border:0px;
 }
-
+#cf7sendwa-quickshop-container div.cf7sendwa-product-sku,
+div.cf7sendwa-product-sku {
+	font-size: 0.80em;
+	color: #666;
+	font-style: italic;
+}
 /* product detail */
+.jquery-modal.blocker.current {
+	z-index: 9999!important;
+}
 #cf7sendwa-quickshop-container .woo-link-detail { color: #000; }
 .product-item-detail {
     background: #f9f9f9;

@@ -43,18 +43,24 @@ function cf7sendwa_wc_price( $price, $args=array() ) {
  * @since 0.9.3
  */	
 function cf7sendwa_woo_list_categories( $category ) {
-    $orderby = 'name';
-    $order = 'asc';
-    $hide_empty = true ;
-    $cat_args = array(
-        'orderby'    => $orderby,
-        'order'      => $order,
-        'hide_empty' => $hide_empty,
-    );
-    if( $category != '' ) {
-        $cat_args['slug'] = explode(",",$category);
+	$product_categories = array();
+	if( $category != '' ) {
+		$categories = explode(",",$category);
+		foreach( $categories as $cat ){
+			$_term = get_term_by( 'slug', $cat, 'product_cat' );
+			array_push( $product_categories, $_term );
+		}
+	} else {
+	    $orderby = 'name';
+	    $order = 'asc';
+	    $hide_empty = true ;
+	    $cat_args = array(
+	        'orderby'    => $orderby,
+	        'order'      => $order,
+	        'hide_empty' => $hide_empty,
+	    );
+	    $product_categories = get_terms( 'product_cat', $cat_args );    
     }
-    $product_categories = get_terms( 'product_cat', $cat_args );    
     return $product_categories;
 }
 

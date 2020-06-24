@@ -50,6 +50,7 @@
 		        <div class="detail-content grid-50 mobile-grid-100 product-item-detail-desc">
 		            <h2 data-bind="text: title"></h2>
 		            <div data-bind="html: price"></div>
+		            <div class="cf7sendwa-product-sku" data-bind="html:sku"></div>
 		            <div data-bind="html: excerpt" class="product-item-description"></div>
 		            <div data-bind="html: attributes"></div>
 		            <span data-bind="text: stock" class="stock-status"></span>

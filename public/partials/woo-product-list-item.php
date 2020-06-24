@@ -1,4 +1,4 @@
-<div class="product-items" data-total="<?php echo $products['total'] ?>">
+<div class="product-items page-<?php echo $products['page']; ?>" data-total="<?php echo $products['total'] ?>">
 	<?php foreach( $products['results'] as $product ): 
 				$grid1 = '60';
 				$grid2 = '40';
@@ -10,8 +10,12 @@
 			<div class="grid-<?php echo $grid1 ?> tablet-grid-100 mobile-grid-100 item-block">
 				<a href="#" class="woo-link-detail"><img src="<?php echo $product['prop']['images'][0]['src']; ?>" width="120" align="left" border="0"></a>
 				<div class="product-item-info">
-					<h4><a href="#" class="woo-link-detail"><?php echo $product['name']; ?></a></h4>					
+					<h4><a href="#" class="woo-link-detail"><?php echo $product['name']; ?></a></h4>	
 					<?php
+					if( get_option( 'quickshop_sku', '0' ) == '1' && $product['prop']['sku'] != '' ) {
+						echo '<div class="cf7sendwa-product-sku">SKU: ' . $product['prop']['sku'] . '</div>';
+					}	
+						
 					$quickshop_excerpt = get_option( 'quickshop_excerpt', '0' );						
 					if( $quickshop_excerpt == '1' ) {
 						echo '<div class="product-excerpt">' . $product['prop']['short_description'] . '</div>';	
@@ -61,6 +65,11 @@
 					<div class="grid-50 tablet-grid-100 mobile-grid-100 item-block">
 						<div class="product-item-info">
 							<h4><?php echo $prd['name']; ?></h4>
+							<?php
+							if( get_option( 'quickshop_sku', '0' ) == '1' && $prd['prop']['sku'] != '' ) {
+								echo '<div class="cf7sendwa-product-sku"><span class="cf7sendwa-product-sku-label">SKU: </span>' . $prd['prop']['sku'] . '</div>';
+							}	
+							?>
 							<?php echo $prd['prop']['price_html'] ?>
 									
 							<?php if( get_option( 'quickshop_outofstock', '0' ) == '1' ) : ?>
@@ -108,12 +117,14 @@
 </div>
 <?php 
 if( $args['paging'] != 'disable' ) {	
-	if( $args['paging'] == 'auto' && $products['pages'] > $products['page'] ) {
-		echo '<div class="quickshop-load-more" data-next="' . ($products['page']+1) . '">...</div>';
-	} elseif( $args['paging'] == 'loadmore' && $products['pages'] > $products['page'] ) {
-		echo '<a id="' . $args['category'] . '-page-' .$products['page']. '" href="#" class="button quickshop-load-more-link" data-next="' . ($products['page']+1) . '">Load More</a>';		
-	} elseif( $args['paging'] == 'numbers' ) {
-		echo 'paging here';		
-	}
+	echo '<div class="cf7sendwa-quickshop-paging">';
+		if( $args['paging'] == 'auto' && $products['pages'] > $products['page'] ) {
+			echo '<div class="quickshop-load-more" data-next="' . ($products['page']+1) . '">...</div>';
+		} elseif( $args['paging'] == 'loadmore' && $products['pages'] > $products['page'] ) {
+			echo '<a id="' . $args['category'] . '-page-' .$products['page']. '" href="#" class="button quickshop-load-more-link" data-next="' . ($products['page']+1) . '">Load More</a>';		
+		} elseif( $args['paging'] == 'numbers' ) {
+			//echo 'paging here';		
+		}
+	echo '</div>';
 }
 ?>

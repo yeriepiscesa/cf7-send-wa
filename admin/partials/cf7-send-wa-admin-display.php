@@ -154,6 +154,20 @@
 			        </td>
 		        </tr>
 		        <tr>
+			        <th scope="row"><label for="quickshop_sku">Show SKU</label></th>
+			        <td>
+				        <?php
+                        $checked7 = '';
+                        if( $quickshop_sku == '1' ) {
+                            $checked7 = ' checked="checked"';
+                        }
+					    ?>				        
+                        <input type="checkbox" id="quickshop_sku"<?= $checked7 ?>  
+                               name="quickshop_sku" value="1">
+                        <p style="display:inline" class="description">Show product's SKU</p>       
+			        </td>
+		        </tr>
+		        <tr>
 			        <th scope="row"><label for="quickshop_outofstock">Show Out of Stock</label></th>
 			        <td>
 				        <?php

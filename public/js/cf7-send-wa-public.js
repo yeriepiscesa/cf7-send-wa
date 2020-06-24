@@ -349,7 +349,11 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 			var view = (function( detail ){
 				var obj = {};
 				obj.title = detail.title;
-				obj.sku = '<span class="cf7sendwa-product-sku-label">SKU: </span>' + detail.prop.sku;
+				var __sku = detail.prop.sku;
+				if( __sku != '' ) {
+					__sku = '<span class="cf7sendwa-product-sku-label">SKU: </span>' + __sku;
+				}
+				obj.sku = __sku;
 				obj.price = detail.prop.price_html;
 				obj.excerpt = detail.prop.short_description;
 				obj.description = detail.prop.full_description;

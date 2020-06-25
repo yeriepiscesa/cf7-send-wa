@@ -58,6 +58,7 @@
                                name="disable_send_mail" value="1">
                     </td>
 				</tr>
+				<?php do_action( 'cf7sendwa_custom_whatsapp_settings' ); ?>
 			</tbody>
 		</table>
 			
@@ -133,6 +134,7 @@
 				        	<label for="redirect_none">Disable</label>
 			        </td>
 		        </tr>
+		        <?php do_action( 'cf7sendwa_custom_woocommerce_settings' ); ?>
 	        </tbody>
         </table>
 
@@ -211,6 +213,7 @@
 					        <option value="fonnte">Fonnte</option>
 					        <option value="wablas">WABlas</option>
 					        <option value="ruangwa">RuangWA</option>
+					        <?php do_action( 'cf7sendwa_custom_api_provider_options' ); ?>
 				        </select>
 			        </td>
 		        </tr>
@@ -294,7 +297,8 @@
 				</tbody>
 			</table>
         </div>
-
+        
+        <?php do_action( 'cf7sendwa_custom_api_provider_form' ); ?>
                 
 		<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes"></p>		
     </form>

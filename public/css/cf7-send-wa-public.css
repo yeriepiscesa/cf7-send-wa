@@ -118,6 +118,8 @@ input[type=button].sp-woopos-minus {
 	border-top:1px solid #eee;
 	border-bottom:1px solid #eee;
 	background: #fff;
+	max-height: 70vh;
+	overflow: scroll;
 }
 button.cf7sendwa-add-to-cart { width: 100%; font-size: 0.975em; }
 .cf7sendwa-quickshop-checkout .table-cart { margin-bottom: 0px; }
@@ -165,7 +167,7 @@ div.cf7sendwa-product-sku {
 }
 /* product detail */
 .jquery-modal.blocker.current {
-	z-index: 9999!important;
+	z-index: 99999!important;
 }
 #cf7sendwa-quickshop-container .woo-link-detail { color: #000; }
 .product-item-detail {

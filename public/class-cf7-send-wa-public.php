@@ -1128,6 +1128,7 @@ class Cf7_Send_Wa_Public {
 		        'categories'         => $product_categories,
 		        'security' 			 => wp_create_nonce( 'cf7sendwa-rest-request-nonce' ),
 				'quickshop_atts' 	 => $atts,
+                'assets_dir'         => plugin_dir_url( dirname(__FILE__) ) .'includes/assets/'
 			);
 			wp_localize_script( $this->plugin_name, 'cf7sendwa', $_arr );
 			wp_enqueue_script( $this->plugin_name );

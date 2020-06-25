@@ -15,6 +15,7 @@ if ( $this->woo_is_active ) {
 					}
 					$txt .= $variations;
 				}
+				$txt .= "\\n";
 				$txt .= ' @ ' . cf7sendwa_wc_price( $item['price'] );
 				$txt .= ' x ' . $item['quantity'] . ' => ' . 
 						cf7sendwa_wc_price( $item['price']*$item['quantity'] );

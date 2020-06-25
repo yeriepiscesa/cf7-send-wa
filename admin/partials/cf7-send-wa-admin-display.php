@@ -195,6 +195,7 @@
                         <p style="display:inline" class="description">Check if your theme using Unsemantic CSS Grid (eg. GeneratePress)</p>
 			        </td>
 		        </tr>
+		        <?php do_action( 'cf7sendwa_custom_quickshop_settings' ); ?>
 	        </tbody>
         </table>
         

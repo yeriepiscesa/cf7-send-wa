@@ -89,6 +89,7 @@
 									}
 								}
 							}	
+                            $var_txt = str_replace( " ", "", $var_txt );
 							$qty_id =  'prd-qty-'.$prd['prop']['variation_id'].'-'.$var_txt;
 							$n_readonly = '';
 							if( $args['editableqty'] == 'no' ) {

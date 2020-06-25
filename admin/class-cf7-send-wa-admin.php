@@ -162,6 +162,8 @@ class Cf7_Send_Wa_Admin {
             update_option( 'cf7sendwa_wablas_token', $_POST['wablas_token'] );
             update_option( 'cf7sendwa_wablas_domain', $_POST['wablas_domain'] );
             update_option( 'cf7sendwa_ruangwa_token', $_POST['ruangwa_token'] );
+            
+            do_action( 'cf7sendwa_custom_settings_save' );
         }
         
 	    wp_localize_script( $this->plugin_name, 'cf7sendwa', array(

@@ -234,18 +234,15 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 		// add to cart from quickshop
 		$( 'body' ).on( 'click', '.cf7sendwa-add-to-cart', function(evt){
 			var $this_button = $(this);
-			$this_button.prop('disabled', true);;			
+			$this_button.attr('disabled', true);
 			var quickshop = ko.toJS( vm );	
 			delete quickshop.products;
 			delete quickshop.viewdetail;
 			$( '#cf7sendwa_quickshop_cart' ).val( ko.toJSON(quickshop) );			
 			if( quickshop && quickshop.total > 0 ) {
-				// do add to cart
-				var loader_selector = '.cf7sendwa-quickshop-checkout-container';
-				if( cf7sendwa_qsreview.loader_selector != '' ) {
-					loader_selector = cf7sendwa_qsreview.loader_selector;
-				}
-				$( loader_selector ).loading( { message: 'Processing...' } );
+                var btn_text = $this_button.html();
+                $this_button.attr( 'disabled', true );
+                $this_button.html( btn_text + '&nbsp;<img src="' + cf7sendwa.assets_dir + 'img/ajax-loader.gif">' );
 				$.ajax( {
 					url: cf7sendwa.ajaxurl,
 					type: 'POST',
@@ -257,17 +254,17 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 						'redirect': cf7sendwa_qsreview.redirect
 					},
 					success: function(response){
-						$( loader_selector ).loading('toggle');
 						if( response ) {
-							$( loader_selector ).loading( { message: 'Redirecting...' } );	
 							document.location = response.redirect_url;
+                            $this_button.attr( 'disabled', false );
+                            $this_button.html( btn_text );
 						} else {
-							$this_button.prop('disabled', false);;	
+							$this_button.attr('disabled', false);;	
 						}						
 					}
 				} );
 			} else {
-				$this_button.prop('disabled', false);;
+				$this_button.attr('disabled', false);;
 			}
 		} );
 		

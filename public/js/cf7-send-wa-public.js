@@ -140,18 +140,23 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 			} );
 		} else {
 			$( '.product-cat-container' ).each( function( index, element ){
-				var $el = $( element );	
-				var el_id = $el.attr('id');
-				var cat_slug = el_id.replace( 'cat-', '' );		
-				$('#'+el_id).loading();
-				load_products( el_id, cat_slug, function(el_id, cat_slug, data_count){
-					$( '#'+el_id ).loading( 'stop' );
-					if( data_count < 1 ) {
-						$( '#'+el_id ).remove();
-						$( '#cf7sendwa_woo_cat_filter option[value="'+cat_slug+'"]' ).remove();
-					}	
-					$( '#'+ el_id +'.product-cat-container' ).css( 'min-height', '0px' );
-				} );
+				var delay = Math.floor( Math.random() * 200 ) + ( index * 200 );
+				var ajaxRun = window.setInterval( function(){
+					console.log( 'run ' + index + ' with delay: ' + delay );
+					var $el = $( element );	
+					var el_id = $el.attr('id');
+					var cat_slug = el_id.replace( 'cat-', '' );		
+					$('#'+el_id).loading();
+					load_products( el_id, cat_slug, function(el_id, cat_slug, data_count){
+						$( '#'+el_id ).loading( 'stop' );
+						if( data_count < 1 ) {
+							$( '#'+el_id ).remove();
+							$( '#cf7sendwa_woo_cat_filter option[value="'+cat_slug+'"]' ).remove();
+						}	
+						$( '#'+ el_id +'.product-cat-container' ).css( 'min-height', '0px' );
+					} );
+					clearInterval(ajaxRun);	
+				}, delay );
 			} );
 		}
 		
@@ -518,14 +523,18 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 			} );
 		} else {
 			$( '.product-cat-container' ).each( function( index, element ){
-				var $el = $( element );	
-				var el_id = $el.attr('id');
-				var cat_slug = el_id.replace( 'cat-', '' );		
-				$('#'+el_id).loading();
-				load_products( el_id, cat_slug, function(el_id, cat_slug, data_count){
-					$( '#'+el_id ).loading( 'stop' );
-					$( '#'+ el_id +'.product-cat-container' ).css( 'min-height', '0px' );
-				} );
+				var delay = Math.floor( Math.random() * 200 ) + ( index * 200 );
+				var ajaxRun = window.setInterval( function(){
+					var $el = $( element );	
+					var el_id = $el.attr('id');
+					var cat_slug = el_id.replace( 'cat-', '' );		
+					$('#'+el_id).loading();
+					load_products( el_id, cat_slug, function(el_id, cat_slug, data_count){
+						$( '#'+el_id ).loading( 'stop' );
+						$( '#'+ el_id +'.product-cat-container' ).css( 'min-height', '0px' );
+					} );
+					clearInterval(ajaxRun);	
+				}, delay );
 			} );
 		}
 	}

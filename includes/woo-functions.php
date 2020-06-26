@@ -77,7 +77,7 @@ function cf7sendwa_woo_get_cart_items() {
 	);
 	foreach ( WC()->cart->get_cart() as $key => $item ) {
         $product = new WC_product( $item['product_id'] );
-        $name = $product->get_name();
+        $name = $product->get_name();        
         $item_meta = [];
         if( isset( $item['variation_id'] ) && $item['variation_id'] != '' ) {
             $variation = new WC_Product_Variation( $item['variation_id'] );
@@ -101,16 +101,20 @@ function cf7sendwa_woo_get_cart_items() {
             }
             $name = $variation->get_title();
             $weight = $variation->get_weight();
+            $sku = $variation->get_sku();
             $price = $variation->get_price();
             $price_html = $variation->get_price_html();
             $attributes = $item['variation'];
         } else {
             $weight = $product->get_weight();    
+            $sku = $product->get_sku();
             $price = $product->get_price();
             $price_html = $product->get_price_html();
         }
 		array_push( $return['items'], array(
 			'name' => $name,
+			'sku' => $sku,
+			'weight' => $weight,
 			'price' => $price,
 			'quantity' => $item['quantity'],
 			'variations' => $item_meta			

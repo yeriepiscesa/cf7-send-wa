@@ -1168,16 +1168,26 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 		if( vm ) {
 			_.each( vm.items, function( item, index, list ){
 				if( wa_txt != '' ) {
-					wa_txt += "\n";
+					wa_txt += "\n\n";
 				}
 				var title = item.title;
+				var sku = item.prop.sku; 
 				if( item.subtitle != '' ) {
 					title = item.title + ' - ' + item.subtitle;
 				}
-				wa_txt += title + ' @ ' + item.price_html + 'x' + item.qty + ' => ' + item.subtotal_html;
+				if( sku != undefined && sku != '' ) {
+					wa_txt += 'SKU: '+sku;
+					wa_txt += "\n";
+				}
+				wa_txt += "*"+title+"*" + "\n" + ' @ ' + item.price_html + 'x' + item.qty + ' => ' + item.subtotal_html;
 			} );
+			wa_txt += "\n" + "-----------------------------------------";
 			wa_txt += "\n" + '*TOTAL* ' + vm.price_total;
+			wa_txt += "\n" + "-----------------------------------------";
 		}	
+		if( wa_txt != '' ) {
+			wa_txt = "-----------------------------------------" + "\n" + wa_txt;
+		}
 		return wa_txt;
 	}
 	<?php endif; ?>

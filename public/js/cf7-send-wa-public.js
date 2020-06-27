@@ -142,7 +142,6 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 			$( '.product-cat-container' ).each( function( index, element ){
 				var delay = Math.floor( Math.random() * 200 ) + ( index * 200 );
 				var ajaxRun = window.setInterval( function(){
-					console.log( 'run ' + index + ' with delay: ' + delay );
 					var $el = $( element );	
 					var el_id = $el.attr('id');
 					var cat_slug = el_id.replace( 'cat-', '' );		
@@ -344,6 +343,8 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 				'product_id': $( this ).attr( 'data-product_id' ),
 				'product_type': $( this ).attr( 'data-product_type' ),
 				'variation_id': $( this ).attr( 'data-variation_id' ),
+				'sku': $( this ).attr( 'data-sku' ),
+				'weight': $( this ).attr( 'data-weight' ),
 				'pa': pa_terms
 			};
 			var cart_item = new Woo_QuickShop_Cart_Item( id, product_title, subtitle, qty, price, prop );				

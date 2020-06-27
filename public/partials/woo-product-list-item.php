@@ -38,8 +38,10 @@
 					}						
 					?>
 					<input type="number" name="item_qty" step="1"<?php echo $n_readonly ?> value="0" 
+						data-sku="<?php echo $product['prop']['sku'] ?>" 
 						data-stock="<?php echo $product['prop']['stock_status'] ?>"
 						data-price="<?php echo $product['prop']['price'] ?>" 
+						data-weight="<?php echo $product['prop']['weight'] ?>" 
 						data-product_type="<?php echo $product['prop']['type'] ?>"
 						data-product_id="<?php echo $product['prop']['id'] ?>"
 						data-variation_id="<?php echo $product['prop']['variation_id'] ?>"
@@ -59,7 +61,9 @@
 			<textarea style="display:none;" class="woo-product-prop"><?php echo json_encode($product['prop']); ?></textarea>
 		</div>
 
-		<?php if( $product['prop']['type'] == 'variable' ): ?>
+		<?php if( $product['prop']['type'] == 'variable' ): 
+				$product_weight = $product['prop']['weight'];
+				?>
 			<?php foreach( $product['prop']['variations'] as $prd ): ?>
 				<div class="product-item variations var-<?php echo $product['prop']['id']; ?>">
 					<div class="grid-50 tablet-grid-100 mobile-grid-100 item-block">
@@ -95,10 +99,16 @@
 							if( $args['editableqty'] == 'no' ) {
 								$n_readonly = ' readonly="readonly"';
 							}
+							$_weight = floatval( $prd['prop']['weight'] );
+							if( $_weight <= 0 ) {
+								$_weight = $product_weight;
+							}
 							?>
 							<input type="number" name="item_qty" step="1"<?php echo $n_readonly; ?> value="0" 
 								data-stock="<?php echo $prd['prop']['stock_status'] ?>"
+								data-sku="<?php echo isset($prd['prop']['sku'])?$prd['prop']['sku']:$product['prop']['sku'] ?>" 
 								data-price="<?php echo $prd['prop']['price'] ?>" 
+								data-weight="<?php echo $_weight ?>"  								 
 								data-product_type="<?php echo $prd['prop']['type'] ?>"
 								data-product_id="<?php echo $prd['prop']['id'] ?>"
 								data-variation_id="<?php echo $prd['prop']['variation_id'] ?>"

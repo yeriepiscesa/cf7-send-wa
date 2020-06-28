@@ -823,9 +823,11 @@ class Cf7_Send_Wa_Public {
 				$order_address['postcode'] = $shipping['address_parts']['postcode'];
 			}
 	        
+	        $posted_data = apply_filters( 'cf7sendwa_checkout_cf7_data', $_posted_data );
+	        
 	        if( $woo_quickshop ) {
 		        
-		        unset( $_posted_data['quickshop_cart'] );
+		        unset( $posted_data['quickshop_cart'] );
 		        
 				$obj_order = new WC_Order();
 				$obj_order->set_created_via( 'contact-form-7' );
@@ -853,12 +855,11 @@ class Cf7_Send_Wa_Public {
 					$obj_order->set_customer_note( $woo_order['note'] );
 				}
 
-				if( !is_null( $_posted_data ) && !empty( $_posted_data ) ) {
-					foreach( $_posted_data as $key=>$val ){
+				if( !is_null( $posted_data ) && !empty( $posted_data ) ) {
+					foreach( $posted_data as $key=>$val ){
 						$obj_order->add_meta_data( $key, $val );
 					}
 				}
-				
 				
 			    $order_id = $obj_order->save();
 				
@@ -879,7 +880,7 @@ class Cf7_Send_Wa_Public {
 		        if( isset( $woo_order['note'] ) && $woo_order['note'] != '' ) {
 			    	$__note = $woo_order['note'];
 			    }
-				$obj_order = cf7sendwa_woo_create_order( $order_address, $__note, $_posted_data );
+				$obj_order = cf7sendwa_woo_create_order( $order_address, $__note, $posted_data );
 			}
 			
 			$this->woo_order = true;

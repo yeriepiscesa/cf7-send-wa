@@ -862,7 +862,11 @@ class Cf7_Send_Wa_Public {
 			    }
 				
 	        } else {
-				$obj_order = cf7sendwa_woo_create_order( $order_address, $woo_settings['note'], $_posted_data );
+		        $__note = null;
+		        if( isset( $woo_order['note'] ) && $woo_order['note'] != '' ) {
+			    	$__note = $woo_order['note'];
+			    }
+				$obj_order = cf7sendwa_woo_create_order( $order_address, $__note, $_posted_data );
 			}
 			
 			$this->woo_order = true;

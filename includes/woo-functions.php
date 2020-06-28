@@ -236,8 +236,7 @@ function cf7sendwa_woo_create_order( $customer=null, $note=null, $posted_data=nu
     $order->set_customer_ip_address( WC_Geolocation::get_ip_address() );
     $order->set_customer_user_agent( wc_get_user_agent() );
 	if( !is_null( $note ) && $note != '' ) {
-		$customer_note = $posted_data[ $note ];
-	    $order->set_customer_note( $customer_note );
+	    $order->set_customer_note( $note );
 	}
     
     $order->set_discount_total( WC()->cart->get_discount_total() );

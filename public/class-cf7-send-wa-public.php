@@ -844,10 +844,10 @@ class Cf7_Send_Wa_Public {
 				}	
 				$obj_order->calculate_totals();	
 										
-			    $order_id = $obj_order->get_id();
 				if( isset( $woo_order['note'] ) && $woo_order['note'] != '' ) {
-					$obj_order->add_order_note( $woo_order['note'], 0, true );
+					$obj_order->set_customer_note( $woo_order['note'] );
 				}
+			    $order_id = $obj_order->save();
 				
 				$cust = WC()->customer;
 			    if( $order_id && is_object($cust) && $cust->get_id() ) {
@@ -1153,7 +1153,7 @@ class Cf7_Send_Wa_Public {
 		if( !empty( $this->ids ) && !$this->script_loaded ) : ob_start(); ?>
 <script type="text/javascript">
 var cf7wa_ids = <?php echo json_encode( $this->ids ); ?>; 
-var cf7wa_country = '<?php echo get_option( 'cf7sendwa_country', '62' ); ?>';
+var cf7wa_country = '<?php echo get_option( 'cf7sendwa_country', '62' ) == '' ? get_option( 'cf7sendwa_country' ) : '62'; ?>';
 var cf7wa_numbers = <?php echo json_encode( $this->numbers ); ?>; 
 var cf7wa_bodies = <?php echo json_encode( $this->bodies ) ?>;
 <?php if( $this->provider != '' || $cf7sendwa_is_custom_api ): ?>
@@ -1188,6 +1188,7 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 		if( wa_txt != '' ) {
 			wa_txt = "-----------------------------------------" + "\n" + wa_txt;
 		}
+		wa_txt = Hooks.apply_filters( 'cf7sendwa_checkout_order_item', wa_txt );
 		return wa_txt;
 	}
 	<?php endif; ?>

@@ -229,30 +229,21 @@ function cf7sendwa_woo_create_order( $customer=null, $note=null, $posted_data=nu
 	
     $order_vat_exempt = WC()->cart->get_customer()->get_is_vat_exempt() ? 'yes' : 'no';
     $order->add_meta_data( 'is_vat_exempt', $order_vat_exempt );
+    
     $order->set_currency( get_woocommerce_currency() );
     $order->set_prices_include_tax( 'yes' === get_option( 'woocommerce_prices_include_tax' ) );
+    
     $order->set_customer_ip_address( WC_Geolocation::get_ip_address() );
     $order->set_customer_user_agent( wc_get_user_agent() );
-    $order->set_customer_note( isset( $data['order_comments'] ) ? $data['order_comments'] : '' );
-    $order->set_payment_method( isset( $available_gateways[ $data['payment_method'] ] ) ? $available_gateways[ $data['payment_method'] ] : $data['payment_method'] );
-    $order->set_shipping_total( WC()->cart->get_shipping_total() );
+	if( !is_null( $note ) && $note != '' ) {
+		$customer_note = $posted_data[ $note ];
+	    $order->set_customer_note( $customer_note );
+	}
+    
     $order->set_discount_total( WC()->cart->get_discount_total() );
     $order->set_discount_tax( WC()->cart->get_discount_tax() );
     $order->set_cart_tax( WC()->cart->get_cart_contents_tax() + WC()->cart->get_fee_tax() );
-    $order->set_shipping_tax( WC()->cart->get_shipping_tax() );
-    $order->set_total( WC()->cart->get_total( 'edit' ) );
     
-    $checkout->create_order_line_items( $order, WC()->cart );
-    $checkout->create_order_fee_lines( $order, WC()->cart );
-    $checkout->create_order_tax_lines( $order, WC()->cart );
-    $checkout->create_order_coupon_lines( $order, WC()->cart );	
-	
-	if( !is_null( $posted_data ) && !empty( $posted_data ) ) {
-		foreach( $posted_data as $key=>$val ){
-			$order->add_meta_data( $key, $val );
-		}
-	}
-	
 	/* shipping */    
 	$chosen_shipping_methods = WC()->session->get( 'chosen_shipping_methods' );
 	$shipping_packages = WC()->cart->get_shipping_packages();
@@ -282,11 +273,20 @@ function cf7sendwa_woo_create_order( $customer=null, $note=null, $posted_data=nu
 			}
 		}
 	}
+    
+    $order->set_total( WC()->cart->get_total( 'edit' ) );
+    
+    $checkout->create_order_line_items( $order, WC()->cart );
+    $checkout->create_order_fee_lines( $order, WC()->cart );
+    $checkout->create_order_tax_lines( $order, WC()->cart );
+    $checkout->create_order_coupon_lines( $order, WC()->cart );	
 	
-	if( !is_null( $note ) && $note != '' ) {
-		$order->add_order_note( $note, 1, true );
+	if( !is_null( $posted_data ) && !empty( $posted_data ) ) {
+		foreach( $posted_data as $key=>$val ){
+			$order->add_meta_data( $key, $val );
+		}
 	}
-	
+			
 	$cust = WC()->customer;
     $order_id = $order->save();
     if( $order_id && is_object($cust) && $cust->get_id() ) {

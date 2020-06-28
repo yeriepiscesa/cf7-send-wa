@@ -217,7 +217,6 @@ function cf7sendwa_woo_create_order( $customer=null, $note=null, $posted_data=nu
 	if( is_null( $customer ) ) {
 		return false;
 	}	
-	
 	$checkout = WC_Checkout::instance();
 	$cart_hash = WC()->cart->get_cart_hash();
 	$order = new WC_Order();

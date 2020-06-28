@@ -790,7 +790,10 @@ class Cf7_Send_Wa_Public {
 					unset( $_posted_data[$val] );
 				}
 			}
-			
+			if( isset( $_posted_data['item_qty'] ) ) {
+				unset( $_posted_data['item_qty'] );
+			}
+				
 			$order_address = array(
 	            'first_name' => $woo_order[ 'first_name' ],
 	            'last_name'  => $woo_order[ 'last_name' ],
@@ -822,6 +825,8 @@ class Cf7_Send_Wa_Public {
 	        
 	        if( $woo_quickshop ) {
 		        
+		        unset( $_posted_data['quickshop_cart'] );
+		        
 				$obj_order = new WC_Order();
 				$obj_order->set_created_via( 'contact-form-7' );
 			    $obj_order->set_customer_ip_address( WC_Geolocation::get_ip_address() );
@@ -847,6 +852,14 @@ class Cf7_Send_Wa_Public {
 				if( isset( $woo_order['note'] ) && $woo_order['note'] != '' ) {
 					$obj_order->set_customer_note( $woo_order['note'] );
 				}
+
+				if( !is_null( $_posted_data ) && !empty( $_posted_data ) ) {
+					foreach( $_posted_data as $key=>$val ){
+						$obj_order->add_meta_data( $key, $val );
+					}
+				}
+				
+				
 			    $order_id = $obj_order->save();
 				
 				$cust = WC()->customer;

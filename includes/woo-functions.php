@@ -271,6 +271,8 @@ function cf7sendwa_woo_create_order( $customer=null, $note=null, $posted_data=nu
 			}
 		}
 	}
+	$order->set_shipping_total( WC()->cart->get_shipping_total() );
+	$order->set_shipping_tax( WC()->cart->get_shipping_tax() );
     
     $order->set_total( WC()->cart->get_total( 'edit' ) );
     

@@ -6,6 +6,12 @@ This is a WordPress plugin, require Contact Form 7 plugin to be activated.
 - Download the stable version at https://solusipress.com/download/contact-form-7-send-to-whatsapp/
 - See the demo https://bisnisdemo.solusipress.com/contact-form-7-to-wa-test/
 
+## Release 0.10.5
+- Improve : Add custom hooks
+- Fix order note in woocommerce order
+- Fix additional meta data in woocommerce order
+- Other bugs fixed and code cleanups 
+
 ## Release 0.10.4
 - Improve : Make woo-orderdetail more readable on WhatsApp message
 - Improve : Add sku & weight to Item Cart for further use.

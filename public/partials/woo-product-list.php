@@ -40,7 +40,7 @@
 		}
 	}
 	?>
-	
+	<div id="cf7sendwa-quickshop-unsticky-spot" style="display:none;"></div>
 	<div data-bind="template:{name:'product-detail', data: viewdetail}"></div>
 	<script type="text/html" id="product-detail">
 		<div id="cf7sendwa-product-detail" class="product-item-detail grid-parent modal" style="max-width: 700px; padding:0px;">

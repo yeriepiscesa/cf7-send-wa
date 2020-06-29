@@ -32,7 +32,74 @@ String.prototype.getDecimals || (String.prototype.getDecimals = function() {
  * @version 2.1.2
  */
 ;(function(f){"use strict";"function"===typeof define&&define.amd?define(["jquery"],f):"undefined"!==typeof module&&module.exports?module.exports=f(require("jquery")):f(jQuery)})(function($){"use strict";function n(a){return!a.nodeName||-1!==$.inArray(a.nodeName.toLowerCase(),["iframe","#document","html","body"])}function h(a){return $.isFunction(a)||$.isPlainObject(a)?a:{top:a,left:a}}var p=$.scrollTo=function(a,d,b){return $(window).scrollTo(a,d,b)};p.defaults={axis:"xy",duration:0,limit:!0};$.fn.scrollTo=function(a,d,b){"object"=== typeof d&&(b=d,d=0);"function"===typeof b&&(b={onAfter:b});"max"===a&&(a=9E9);b=$.extend({},p.defaults,b);d=d||b.duration;var u=b.queue&&1<b.axis.length;u&&(d/=2);b.offset=h(b.offset);b.over=h(b.over);return this.each(function(){function k(a){var k=$.extend({},b,{queue:!0,duration:d,complete:a&&function(){a.call(q,e,b)}});r.animate(f,k)}if(null!==a){var l=n(this),q=l?this.contentWindow||window:this,r=$(q),e=a,f={},t;switch(typeof e){case "number":case "string":if(/^([+-]=?)?\d+(\.\d+)?(px|%)?$/.test(e)){e= h(e);break}e=l?$(e):$(e,q);case "object":if(e.length===0)return;if(e.is||e.style)t=(e=$(e)).offset()}var v=$.isFunction(b.offset)&&b.offset(q,e)||b.offset;$.each(b.axis.split(""),function(a,c){var d="x"===c?"Left":"Top",m=d.toLowerCase(),g="scroll"+d,h=r[g](),n=p.max(q,c);t?(f[g]=t[m]+(l?0:h-r.offset()[m]),b.margin&&(f[g]-=parseInt(e.css("margin"+d),10)||0,f[g]-=parseInt(e.css("border"+d+"Width"),10)||0),f[g]+=v[m]||0,b.over[m]&&(f[g]+=e["x"===c?"width":"height"]()*b.over[m])):(d=e[m],f[g]=d.slice&& "%"===d.slice(-1)?parseFloat(d)/100*n:d);b.limit&&/^\d+$/.test(f[g])&&(f[g]=0>=f[g]?0:Math.min(f[g],n));!a&&1<b.axis.length&&(h===f[g]?f={}:u&&(k(b.onAfterFirst),f={}))});k(b.onAfter)}})};p.max=function(a,d){var b="x"===d?"Width":"Height",h="scroll"+b;if(!n(a))return a[h]-$(a)[b.toLowerCase()]();var b="client"+b,k=a.ownerDocument||a.document,l=k.documentElement,k=k.body;return Math.max(l[h],k[h])-Math.min(l[b],k[b])};$.Tween.propHooks.scrollLeft=$.Tween.propHooks.scrollTop={get:function(a){return $(a.elem)[a.prop]()}, set:function(a){var d=this.get(a);if(a.options.interrupt&&a._last&&a._last!==d)return $(a.elem).stop();var b=Math.round(a.now);d!==b&&($(a.elem)[a.prop](b),a._last=this.get(a))}};return p});
-
+/**
+ * @A WordPress-like hook system for JavaScript.
+ * @author Rheinard Korf
+ * @license GPL2 (https://www.gnu.org/licenses/gpl-2.0.html)
+ * @requires underscore.js (http://underscorejs.org/)
+ */
+var Hooks = Hooks || {}; // Extend Hooks if exists or create new Hooks object.
+Hooks.actions = Hooks.actions || {}; // Registered actions
+Hooks.filters = Hooks.filters || {}; // Registered filters
+Hooks.add_action = function( tag, callback, priority ) {
+    if( typeof priority === "undefined" ) {
+        priority = 10;
+    }
+    Hooks.actions[ tag ] = Hooks.actions[ tag ] || [];
+    Hooks.actions[ tag ].push( { priority: priority, callback: callback } );
+}
+Hooks.add_filter = function( tag, callback, priority ) {
+    if( typeof priority === "undefined" ) {
+        priority = 10;
+    }
+    Hooks.filters[ tag ] = Hooks.filters[ tag ] || [];
+    Hooks.filters[ tag ].push( { priority: priority, callback: callback } );
+}
+Hooks.remove_action = function( tag, callback ) {
+    Hooks.actions[ tag ] = Hooks.actions[ tag ] || [];
+    Hooks.actions[ tag ].forEach( function( filter, i ) {
+        if( filter.callback === callback ) {
+            Hooks.actions[ tag ].splice(i, 1);
+        }
+    } );
+}
+Hooks.remove_filter = function( tag, callback ) {
+    Hooks.filters[ tag ] = Hooks.filters[ tag ] || [];
+    Hooks.filters[ tag ].forEach( function( filter, i ) {
+        if( filter.callback === callback ) {
+            Hooks.filters[ tag ].splice(i, 1);
+        }
+    } );
+}
+Hooks.do_action = function( tag, options ) {
+    var actions = [];
+    if( typeof Hooks.actions[ tag ] !== "undefined" && Hooks.actions[ tag ].length > 0 ) {
+        Hooks.actions[ tag ].forEach( function( hook ) {
+            actions[ hook.priority ] = actions[ hook.priority ] || [];
+            actions[ hook.priority ].push( hook.callback );
+        } );
+        actions.forEach( function( hooks ) {
+            hooks.forEach( function( callback ) {
+                callback( options );
+            } );
+        } );
+    }
+}
+Hooks.apply_filters = function( tag, value, options ) {
+    var filters = [];
+    if( typeof Hooks.filters[ tag ] !== "undefined" && Hooks.filters[ tag ].length > 0 ) {
+        Hooks.filters[ tag ].forEach( function( hook ) {
+            filters[ hook.priority ] = filters[ hook.priority ] || [];
+            filters[ hook.priority ].push( hook.callback );
+        } );
+        filters.forEach( function( hooks ) {
+            hooks.forEach( function( callback ) {
+                value = callback( value, options );
+            } );
+        } );
+    }
+    return value;
+}
 /* Main Class */
 function Woo_QuickShop_Cart() {
 	var self = this;
@@ -300,7 +367,7 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 	    }
 	    
     } );
-    
+
     function product_qty_change( evt ) {
 		var qty = parseInt( $(this).val() );
 		if( isNaN(qty) ) {

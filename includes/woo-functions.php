@@ -285,18 +285,20 @@ function cf7sendwa_woo_create_order( $customer=null, $note=null, $posted_data=nu
 		}
 	}
 			
-	$cust = WC()->customer;
+	do_action( 'cf7sendwa_before_woo_order_save', $obj_order, $posted_data );
     $order_id = $order->save();
+	$cust = WC()->customer;
     if( $order_id && is_object($cust) && $cust->get_id() ) {
 		update_post_meta( $order_id, '_customer_user', $cust->get_id() );	    
     }
 
-    $mail_order = new WC_Email_New_Order();
-    $mail_order->trigger( $order_id, $order );
-    if( isset($customer['email']) && is_email( $customer['email'] ) ) {
-	    $mail = new WC_Email_Customer_Invoice();
-	    $mail->trigger( $order_id, $order );
+	if( ! apply_filters( 'cf7sendwa_disable_woocommerce_email', false ) ) {
+	    $mail_order = new WC_Email_New_Order();
+	    $mail_order->trigger( $order_id, $order );
+	    if( isset($customer['email']) && is_email( $customer['email'] ) ) {
+		    $mail = new WC_Email_Customer_Invoice();
+		    $mail->trigger( $order_id, $order );
+	    }
     }
-    
     return $order;
 }

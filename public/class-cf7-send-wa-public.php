@@ -707,7 +707,7 @@ class Cf7_Send_Wa_Public {
 		add_shortcode( 'cf7sendwa_woo_checkout', array( $this, 'cf7sendwa_woo_checkout_render' ) ); // backwards compatibility
 		add_shortcode( 'cf7sendwa-checkout', array( $this, 'cf7sendwa_woo_checkout_render' ) );
 	}	
-	public function cf7sendwa_woo_checkout_render( $atts ) {
+	public function cf7sendwa_woo_checkout_render( $atts, $content='' ) {
 	    $html = '';
         if( is_checkout() && get_option( 'cf7sendwa_woo_checkout', '' ) != '' ) {
 	        ob_start();
@@ -861,19 +861,22 @@ class Cf7_Send_Wa_Public {
 					}
 				}
 				
+				do_action( 'cf7sendwa_before_woo_order_save', $obj_order, $posted_data );
 			    $order_id = $obj_order->save();
 				
 				$cust = WC()->customer;
 			    if( $order_id && is_object($cust) && $cust->get_id() ) {
 					update_post_meta( $order_id, '_customer_user', $cust->get_id() );	    
 			    }
-			    
-			    $mail_order = new WC_Email_New_Order();
-			    $mail_order->trigger( $order_id, $obj_order );
-			    if( isset($order_address['email']) && is_email( $order_address['email'] ) ) {
-				    $mail = new WC_Email_Customer_Invoice();
-				    $mail->trigger( $order_id, $obj_order );
-			    }
+							    
+				if( ! apply_filters( 'cf7sendwa_disable_woocommerce_email', false ) ) {
+				    $mail_order = new WC_Email_New_Order();
+				    $mail_order->trigger( $order_id, $obj_order );
+				    if( isset($order_address['email']) && is_email( $order_address['email'] ) ) {
+					    $mail = new WC_Email_Customer_Invoice();
+					    $mail->trigger( $order_id, $obj_order );
+				    }
+				}
 				
 	        } else {
 		        $__note = null;
@@ -883,8 +886,11 @@ class Cf7_Send_Wa_Public {
 				$obj_order = cf7sendwa_woo_create_order( $order_address, $__note, $posted_data );
 			}
 			
+			
 			$this->woo_order = true;
 			$this->woo_order_id = $obj_order->get_id();
+			
+			do_action( 'cf7sendwa_after_woo_order', $this->woo_order_id, $posted_data );
 			
 			$order_redirect = get_option( 'cf7sendwa_woo_order_redirect', '' );
 			if( $order_redirect == '' || $order_redirect == 'thankyou' ) {

@@ -30,5 +30,10 @@ if( $atts['max-width'] != '' ) {
 				</tbody>
 			</table>
 		</div>
+		<?php 
+		if( $content != '' ) {
+			echo do_shortcode( $content );
+		}
+		?>
 	</div>
 </div>

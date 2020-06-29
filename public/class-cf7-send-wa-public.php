@@ -1034,7 +1034,7 @@ class Cf7_Send_Wa_Public {
 		        $args = $_POST['args'];
 	        }
 	        $products = Cf7_Send_Wa_Products::list_all( $args );
-	        include 'partials/woo-product-list-item.php';
+	        include apply_filters( 'cf7sendwa_product_list_item_template', 'partials/woo-product-list-item.php', $args );
 		}
 		die();
 	}

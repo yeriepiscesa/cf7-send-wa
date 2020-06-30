@@ -711,7 +711,7 @@ class Cf7_Send_Wa_Public {
 	    $html = '';
         if( is_checkout() && get_option( 'cf7sendwa_woo_checkout', '' ) != '' ) {
 	        ob_start();
-	        include 'partials/cf7-send-wa-public-display.php';
+	        include apply_filters( 'cf7sendwa_woo_checkout_template', 'partials/cf7-send-wa-public-display.php' );
 	        $html .= ob_get_contents();
 	        ob_end_clean();
 		} else {
@@ -1241,7 +1241,7 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 			if( $this->quickshop_rendered ) {
 				?>the_text = the_text.replace( '[woo-orderdetail]', quickshop_get_cart_text() ); <?php
 			} else {					
-				include 'partials/woo-order-details.php'; 
+				include apply_filters( 'cf7sendwa_woo_order_details_template', 'partials/woo-order-details.php' ); 
 			}
 			?>
 			var the_phone = cf7wa_numbers[ the_id ];

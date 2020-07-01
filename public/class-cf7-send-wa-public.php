@@ -725,6 +725,7 @@ class Cf7_Send_Wa_Public {
 					'cart_label' => 'Add to Cart', 
 					'sticky' => 'no', // or yes
 					'max-width' => '',
+                    'max-height' => '',
 					'top' => '',
 					'bottom' => '',
 					'redirect' => 'cart',

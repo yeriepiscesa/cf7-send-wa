@@ -5,8 +5,14 @@ if( $atts['max-width'] != '' ) {
 }
 ?>
 <div id="cf7sendwa-checkout"<?php echo $the_style ?>>
+    <?php 
+    $style_height = '';
+    if( isset( $atts['max-height'] ) && $atts['max-height'] != '' ) {
+        $style_height = ' style="max-height: ' . $atts['max-height'] . ';"';
+    }
+    ?>
 	<div class="cf7sendwa-quickshop-checkout-container">
-		<div class="grid-100 parent-grid cf7sendwa-quickshop-checkout">
+		<div class="grid-100 parent-grid cf7sendwa-quickshop-checkout"<?php echo $style_height; ?>>
 			<table width="100%" border="0" class="table-cart" style="overflow-x:auto;">
 				<thead>
 					<tr>

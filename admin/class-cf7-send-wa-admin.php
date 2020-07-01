@@ -307,6 +307,7 @@ class Cf7_Send_Wa_Admin {
 			'active' => false,
 			'recipient' => '',
 			'body' => '',
+			'attachments' => '',
 		) );
 	    include 'partials/cf7-send-wa-form-settings.php';
     }

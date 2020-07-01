@@ -39,6 +39,17 @@
 							data-config-field="<?php echo sprintf( '%s.body', esc_attr( $args['name'] ) ); ?>"><?php echo esc_textarea( $whatsapp['body'] ); ?></textarea>
 					</td>
 				</tr>
+				<tr>
+					<th scope="row">
+						<label for="<?php echo $id; ?>-attachments"><?php echo esc_html( __( 'File attachments', 'cf7sendwa' ) ); ?></label>
+					</th>
+					<td>
+						<textarea id="<?php echo $id; ?>-attachments" 
+							name="<?php echo $id; ?>[attachments]" 
+							cols="100" rows="4" class="large-text code" 
+							data-config-field="<?php echo sprintf( '%s.attachments', esc_attr( $args['name'] ) ); ?>"><?php echo esc_textarea( $whatsapp['attachments'] ); ?></textarea>
+					</td>
+				</tr>
 			</tbody>
 		</table>
 	</fieldset>

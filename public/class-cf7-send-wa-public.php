@@ -595,17 +595,17 @@ class Cf7_Send_Wa_Public {
 			$uploaded_files = $submission->uploaded_files();
 		}
 		$template = $contact_form->prop('whatsapp');
-		if( isset( $template['body'] ) && trim( $template['body'] ) == '' ) {
+		if( isset( $template['attachments'] ) && trim( $template['attachments'] ) == '' ) {
 			$template = $contact_form->prop('mail');		
 		}
-		if( isset( $template['body'] ) ) {
+		if( isset( $template['attachments'] ) ) {
 			foreach ( (array) $uploaded_files as $name => $path ) {
-				if ( false !== strpos( $template['body'], "[${name}]" )
+				if ( false !== strpos( $template['attachments'], "[${name}]" )
 				and ! empty( $path ) ) {
 					$attachments[] = $path;
 				}
 			}
-			foreach ( explode( "\n", $template['body'] ) as $line ) {
+			foreach ( explode( "\n", $template['attachments'] ) as $line ) {
 				$line = trim( $line );
 				if ( '[' == substr( $line, 0, 1 ) ) {
 					continue;

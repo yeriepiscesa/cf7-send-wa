@@ -1330,7 +1330,7 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
             <?php endif; ?>
             
 		}
-		if( $( '#cf7sendwa_quickshop_cart' ) && $( '#cf7sendwa_quickshop_cart' ).val() != '' ) {
+		if( $( '#cf7sendwa_quickshop_cart' ).length && $( '#cf7sendwa_quickshop_cart' ).val() != '' ) {
 			var vm = Woo_QuickShop_Cart.getVM();
 			vm.items.removeAll();
 			$( '.item-subtotal' ).each( function(index){

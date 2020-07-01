@@ -122,36 +122,57 @@ class Cf7_Send_Wa_Admin {
         if( isset( $_POST ) && !empty( $_POST ) ) {
             $settings_saved = true;
             update_option( 'cf7sendwa_number', $_POST['whatsapp_number'] );
-            $disable_mail = $_POST['disable_send_mail'];
-            if( $disable_mail != '1' ) $disable_mail = '0';
+            $disable_mail = '0';
+            if( isset( $_POST['disable_send_mail'] ) ) {
+	        	$disable_mail = $_POST['disable_send_mail'];    
+				if( $disable_mail != '1' ) $disable_mail = '0';
+            }
             update_option( 'cf7sendwa_disablemail', $disable_mail );
 			update_option( 'cf7sendwa_country', $_POST['default_country'] );	
             
             update_option( 'cf7sendwa_woo_checkout', $_POST['woo_checkout'] );
             update_option( 'cf7sendwa_woo_order_redirect', $_POST['woo_order_redirect'] );
 
-            $full_cart = $_POST['full_cart'];
-            if( $full_cart != '1' ) $full_cart = '0';
+            $full_cart = '0'; 
+            if( isset( $_POST['full_cart'] ) ) {
+	            $full_cart = $_POST['full_cart'];
+				if( $full_cart != '1' ) $full_cart = '0';
+            }
             update_option( 'cf7sendwa_fullcart', $full_cart );
-
-            $require_shipping = $_POST['require_shipping'];
-            if( $require_shipping != '1' ) $require_shipping = '0';
+			
+            $require_shipping = '0';
+            if( isset( $_POST['require_shipping'] ) ) {
+	        	$require_shipping = $_POST['require_shipping'];    
+				if( $require_shipping != '1' ) $require_shipping = '0';
+            }
             update_option( 'cf7sendwa_requireshipping', $require_shipping );
 
-            $quickshop_excerpt = $_POST['quickshop_excerpt'];
-            if( $quickshop_excerpt != '1' ) $quickshop_excerpt = '0';
+            $quickshop_excerpt = '0';
+            if( isset( $_POST['quickshop_excerpt'] ) ) {
+	        	$quickshop_excerpt = $_POST['quickshop_excerpt'];    
+				if( $quickshop_excerpt != '1' ) $quickshop_excerpt = '0';
+            }
             update_option( 'quickshop_excerpt', $quickshop_excerpt );
 
-            $quickshop_sku = $_POST['quickshop_sku'];
-            if( $quickshop_sku != '1' ) $quickshop_sku = '0';
+            $quickshop_sku = '0';
+            if( isset( $_POST['quickshop_sku'] ) ) {
+	        	$quickshop_sku = $_POST['quickshop_sku'];    
+				if( $quickshop_sku != '1' ) $quickshop_sku = '0';
+            }
             update_option( 'quickshop_sku', $quickshop_sku );
 
-            $quickshop_outofstock = $_POST['quickshop_outofstock'];
-            if( $quickshop_outofstock != '1' ) $quickshop_outofstock = '0';
+            $quickshop_outofstock = '0';
+            if( isset( $_POST['quickshop_outofstock'] ) ) {
+	        	$quickshop_outofstock = $_POST['quickshop_outofstock'];    
+				if( $quickshop_outofstock != '1' ) $quickshop_outofstock = '0';
+            }
             update_option( 'quickshop_outofstock', $quickshop_outofstock );
 
-            $quickshop_unsemantic = $_POST['quickshop_unsemantic'];
-            if( $quickshop_unsemantic != '1' ) $quickshop_unsemantic = '0';
+            $quickshop_unsemantic = '0';
+            if( isset( $_POST['quickshop_unsemantic'] ) ) {
+	        	$quickshop_unsemantic = $_POST['quickshop_unsemantic'];    
+				if( $quickshop_unsemantic != '1' ) $quickshop_unsemantic = '0';
+            }
             update_option( 'quickshop_unsemantic', $quickshop_unsemantic );
 
             update_option( 'cf7sendwa_provider', $_POST['provider'] );

@@ -206,7 +206,7 @@ class Cf7_Send_Wa_Public {
         $shortcode .= ']';
         
         $html = '';
-		$selector = '#cf7sendwa-frm'.$atts['id'].'_'.$this->incstance_count;
+		$selector = '#cf7sendwa-frm'.$atts['id'].'_'.$this->instance_count;
         if( $is_popup ) {
 	        $_style = ''; $_class = '';
 	        if( trim( $atts['style'] ) != '' ) {
@@ -255,7 +255,7 @@ class Cf7_Send_Wa_Public {
 	        }        
         }
         
-        $this->incstance_count++;
+        $this->instance_count++;
         
 		return $html;
 	}
@@ -1010,7 +1010,9 @@ class Cf7_Send_Wa_Public {
 					if( $field == 'address' ) {
 						$field = 'address_1';
 					}
-					$the_value = $cust_billing[ $field ];
+					if( isset( $cust_billing[ $field ] ) ) {
+						$the_value = $cust_billing[ $field ];
+					}
 				}	
 			}
 			if( $scanned_tag['basetype'] != 'textarea') {

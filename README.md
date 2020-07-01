@@ -6,6 +6,10 @@ This is a WordPress plugin, require Contact Form 7 plugin to be activated.
 - Download the stable version at https://solusipress.com/download/contact-form-7-send-to-whatsapp/
 - See the demo https://bisnisdemo.solusipress.com/contact-form-7-to-wa-test/
 
+## Release 0.10.7
+- Add attachments field in contact form's WhatsApp tab
+- Bugs Fixed and code cleanups
+
 ## Release 0.10.6
 - Bugs fixed for shipping total.
 - Add custom filter for replacable template.

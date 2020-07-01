@@ -29,6 +29,8 @@
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
+		error_reporting( E_ALL );
+		@ini_set( 'display_errors','On' );
 
 /**
  * Currently plugin version.

@@ -89,7 +89,7 @@ class Cf7_Send_Wa_Products {
         $defaults['order'] = 'ASC';            
 
 		$args = array_merge( $defaults, $args );
-
+		
         if( isset( $args['category'] ) && $args['category'] != '' ) {
             $_category = explode( ',', $args['category'] );
             $args['category'] = $_category;
@@ -180,19 +180,10 @@ class Cf7_Send_Wa_Products {
 
         }
         
-        $cat_id = '';
-        if( !is_null( $category ) ) {
-            $cat = get_term_by( 'slug', $category, 'product_cat' );
-            if ( $cat instanceof WP_Term ) {
-                $cat_id = $cat->term_id;
-            }            
-        }
-        
         return [
             'total' => $wc_products->total,
             'page' => $args['page'],
             'pages' => $wc_products->max_num_pages,
-            'category' => $cat_id,
             'results' => $data
         ];
     }

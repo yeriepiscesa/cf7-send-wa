@@ -594,25 +594,30 @@ class Cf7_Send_Wa_Public {
 		if ( $submission = WPCF7_Submission::get_instance() ) {
 			$uploaded_files = $submission->uploaded_files();
 		}
-		$template = $contact_form->prop('mail');
-		foreach ( (array) $uploaded_files as $name => $path ) {
-			if ( false !== strpos( $template, "[${name}]" )
-			and ! empty( $path ) ) {
-				$attachments[] = $path;
-			}
+		$template = $contact_form->prop('whatsapp');
+		if( isset( $template['body'] ) && trim( $template['body'] ) == '' ) {
+			$template = $contact_form->prop('mail');		
 		}
-		foreach ( explode( "\n", $template ) as $line ) {
-			$line = trim( $line );
-			if ( '[' == substr( $line, 0, 1 ) ) {
-				continue;
+		if( isset( $template['body'] ) ) {
+			foreach ( (array) $uploaded_files as $name => $path ) {
+				if ( false !== strpos( $template['body'], "[${name}]" )
+				and ! empty( $path ) ) {
+					$attachments[] = $path;
+				}
 			}
-			$path = path_join( WP_CONTENT_DIR, $line );
-			if ( ! wpcf7_is_file_path_in_content_dir( $path ) ) {
-				continue;
-			}
-			if ( is_readable( $path )
-			and is_file( $path ) ) {
-				$attachments[] = $path;
+			foreach ( explode( "\n", $template['body'] ) as $line ) {
+				$line = trim( $line );
+				if ( '[' == substr( $line, 0, 1 ) ) {
+					continue;
+				}
+				$path = path_join( WP_CONTENT_DIR, $line );
+				if ( ! wpcf7_is_file_path_in_content_dir( $path ) ) {
+					continue;
+				}
+				if ( is_readable( $path )
+				and is_file( $path ) ) {
+					$attachments[] = $path;
+				}
 			}
 		}
 		return $attachments;

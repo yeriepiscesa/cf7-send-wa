@@ -722,6 +722,7 @@ class Cf7_Send_Wa_Public {
 		} else {
 			if( $this->quickshop_rendered ) {
 				$atts = shortcode_atts( array(
+					'id' => '',
 					'cart_label' => 'Add to Cart', 
 					'sticky' => 'no', // or yes
 					'max-width' => '',

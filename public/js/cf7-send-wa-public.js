@@ -345,10 +345,10 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 			    getWidthFrom:'#cf7sendwa-checkout'
 		    };
 		    if( cf7sendwa_qsreview.top != '' ) {
-			    prop.topSpacing = parseInt(cf7sendwa_qsreview.top);
+			    prop.topSpacing = Hooks.apply_filters( 'cf7sendwa_checkout_sticky_top', parseInt(cf7sendwa_qsreview.top), { atts: cf7sendwa_qsreview } );
 		    }
 		    if( cf7sendwa_qsreview.bottom != '' ) {
-			    prop.bottomSpacing = parseInt(cf7sendwa_qsreview.bottom);
+			    prop.bottomSpacing = Hooks.apply_filters( 'cf7sendwa_checkout_sticky_bottom', parseInt(cf7sendwa_qsreview.bottom), { atts: cf7sendwa_qsreview } );
 		    }
 		    $( '.cf7sendwa-quickshop-checkout-container' ).sticky(prop);
 	    }

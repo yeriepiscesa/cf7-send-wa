@@ -1267,8 +1267,8 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
             <?php if( $this->provider != '' || $cf7sendwa_is_custom_api ): ?>  
             	$( '.wpcf7-response-output' ).wrap( '<div id="cf7sendwa_element_'+the_id+'" style="display:none;"></div>' );              
                 var cf7sendwa_send_data = { 
-	                'to_number': the_phone, 
-	                'message': the_text, 
+	                'to_number': Hooks.apply_filters( 'cf7sendwa_to_number', the_phone ), 
+	                'message': Hooks.apply_filters( 'cf7sendwa_text_message', the_text ), 
 	                'security': cf7wa_security,
 	                'cf7_id': the_id,
 	                'cf7_inputs': inputs,
@@ -1319,8 +1319,8 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 		            } );
 	            }
             }
-            the_text = window.encodeURIComponent( the_text );
-			var url = 'https://api.whatsapp.com/send?phone=' + the_phone + '&text=' + the_text;
+            the_text = window.encodeURIComponent( Hooks.apply_filters( 'cf7sendwa_text_message', the_text ) );
+			var url = 'https://api.whatsapp.com/send?phone=' + Hooks.apply_filters( 'cf7sendwa_to_number', the_phone ) + '&text=' + the_text;
 			var isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
 			var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;			
 			if( isSafari && iOS ) {

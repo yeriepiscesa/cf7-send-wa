@@ -708,7 +708,6 @@ class Cf7_Send_Wa_Public {
 	 * @access public
 	 */
 	public function woo_checkout_cart_tag() {
-		//wpcf7_add_form_tag( 'cf7sendwa_woo_checkout', array( $this, 'cf7sendwa_woo_checkout_render' ), array( 'name-attr' => true ) );		
 		add_shortcode( 'cf7sendwa_woo_checkout', array( $this, 'cf7sendwa_woo_checkout_render' ) ); // backwards compatibility
 		add_shortcode( 'cf7sendwa-checkout', array( $this, 'cf7sendwa_woo_checkout_render' ) );
 	}	

@@ -612,10 +612,10 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 		}
 	}
 	// select2
-	$( '.cf7sendwa-woo-categories' ).select2( {
-		placeholder: "Select Category", 
-		allowClear: true
-	} );
-	
-    	
+	if( $( '.cf7sendwa-woo-categories' ).length ) {
+		$( '.cf7sendwa-woo-categories' ).select2( {
+			placeholder: "Select Category", 
+			allowClear: true
+		} );
+	}
 })( jQuery );

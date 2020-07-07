@@ -236,7 +236,7 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 			if( cf7sendwa_qsreview.button_append_to != '' ) {
 				button_container_selector = cf7sendwa_qsreview.button_append_to;
 			}
-			$( button_container_selector ).parent().append( html_hidden ).append( button_html );
+			$( button_container_selector ).append( html_hidden ).append( button_html );
 		}
 		$( 'body' ).on( 'change', '.product-item .qty', product_qty_change );
 		$( 'body' ).on( 'keyup', '.product-item .qty', product_qty_change );

@@ -178,7 +178,6 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
     function wrap_spinner( id ) {
         $( '#'+id ).css( 'display','inline-block' )
                    .css( 'margin-top', '0px' )
-                   .css( 'width', '40%' )
                    .css( 'border', '0px' );
         $( '#'+id ).attr( 'step', '1' )
         $( '#'+id ).addClass( 'input-text qty text' );
@@ -247,16 +246,20 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 		$( 'body' ).on( 'click', '.variant-option-button', function(evt){
 			evt.preventDefault();
 			var var_id = $(this).attr('data-var-id');
-			var $tgglEl = $( '.variations.var-'+var_id );
-			$(this).toggleClass( 'active' );
-			$tgglEl.slideToggle();			
-			if( $(this).hasClass('active') ) {
-				$(this).find( '.angle-down' ).hide();	
-				$(this).find( '.angle-up' ).show();	
+			if( cf7sendwa.quickshop_atts.render == 'grid' ) {
+				$( '.product-item-variations-var-'+var_id ).modal();
 			} else {
-				$(this).find( '.angle-down' ).show();	
-				$(this).find( '.angle-up' ).hide();	
-			}
+				var $tgglEl = $( '.variations.var-'+var_id );
+				$(this).toggleClass( 'active' );
+				$tgglEl.slideToggle();			
+				if( $(this).hasClass('active') ) {
+					$(this).find( '.angle-down' ).hide();	
+					$(this).find( '.angle-up' ).show();	
+				} else {
+					$(this).find( '.angle-down' ).show();	
+					$(this).find( '.angle-up' ).hide();	
+				}
+			}	
 		} );
 		$( 'body' ).on( 'click', '.wpcf7-form-control.wpcf7-submit', function(evt){
 			var quickshop = ko.toJS( vm );
@@ -513,9 +516,10 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 						$prd_item.remove();
 					}
 				} );		
-				$( '#'+el_id+' .variations' ).hide();
-				$( '#'+el_id+' .variant-option-button .angle-up' ).hide();
-				
+                if( cf7sendwa.quickshop_atts.render == 'list' ) {
+					$( '#'+el_id+' .variations' ).hide();
+					$( '#'+el_id+' .variant-option-button .angle-up' ).hide();
+				}
 				if( typeof callback == 'function' ) {
 					callback( el_id, cat_slug, data_count );
 				}

@@ -1109,6 +1109,9 @@ class Cf7_Send_Wa_Public {
 		if( !is_checkout() && !$this->quickshop_rendered ) {
 			
 		    $atts = shortcode_atts( array(
+                'render' => 'list',
+                'columns' => '2',
+                'mobile-columns' => '2',
 				'category' => '',
 		        'filter' => 'no',
 		        'products' => '',

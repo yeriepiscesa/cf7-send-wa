@@ -55,7 +55,7 @@
 		            <div data-bind="html: attributes"></div>
 		            <span data-bind="text: stock" class="stock-status"></span>
 		        </div>
-				<div class="grid-100 product-item-detail-description" data-bind="html: description">
+				<div class="grid-100" data-bind="html: description">
 				</div>	     
 		    </div>    
 		</div>

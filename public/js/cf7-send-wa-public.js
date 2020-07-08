@@ -445,7 +445,12 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 				obj.sku = __sku;
 				obj.price = detail.prop.price_html;
 				obj.excerpt = detail.prop.short_description;
-				obj.description = detail.prop.full_description;
+				if( detail.prop.full_description.trim() == '' ) {
+					obj.description = '';
+				} else {
+					obj.description = '<div class="product-item-detail-description">' + detail.prop.full_description.replace( /\n/g,"<br>" ) + '</div>';
+				}
+				
 				
 				var img = '';
 				if( detail.prop.images.length ) {

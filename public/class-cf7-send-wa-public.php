@@ -181,6 +181,7 @@ class Cf7_Send_Wa_Public {
 		), $atts );
 		$atts = array_merge( $atts, $_atts );
 		
+		wp_enqueue_script( 'cf7sendwa-commonlib' );
         wp_enqueue_script( 'underscore' );
         
         $is_popup = false;

@@ -146,6 +146,7 @@ class Cf7_Send_Wa_Public {
 	 * @since    0.3.0
 	 */
 	public function enqueue_scripts() {
+		wp_register_script( 'cf7sendwa-commonlib', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/commonlib.js' );
 		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cf7-send-wa-public.js', array( 'jquery' ), $this->version, true );
 		wp_register_script( 'jquery-modal', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/jquery.modal.min.js', array( 'jquery' ), '0.9.1', false );
 		wp_register_script( 'knockout', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/knockout.js' );
@@ -714,6 +715,7 @@ class Cf7_Send_Wa_Public {
 	public function cf7sendwa_woo_checkout_render( $atts, $content='' ) {
 	    $html = '';
         if( is_checkout() && get_option( 'cf7sendwa_woo_checkout', '' ) != '' ) {
+	        wp_enqueue_script( 'cf7sendwa-commonlib' );
 	        ob_start();
 	        include apply_filters( 'cf7sendwa_woo_checkout_template', 'partials/cf7-send-wa-public-display.php' );
 	        $html .= ob_get_contents();
@@ -1166,6 +1168,7 @@ class Cf7_Send_Wa_Public {
                 'assets_dir'         => plugin_dir_url( dirname(__FILE__) ) .'includes/assets/'
 			);
 			wp_localize_script( $this->plugin_name, 'cf7sendwa', $_arr );
+			wp_enqueue_script( 'cf7sendwa-commonlib' );
 			wp_enqueue_script( $this->plugin_name );
 			
 		    do_action( 'cf7sendwa_before_product_list', $_arr );

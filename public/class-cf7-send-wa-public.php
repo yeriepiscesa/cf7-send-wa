@@ -699,6 +699,11 @@ class Cf7_Send_Wa_Public {
 	    return $template;
     }
     
+    public function do_shortcode_inside_form( $form ){
+	    $form = do_shortcode( $form );
+	    return $form;
+    }
+    
     public function custom_cf7_tags() {
 	    $this->woo_checkout_cart_tag();
 	    $this->woo_quickshop_tag();

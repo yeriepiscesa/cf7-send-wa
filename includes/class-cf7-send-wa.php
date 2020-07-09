@@ -206,6 +206,7 @@ class Cf7_Send_Wa {
         $this->loader->add_action( 'wpcf7_before_send_mail', $plugin_public, 'prepare_attachments', 15, 1 );
 		$this->loader->add_action( 'wp_footer', $plugin_public, 'render_script_footer', 99 );
 		$this->loader->add_filter( 'wpcf7_ajax_json_echo', $plugin_public, 'feedback_ajax_json_echo', 10, 2 );
+        $this->loader->add_filter( 'wpcf7_form_elements', $plugin_public, 'do_shortcode_inside_form' );
         
         $providers = [ 'twilio', 'fonnte', 'wablas', 'ruangwa' ];
         foreach( $providers as $provider ) {

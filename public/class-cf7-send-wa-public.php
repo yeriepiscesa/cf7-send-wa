@@ -821,7 +821,10 @@ class Cf7_Send_Wa_Public {
 	        );
 	        
 	        if( $woo_quickshop ) {
-				$customer = WC()->session->get( 'customer' );
+	            $customer = null;
+	            if( isset( WC()->session ) ) {
+    				$customer = WC()->session->get( 'customer' );
+	            }
 				if( is_array( $customer ) && !empty( $customer ) ) {
 					if( trim($order_address['address_1']) == '' ) {
 						if( $customer['shipping_address_1'] == '' ) {

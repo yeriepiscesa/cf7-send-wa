@@ -758,6 +758,10 @@ class Cf7_Send_Wa_Public {
 	 */
     public function create_woo_order( $contact_form ) {
 	    
+	    if( isset( $_POST['_cf7sendwa_basic_form'] ) ) {
+		    return true;
+		}
+		
 		$woo_checkout_form = get_option( 'cf7sendwa_woo_checkout', '' );	    
 		// instant checkout from quickshop
 		$woo_quickshop = false;

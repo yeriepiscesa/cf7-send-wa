@@ -183,12 +183,18 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 			}	
 		} );
 		$( 'body' ).on( 'click', '.wpcf7-form-control.wpcf7-submit', function(evt){
-			var quickshop = ko.toJS( vm );
-			delete quickshop.products;
-			delete quickshop.viewdetail;
-			$( '#cf7sendwa_quickshop_cart' ).val( ko.toJSON(quickshop) );
-			if( quickshop && quickshop.total <= 0 ) {
-				evt.preventDefault();
+			var $form = $(this).closest( 'form' );
+			var $base = $form.find( '.cf7-basic-submit' );
+			if( $base.length ) {
+			   Hooks.do_action( 'cf7sendwa_before_basic_form_submit' );
+			} else {
+				var quickshop = ko.toJS( vm );
+				delete quickshop.products;
+				delete quickshop.viewdetail;
+				$( '#cf7sendwa_quickshop_cart' ).val( ko.toJSON(quickshop) );
+				if( quickshop && quickshop.total <= 0 ) {
+					evt.preventDefault();
+				}
 			}
 		} );
 		

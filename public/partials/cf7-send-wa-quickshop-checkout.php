@@ -11,15 +11,19 @@ if( $atts['max-width'] != '' ) {
         $style_height = ' style="max-height: ' . $atts['max-height'] . ';"';
     }
     ?>
-	<div class="cf7sendwa-quickshop-checkout-container">
-		<div class="grid-100 parent-grid cf7sendwa-quickshop-checkout"<?php echo $style_height; ?>>
-			<table width="100%" border="0" class="table-cart" style="overflow-x:auto;">
+	<div class="grid-100 parent-grid cf7sendwa-quickshop-checkout-container"<?php echo $style_height; ?>>
+		<div class="cf7sendwa-quickshop-checkout-header">
+			<table width="100%" border="0" class="table-cart">
 				<thead>
 					<tr>
-						<td class="cart-item">Total</td>
-						<td class="cart-nominal" data-bind="html:price_total">Rp. 0</td>
+						<td width="60%">Total</td>
+						<td width="40%" class="cart-nominal" data-bind="html:price_total">Rp. 0</td>
 					</tr>
 				</thead>
+			</table>
+		</div>
+		<div class="wrap cf7sendwa-quickshop-checkout">
+			<table width="100%" border="0" class="table-cart" style="overflow-x:auto;">
 				<tbody data-bind="foreach:items">
 					<tr>
 						<td width="60%" class="cart-item">

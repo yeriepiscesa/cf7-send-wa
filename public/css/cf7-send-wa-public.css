@@ -135,26 +135,28 @@ input[type=button].sp-woopos-minus {
 	margin-left: 10px;
 	margin-bottom: 0px;
 }
-
 .cf7sendwa-quickshop-checkout {
-	padding:20px 15px;
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 	font-size: 0.975em;
-	border-top:1px solid #eee;
-	border-bottom:1px solid #eee;
 	background: #fff;
 	max-height: 70vh;
 	overflow: scroll;
 }
 button.cf7sendwa-add-to-cart { width: 100%; font-size: 0.975em; }
-.cf7sendwa-quickshop-checkout .table-cart { margin-bottom: 0px; }
-.cf7sendwa-quickshop-checkout .table-cart,
+
+.cf7sendwa-quickshop-checkout .table-cart, 
+.cf7sendwa-quickshop-checkout-header .table-cart { border:0px; vertical-align:top; margin-bottom: 0px; }
+
+.cf7sendwa-quickshop-checkout-header .table-cart tr td,
 .cf7sendwa-quickshop-checkout .table-cart tr td { border:0px; vertical-align: top; }
-.cf7sendwa-quickshop-checkout .table-cart thead tr td { font-weight: 600; padding-bottom: 5px; }
+
+.cf7sendwa-quickshop-checkout-header .table-cart thead tr td { font-weight: 600; padding-bottom: 5px; }
 .cf7sendwa-quickshop-checkout .table-cart tbody tr td {
 	border-top: 1px dotted #ccc;
 	padding-top: 10px;
 }
+
+.cf7sendwa-quickshop-checkout-header .table-cart .cart-nominal,
 .cf7sendwa-quickshop-checkout .table-cart .cart-nominal {
 	text-align: right;
 }

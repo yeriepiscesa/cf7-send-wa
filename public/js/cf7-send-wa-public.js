@@ -156,7 +156,8 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 			if( cf7sendwa_qsreview.button_append_to != '' ) {
 				button_container_selector = cf7sendwa_qsreview.button_append_to;
 			}
-			$( button_container_selector ).append( html_hidden ).append( button_html );
+			$( button_container_selector ).append( html_hidden );
+			$( button_container_selector ).parent().append( button_html );
 		}
 		$( 'body' ).on( 'change', '.product-item .qty', product_qty_change );
 		$( 'body' ).on( 'keyup', '.product-item .qty', product_qty_change );
@@ -271,9 +272,7 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 		} );
 		
 	    if( cf7sendwa_qsreview.sticky == 'yes' ) { // sticky checkout
-		    var prop = {
-			    getWidthFrom:'#cf7sendwa-checkout'
-		    };
+		    var prop = {};
 		    if( cf7sendwa_qsreview.top != '' ) {
 			    prop.topSpacing = Hooks.apply_filters( 'cf7sendwa_checkout_sticky_top', parseInt(cf7sendwa_qsreview.top), { atts: cf7sendwa_qsreview } );
 		    }

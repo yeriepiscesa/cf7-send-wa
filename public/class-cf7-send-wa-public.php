@@ -767,11 +767,6 @@ class Cf7_Send_Wa_Public {
 		    return true;
 		}
 		
-        WC()->session = new WC_Session_Handler();
-        WC()->session->init();
-        WC()->cart = new WC_Cart();
-        WC()->cart->set_cart_contents( WC()->session->get('cart') );
-        
 		$woo_checkout_form = get_option( 'cf7sendwa_woo_checkout', '' );	    
 		// instant checkout from quickshop
 		$woo_quickshop = false;
@@ -825,6 +820,8 @@ class Cf7_Send_Wa_Public {
 	            'address_1'  => $woo_order[ 'address' ],
 	        );
 	        
+            WC()->session = new WC_Session_Handler();
+            WC()->session->init();
     		$customer = WC()->session->get( 'customer' );
 	        if( $woo_quickshop ) {
 				if( is_array( $customer ) && !empty( $customer ) ) {
@@ -840,6 +837,8 @@ class Cf7_Send_Wa_Public {
 					}			
 				}
 			} else {
+                WC()->cart = new WC_Cart();
+                WC()->cart->set_cart_contents( WC()->session->get('cart') );
 				$shipping = cf7sendwa_woo_get_shippings();
 				$order_address['address_2'] = $shipping['address_parts']['address_2'];
 				$order_address['city'] = $shipping['address_parts']['city'];

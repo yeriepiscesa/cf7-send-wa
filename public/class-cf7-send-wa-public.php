@@ -767,6 +767,11 @@ class Cf7_Send_Wa_Public {
 		    return true;
 		}
 		
+        WC()->session = new WC_Session_Handler();
+        WC()->session->init();
+        WC()->cart = new WC_Cart();
+        WC()->cart->set_cart_contents( WC()->session->get('cart') );
+        
 		$woo_checkout_form = get_option( 'cf7sendwa_woo_checkout', '' );	    
 		// instant checkout from quickshop
 		$woo_quickshop = false;
@@ -820,11 +825,8 @@ class Cf7_Send_Wa_Public {
 	            'address_1'  => $woo_order[ 'address' ],
 	        );
 	        
+    		$customer = WC()->session->get( 'customer' );
 	        if( $woo_quickshop ) {
-	            $customer = null;
-	            if( isset( WC()->session ) ) {
-    				$customer = WC()->session->get( 'customer' );
-	            }
 				if( is_array( $customer ) && !empty( $customer ) ) {
 					if( trim($order_address['address_1']) == '' ) {
 						if( $customer['shipping_address_1'] == '' ) {
@@ -885,9 +887,8 @@ class Cf7_Send_Wa_Public {
 				do_action( 'cf7sendwa_before_woo_order_save', $obj_order, $posted_data );
 			    $order_id = $obj_order->save();
 				
-				$cust = WC()->customer;
-			    if( $order_id && is_object($cust) && $cust->get_id() ) {
-					update_post_meta( $order_id, '_customer_user', $cust->get_id() );	    
+			    if( $order_id && is_array( $customer ) && isset( $customer['id'] ) ) {
+					update_post_meta( $order_id, '_customer_user', $customer['id'] );	    
 			    }
 							    
 				if( ! apply_filters( 'cf7sendwa_disable_woocommerce_email', false ) ) {

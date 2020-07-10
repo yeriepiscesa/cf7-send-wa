@@ -144,9 +144,9 @@ function cf7sendwa_woo_get_cart_items() {
 function cf7sendwa_woo_get_shippings(){
 
 	$customer = WC()->session->get( 'customer' );	
-	$shipping_total = WC()->cart->shipping_total;	
+	$cart_totals = WC()->session->get( 'cart_totals' );
+	$shipping_total = $cart_totals['shipping_total'];		
 	$chosen_shipping_methods = WC()->session->get( 'chosen_shipping_methods' );
-	$shipping_packages = WC()->cart->get_shipping_packages();
 
 	$return = array(
 		'lines' => array(),
@@ -155,21 +155,20 @@ function cf7sendwa_woo_get_shippings(){
 	);
 	
 	$shipping_dest = null;
-	foreach( $shipping_packages as $package_id => $package ) {
-		if ( WC()->session->__isset( 'shipping_for_package_'.$package_id ) ) {
-			$pckg = WC()->session->get( 'shipping_for_package_'.$package_id );
-			foreach( $pckg['rates'] as $shipping_rate_id => $shipping_rate ){
-				if( in_array( $shipping_rate_id, $chosen_shipping_methods ) ) {
-		            $label_name  = $shipping_rate->get_label();
-		            $cost = $shipping_rate->get_cost();
-		            $tax_cost    = $shipping_rate->get_shipping_tax();
-		            array_push( $return['lines'], array(
-			            'label' => $label_name,
-			            'cost' => $cost,
-			            'tax_cost' => $tax_cost
-		            ) );
-		            $shipping_dest = $package['destination'];
-				}
+	$package_id = '0';
+	if ( WC()->session->__isset( 'shipping_for_package_'.$package_id ) ) {
+		$pckg = WC()->session->get( 'shipping_for_package_'.$package_id );
+		foreach( $pckg['rates'] as $shipping_rate_id => $shipping_rate ){
+			if( in_array( $shipping_rate_id, $chosen_shipping_methods ) ) {
+	            $label_name  = $shipping_rate->get_label();
+	            $cost = $shipping_rate->get_cost();
+	            $tax_cost    = $shipping_rate->get_shipping_tax();
+	            array_push( $return['lines'], array(
+		            'label' => $label_name,
+		            'cost' => $cost,
+		            'tax_cost' => $tax_cost
+	            ) );
+	            $shipping_dest = $package['destination'];
 			}
 		}
 	}
@@ -212,21 +211,22 @@ function cf7sendwa_woo_get_shippings(){
  * Create Woocommerce Order
  * @since 0.6.0
  */	
-function cf7sendwa_woo_create_order( $customer=null, $note=null, $posted_data=null ) {
-	
+function cf7sendwa_woo_create_order( $customer=null, $note=null, $posted_data=null ) {	
 	if( is_null( $customer ) ) {
 		return false;
 	}	
+	
+	$cust = WC()->session->get( 'customer' );
+	$cart_totals = WC()->session->get( 'cart_totals' );
+	
 	$checkout = WC_Checkout::instance();
-	$cart_hash = WC()->cart->get_cart_hash();
 	$order = new WC_Order();
 	$order->set_created_via( 'contact-form-7' );
-	$order->set_cart_hash( $cart_hash );	
 	
 	$order->set_address( $customer, 'billing' );
     $order->set_address( $customer, 'shipping' );
 	
-    $order_vat_exempt = WC()->cart->get_customer()->get_is_vat_exempt() ? 'yes' : 'no';
+    $order_vat_exempt = $cust['is_vat_exempt'] ? 'yes' : 'no';
     $order->add_meta_data( 'is_vat_exempt', $order_vat_exempt );
     
     $order->set_currency( get_woocommerce_currency() );
@@ -237,49 +237,56 @@ function cf7sendwa_woo_create_order( $customer=null, $note=null, $posted_data=nu
 	if( !is_null( $note ) && $note != '' ) {
 	    $order->set_customer_note( $note );
 	}
+	
+	$carts = WC()->session->get('cart');
+	if( is_array( $carts ) && !empty( $carts ) ) {
+		foreach( $carts as $key => $item ) {
+			$prd = wc_get_product( $item['product_id'] );
+			$qty = $item['quantity'];
+			$args = array();
+			if( $item['variation_id'] != 0 ) {
+				$args['variation'] = $item['variation'];
+				$prd = wc_get_product( $item['variation_id'] );
+			}
+			$order->add_product( $prd, $qty, $args );						
+		}
+	}
     
-    $order->set_discount_total( WC()->cart->get_discount_total() );
-    $order->set_discount_tax( WC()->cart->get_discount_tax() );
-    $order->set_cart_tax( WC()->cart->get_cart_contents_tax() + WC()->cart->get_fee_tax() );
+    $order->set_discount_total( $cart_totals['discount_total'] );
+    $order->set_discount_tax( $cart_totals['discount_tax'] );
+    $order->set_cart_tax( $cart_totals['cart_contents_tax'] );
     
 	/* shipping */    
 	$chosen_shipping_methods = WC()->session->get( 'chosen_shipping_methods' );
-	$shipping_packages = WC()->cart->get_shipping_packages();
-	foreach( $shipping_packages as $package_id => $package ) {
-		if ( WC()->session->__isset( 'shipping_for_package_'.$package_id ) ) {
-			$pckg = WC()->session->get( 'shipping_for_package_'.$package_id );
-			foreach( $pckg['rates'] as $shipping_rate_id => $shipping_rate ){
-				if( in_array( $shipping_rate_id, $chosen_shipping_methods ) ) {
-					$item                     = new WC_Order_Item_Shipping();
-	                $item->legacy_package_key = $package_key; // @deprecated For legacy actions.
-	                $item->set_props(
-	                    array(
-	                        'method_title' => $shipping_rate->get_label(),
-	                        'method_id'    => $shipping_rate->get_method_id(),
-	                        'instance_id'  => $shipping_rate->get_instance_id(),
-	                        'total'        => wc_format_decimal( $shipping_rate->get_cost() ),
-	                        'taxes'        => array(
-	                            'total' => $shipping_rate->get_taxes(),
-	                        ),
-	                    )
-	                );		            
-		            foreach ( $shipping_rate->get_meta_data() as $key => $value ) {
-	                    $item->add_meta_data( $key, $value, true );
-	                }
-	                $order->add_item( $item );
-				}
+	$package_id = '0';
+	if ( WC()->session->__isset( 'shipping_for_package_'.$package_id ) ) {
+		$pckg = WC()->session->get( 'shipping_for_package_'.$package_id );
+		foreach( $pckg['rates'] as $shipping_rate_id => $shipping_rate ){
+			if( in_array( $shipping_rate_id, $chosen_shipping_methods ) ) {
+				$item                     = new WC_Order_Item_Shipping();
+                $item->legacy_package_key = $package_key; // @deprecated For legacy actions.
+                $item->set_props(
+                    array(
+                        'method_title' => $shipping_rate->get_label(),
+                        'method_id'    => $shipping_rate->get_method_id(),
+                        'instance_id'  => $shipping_rate->get_instance_id(),
+                        'total'        => wc_format_decimal( $shipping_rate->get_cost() ),
+                        'taxes'        => array(
+                            'total' => $shipping_rate->get_taxes(),
+                        ),
+                    )
+                );		            
+	            foreach ( $shipping_rate->get_meta_data() as $key => $value ) {
+                    $item->add_meta_data( $key, $value, true );
+                }
+                $order->add_item( $item );
 			}
 		}
 	}
-	$order->set_shipping_total( WC()->cart->get_shipping_total() );
-	$order->set_shipping_tax( WC()->cart->get_shipping_tax() );
+	$order->set_shipping_total( $cart_totals['shipping_total'] );
+	$order->set_shipping_tax( $cart_totals['shipping_tax'] );
     
-    $order->set_total( WC()->cart->get_total( 'edit' ) );
-    
-    $checkout->create_order_line_items( $order, WC()->cart );
-    $checkout->create_order_fee_lines( $order, WC()->cart );
-    $checkout->create_order_tax_lines( $order, WC()->cart );
-    $checkout->create_order_coupon_lines( $order, WC()->cart );	
+    $order->calculate_totals();	
 	
 	if( !is_null( $posted_data ) && !empty( $posted_data ) ) {
 		foreach( $posted_data as $key=>$val ){
@@ -289,9 +296,8 @@ function cf7sendwa_woo_create_order( $customer=null, $note=null, $posted_data=nu
 			
 	do_action( 'cf7sendwa_before_woo_order_save', $obj_order, $posted_data );
     $order_id = $order->save();
-	$cust = WC()->customer;
-    if( $order_id && is_object($cust) && $cust->get_id() ) {
-		update_post_meta( $order_id, '_customer_user', $cust->get_id() );	    
+    if( $order_id && isset( $cust['id'] ) ) {
+		update_post_meta( $order_id, '_customer_user', $cust['id'] );	    
     }
 
 	if( ! apply_filters( 'cf7sendwa_disable_woocommerce_email', false ) ) {

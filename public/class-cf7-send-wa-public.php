@@ -252,8 +252,8 @@ class Cf7_Send_Wa_Public {
         if( $_wa && isset( $_wa['body'] ) && trim($_wa['body']) != '' ) {
 	        $this->bodies[$atts['id']] = trim($_wa['body']);
 	        $this->resends[ $atts['id'] ] = array(
-	        	'allow' => $_wa['allowresend'],
-	        	'label' => $_wa['resendlabel']
+	        	'allow' => is_null( $_wa['allowresend'] ) ? '0' : $_wa['allowresend'],
+	        	'label' => is_null( $_wa['resendlabel'] ) ? '' : $_wa['resendlabel']
 	        );
         } else {
 	        $_mail = get_post_meta( $atts['id'], '_mail', true );
@@ -1376,22 +1376,23 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 	        }
         }            
 	}
-	
 	$(document).ready( function(){
 		Hooks.add_action( 'cf7sendwa_after_mailsent', function( options ){
 			var the_id = options.cf7event.detail.contactFormId;		
-			if( cf7wa_resends[the_id]['allow'] == '1' ) {
-				var label = 'Resend WA Message';
-				if( cf7wa_resends[the_id]['label'] != '' ) {
-					label = cf7wa_resends[the_id]['label'] ;
+			if( cf7wa_resends.hasOwnProperty( the_id ) ) {
+				if( cf7wa_resends[the_id]['allow'] == '1' ) {
+					var label = 'Resend WA Message';
+					if( cf7wa_resends[the_id]['label'] != '' ) {
+						label = cf7wa_resends[the_id]['label'] ;
+					}
+					var id = options.cf7event.detail.id;
+					var the_url = 'https://wa.me/'+options.phone+'?text=' + options.text;
+					var html = ' <a class="cf7sendwa-resend-link" href="' + the_url + '" target="_blank">' + label + '</a>';
+					var interval = window.setInterval( function(){
+						$( '#'+id+ ' .wpcf7-response-output' ).append( html );
+						clearInterval( interval );
+					}, 3000 );
 				}
-				var id = options.cf7event.detail.id;
-				var the_url = 'https://wa.me/'+options.phone+'?text=' + options.text;
-				var html = ' <a class="cf7sendwa-resend-link" href="' + the_url + '" target="_blank">' + label + '</a>';
-				var interval = window.setInterval( function(){
-					$( '#'+id+ ' .wpcf7-response-output' ).append( html );
-					clearInterval( interval );
-				}, 3000 );
 			}
 		} );
 	} );

@@ -50,6 +50,30 @@
 							data-config-field="<?php echo sprintf( '%s.attachments', esc_attr( $args['name'] ) ); ?>"><?php echo esc_textarea( $whatsapp['attachments'] ); ?></textarea>
 					</td>
 				</tr>
+				<?php if ( empty( $args['use'] ) ): ?>
+				<tr>
+					<th scope="row">
+						<label for="<?php echo $id; ?>-allowresend"><?php echo esc_html( __( 'Allow resend message', 'cf7sendwa' ) ); ?></label>
+					</th>
+					<td>
+						<input type="checkbox" id="<?php echo $id; ?>-allowresend"
+						       name="<?php echo $id ?>[allowresend]"
+						       value="1"<?php echo ( $whatsapp['allowresend'] ) ? ' checked="checked"' : ''; ?>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">
+						<label for="<?php echo $id; ?>-resendlabel"><?php echo esc_html( __( 'Resend label', 'cf7sendwa' ) ); ?></label>
+					</th>
+					<td>
+						<input type="text" id="<?php echo $id; ?>-resendlabel" 
+						       name="<?php echo $id; ?>[resendlabel]" 
+						       class="large-text code" size="70" placeholder="Resend WA Message"
+						       value="<?php echo esc_attr( $whatsapp['resendlabel'] ); ?>" 
+						       data-config-field="<?php echo sprintf( '%s.resendlabel', esc_attr( $args['name'] ) ); ?>" />
+					</td>
+				</tr>
+				<?php endif; ?>
 			</tbody>
 		</table>
 	</fieldset>

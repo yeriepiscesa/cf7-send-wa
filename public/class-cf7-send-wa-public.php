@@ -44,6 +44,7 @@ class Cf7_Send_Wa_Public {
 	protected $script_loaded = false;
 	protected $bodies = array();
 	protected $numbers = array();
+	protected $resends = array();
 
     protected $provider = '';
 
@@ -250,6 +251,10 @@ class Cf7_Send_Wa_Public {
         $_wa = get_post_meta( $atts['id'], '_whatsapp', true );
         if( $_wa && isset( $_wa['body'] ) && trim($_wa['body']) != '' ) {
 	        $this->bodies[$atts['id']] = trim($_wa['body']);
+	        $this->resends[ $atts['id'] ] = array(
+	        	'allow' => $_wa['allowresend'],
+	        	'label' => $_wa['resendlabel']
+	        );
         } else {
 	        $_mail = get_post_meta( $atts['id'], '_mail', true );
 	        if( $_mail && isset( $_mail['body'] ) ) {
@@ -1207,6 +1212,7 @@ var cf7wa_ids = <?php echo json_encode( $this->ids ); ?>;
 var cf7wa_country = '<?php echo get_option( 'cf7sendwa_country', '62' ) == '' ? get_option( 'cf7sendwa_country' ) : '62'; ?>';
 var cf7wa_numbers = <?php echo json_encode( $this->numbers ); ?>; 
 var cf7wa_bodies = <?php echo json_encode( $this->bodies ) ?>;
+var cf7wa_resends = <?php echo json_encode( $this->resends ) ?>;
 <?php if( $this->provider != '' || $cf7sendwa_is_custom_api ): ?>
 var cf7wa_security = '<?php echo wp_create_nonce( 'cf7sendwa-api-action' ); ?>';
 var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
@@ -1349,6 +1355,7 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 			redirect_woo_order_received( api_response );
             <?php endif; ?>
             
+			Hooks.do_action( 'cf7sendwa_after_mailsent', { cf7event: event, phone: the_phone, text: the_text } );
 		}
 		if( $( '#cf7sendwa_quickshop_cart' ).length && $( '#cf7sendwa_quickshop_cart' ).val() != '' ) {
 			var vm = Woo_QuickShop_Cart.getVM();
@@ -1356,7 +1363,7 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 			$( '.item-subtotal' ).each( function(index){
 				$( this ).html( 'Rp 0' );
 			} );
-		}
+		}		
 	} );
 	function redirect_woo_order_received( api_response ){
         if( api_response.woo_order != undefined ) {
@@ -1369,6 +1376,25 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 	        }
         }            
 	}
+	
+	$(document).ready( function(){
+		Hooks.add_action( 'cf7sendwa_after_mailsent', function( options ){
+			var the_id = options.cf7event.detail.contactFormId;		
+			if( cf7wa_resends[the_id]['allow'] == '1' ) {
+				var label = 'Resend WA Message';
+				if( cf7wa_resends[the_id]['label'] != '' ) {
+					label = cf7wa_resends[the_id]['label'] ;
+				}
+				var id = options.cf7event.detail.id;
+				var the_url = 'https://wa.me/'+options.phone+'?text=' + options.text;
+				var html = ' <a class="cf7sendwa-resend-link" href="' + the_url + '" target="_blank">' + label + '</a>';
+				var interval = window.setInterval( function(){
+					$( '#'+id+ ' .wpcf7-response-output' ).append( html );
+					clearInterval( interval );
+				}, 3000 );
+			}
+		} );
+	} );
 })(jQuery);
 </script>
 		<?php  

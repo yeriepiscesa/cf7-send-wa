@@ -15,13 +15,16 @@ if( $atts['max-width'] != '' ) {
 		<div class="cf7sendwa-quickshop-checkout-header">
 			<table width="100%" border="0" class="table-cart">
 				<thead>
+					<?php do_action( 'cf7sendwa_quickshop_before_total_review' ); ?>		
 					<tr>
 						<td width="60%">Total</td>
 						<td width="40%" class="cart-nominal" data-bind="html:price_total">Rp. 0</td>
 					</tr>
+					<?php do_action( 'cf7sendwa_quickshop_after_total_review' ); ?>		
 				</thead>
 			</table>
 		</div>
+		<?php do_action( 'cf7sendwa_quickshop_before_order_review_list' ); ?>		
 		<div class="wrap cf7sendwa-quickshop-checkout">
 			<table width="100%" border="0" class="table-cart" style="overflow-x:auto;">
 				<tbody data-bind="foreach:items">
@@ -41,6 +44,7 @@ if( $atts['max-width'] != '' ) {
 			</table>
 		</div>
 		<?php 
+		do_action( 'cf7sendwa_quickshop_after_order_review_list' );
 		if( $content != '' ) {
 			echo do_shortcode( $content );
 		}

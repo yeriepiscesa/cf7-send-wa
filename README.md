@@ -6,6 +6,10 @@ This is a WordPress plugin, require Contact Form 7 plugin to be activated.
 - Download the stable version at https://solusipress.com/download/contact-form-7-send-to-whatsapp/
 - See the demo https://bisnisdemo.solusipress.com/contact-form-7-to-wa-test/
 
+## Release 0.10.14
+- Add option to resend whatsapp message.
+- Add custom hooks to quickshop order review.
+
 ## Release 0.10.13
 - Fix non-session woocommerce order inside cf7.
 - Re-styling order review list and add to cart/checkout button for quickshop.

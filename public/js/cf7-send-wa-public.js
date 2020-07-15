@@ -54,7 +54,14 @@ function Woo_QuickShop_Cart() {
 		if( this.constructor.name == 'Woo_QuickShop_Cart_Item' ) {
 			var id = this.id;
 			var $target = jQuery( '#'+id ).closest( '.product-item' );
-			jQuery( 'body' ).scrollTo( $target, 400, {offset:-50} );
+			if( $target.hasClass( 'variations' ) ) {
+				var product_id = jQuery( '#'+id ).attr( 'data-product_id' );
+				var $btn = jQuery( '.variant-option-button[data-var-id=' + product_id + ']' );
+				if( !$btn.hasClass( 'active' ) ) {
+					$btn.trigger( 'click' );
+				}
+			}
+			jQuery( 'body' ).scrollTo( $target, 400, { offset: Hooks.apply_filters( 'cf7sendwa_order_review_item_click_offset', -50 ) } );
 			var _x = window.setInterval(function(){
 				$target.fadeOut(250).fadeIn(250);
 				window.clearInterval( _x );

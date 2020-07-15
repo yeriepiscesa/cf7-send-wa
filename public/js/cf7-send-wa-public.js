@@ -468,8 +468,8 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 					}
 				} );		
                 if( cf7sendwa.quickshop_atts.render == 'list' ) {
-					$( '#'+el_id+' .variations' ).hide();
-					$( '#'+el_id+' .variant-option-button .angle-up' ).hide();
+					$( '#'+el_id+' .product-items.page-' + products_page + ' .variations' ).hide();
+					$( '#'+el_id+' .product-items.page-' + products_page + ' .variant-option-button .angle-up' ).hide();
 				}
 				if( typeof callback == 'function' ) {
 					callback( el_id, cat_slug, data_count );

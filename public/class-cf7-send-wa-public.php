@@ -743,7 +743,8 @@ class Cf7_Send_Wa_Public {
 					'bottom' => '',
 					'redirect' => 'cart',
 					'button_append_to' => '',
-					'loader_selector' => ''
+					'loader_selector' => '',
+					'shipping' => ''
 				), $atts, 'cf7sendwa-checkout');
 				$html = '';
 				wp_localize_script( $this->plugin_name, 'cf7sendwa_qsreview', $atts );

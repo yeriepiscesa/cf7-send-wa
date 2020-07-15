@@ -36,6 +36,19 @@ function Woo_QuickShop_Cart() {
 	self.price_total = ko.pureComputed( function(){			
 		return 'Rp ' + jQuery.number( self.total(), cf7sendwa.decimals, cf7sendwa.decimal_separator, cf7sendwa.thousand_separator );
 	} );
+
+	self.weight_total = ko.pureComputed( function(){
+		var total = 0;
+		_.each( self.items(), function( item, index, list ){
+			var _w = parseFloat( item.prop.weight );
+			if( isNaN( _w ) ) _w = Hooks.apply_filters( 'cf7sendwa_base_weight', 1000 );
+			total = total + ( _w * item.qty() );
+		} );
+		return total;
+	} );
+	self.weight_total_html = ko.pureComputed( function(){
+		return jQuery.number( self.weight_total(), cf7sendwa.decimals, cf7sendwa.decimal_separator, cf7sendwa.thousand_separator ) + ' ' + Hooks.apply_filters( 'cf7sendwa_weight_units', 'gr' );
+	} );
 	
 	self.gotoItem = function(e){
 		if( this.constructor.name == 'Woo_QuickShop_Cart_Item' ) {

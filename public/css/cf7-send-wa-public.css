@@ -139,6 +139,8 @@ input[type=button].sp-woopos-minus {
 	margin-bottom: 10px;
 	font-size: 0.975em;
 	background: #fff;
+}
+#cf7sendwa-checkout .sticky-wrapper .cf7sendwa-quickshop-checkout {
 	max-height: 70vh;
 	overflow: scroll;
 }

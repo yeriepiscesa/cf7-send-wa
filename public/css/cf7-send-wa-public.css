@@ -50,6 +50,10 @@ input[type=button].sp-woopos-minus {
 #cf7sendwa-quickshop-container * {
 	font-size: 1em;	
 } 
+#cf7sendwa-quickshop-container .quantity a.minus,
+#cf7sendwa-quickshop-container .quantity a.plus {
+    display:none;
+}
 #cf7sendwa-quickshop-container .category-title {
 	font-weight: 600;
 	border-bottom: 1px solid #eee;

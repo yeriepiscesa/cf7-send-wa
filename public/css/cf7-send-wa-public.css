@@ -204,9 +204,6 @@ div.cf7sendwa-product-sku {
 	z-index: 99999!important;
 }
 #cf7sendwa-quickshop-container .woo-link-detail { color: #000; }
-.product-item-detail {
-    background: #f9f9f9;
-}
 .product-item-detail h2 {
     font-weight: 700;
     padding-top:25px;
@@ -218,15 +215,16 @@ div.cf7sendwa-product-sku {
 .product-item-detail .product-item-description { color: #666; margin-top:10px; }
 .product-item-detail .product-item-description p { margin-bottom: 0px; }
 .product-item-detail-description {
-	color: #666; padding: 20px;
+	color: #666; padding-top: 20px;
+}
+#cf7sendwa-product-detail {
 }
 .product-item-detail .detail-image {
-    background:#000;
     padding:0px;
     margin:0px;
 }
 .product-item-detail .detail-content {
-    padding-bottom: 25px;
+	background-color: #ffffff;
 }
 .product-item-detail-desc {
     padding: 20px;

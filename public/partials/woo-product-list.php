@@ -43,7 +43,7 @@
 	<div id="cf7sendwa-quickshop-unsticky-spot" style="display:none;"></div>
 	<div data-bind="template:{name:'product-detail', data: viewdetail}"></div>
 	<script type="text/html" id="product-detail">
-		<div id="cf7sendwa-product-detail" class="product-item-detail grid-parent modal" style="max-width: 700px; padding:0px;">
+		<div id="cf7sendwa-product-detail" class="product-item-detail grid-parent modal" style="max-width: 1000px; padding:0px;">
 		    <div class="sp-product-detail ">
 		        <div class="detail-image grid-50 mobile-grid-100 fotorama" data-bind="html:images">
 		        </div>
@@ -54,9 +54,8 @@
 		            <div data-bind="html: excerpt" class="product-item-description"></div>
 		            <div data-bind="html: attributes"></div>
 		            <span data-bind="text: stock" class="stock-status"></span>
+					<div data-bind="html: description"></div>	     
 		        </div>
-				<div class="grid-100" data-bind="html: description">
-				</div>	     
 		    </div>    
 		</div>
 	</script>	

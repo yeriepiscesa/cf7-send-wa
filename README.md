@@ -6,6 +6,11 @@ This is a WordPress plugin, require Contact Form 7 plugin to be activated.
 - Download the stable version at https://solusipress.com/download/contact-form-7-send-to-whatsapp/
 - See the demo https://bisnisdemo.solusipress.com/contact-form-7-to-wa-test/
 
+## Release 0.10.16
+- Redesign quickshop's product detail popup.
+- Improve sticky functionality on quickshop order review.
+- Bugs fixed on WA resend options.
+
 ## Release 0.10.15
 - Add weight calculation on quickshop for future use.
 - Improve max-height of quickshop's order review only when sticky active.

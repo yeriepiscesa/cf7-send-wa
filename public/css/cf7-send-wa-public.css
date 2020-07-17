@@ -94,9 +94,11 @@ input[type=button].sp-woopos-minus {
 #cf7sendwa-quickshop-container .product-item.grid-mode:nth-child(even) {
     background-color:inherit;
 }
-#cf7sendwa-quickshop-container .product-item:nth-child(even) {
+
+#cf7sendwa-quickshop-container .product-item.variations:nth-child(even) {
 	background-color: #f9f9f9;
 }
+
 #cf7sendwa-quickshop-container .product-item .item-block-grid {
     display:block;
 }

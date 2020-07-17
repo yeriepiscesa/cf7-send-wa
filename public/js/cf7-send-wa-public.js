@@ -540,6 +540,16 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 						$( cls ).find( 'a.woo-link-detail' ).attr( 'data-el-cls', cls );
 						vm.products.push( new Woo_QuickShop_ProductItem( cls, catId, title, jQuery.parseJSON($prop.val()) ) );
 						$prop.remove();
+						
+						var _colors = cf7sendwa.quickshop_atts.colors;
+						if( _colors != '' ) {
+							_colors = _colors.split(',');
+							if( index %2 != 0 ) {
+								$(this).css( 'background-color', _colors[1] );	
+							} else {
+								$(this).css( 'background-color', _colors[0] );	
+							}
+						}
 					} );				
 				}	
 				

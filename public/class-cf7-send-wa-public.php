@@ -251,9 +251,17 @@ class Cf7_Send_Wa_Public {
         $_wa = get_post_meta( $atts['id'], '_whatsapp', true );
         if( $_wa && isset( $_wa['body'] ) && trim($_wa['body']) != '' ) {
 	        $this->bodies[$atts['id']] = trim($_wa['body']);
+	        $allow_resend = '0';
+	        $resend_label = '';
+	        if( isset( $_wa['allowresend'] ) ) {
+		        $allow_resend = is_null( $_wa['allowresend'] ) ? '0' : $_wa['allowresend'];
+	        }
+	        if( isset( $_wa['resendlabel'] ) ) {
+		    	$resend_label = is_null( $_wa['resendlabel'] ) ? '' : $_wa['resendlabel'];	    
+	        }
 	        $this->resends[ $atts['id'] ] = array(
-	        	'allow' => is_null( $_wa['allowresend'] ) ? '0' : $_wa['allowresend'],
-	        	'label' => is_null( $_wa['resendlabel'] ) ? '' : $_wa['resendlabel']
+	        	'allow' => $allow_resend,
+	        	'label' => $resend_label
 	        );
         } else {
 	        $_mail = get_post_meta( $atts['id'], '_mail', true );

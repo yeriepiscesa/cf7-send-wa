@@ -58,7 +58,7 @@
 					<td>
 						<input type="checkbox" id="<?php echo $id; ?>-allowresend"
 						       name="<?php echo $id ?>[allowresend]"
-						       value="1"<?php echo ( $whatsapp['allowresend'] ) ? ' checked="checked"' : ''; ?>
+						       value="1"<?php echo ( isset( $whatsapp['allowresend'] ) && $whatsapp['allowresend'] ) ? ' checked="checked"' : ''; ?>
 					</td>
 				</tr>
 				<tr>
@@ -69,7 +69,7 @@
 						<input type="text" id="<?php echo $id; ?>-resendlabel" 
 						       name="<?php echo $id; ?>[resendlabel]" 
 						       class="large-text code" size="70" placeholder="Resend WA Message"
-						       value="<?php echo esc_attr( $whatsapp['resendlabel'] ); ?>" 
+						       value="<?php echo esc_attr( isset( $whatsapp['resendlabel'] ) ? $whatsapp['resendlabel'] : '' ); ?>" 
 						       data-config-field="<?php echo sprintf( '%s.resendlabel', esc_attr( $args['name'] ) ); ?>" />
 					</td>
 				</tr>

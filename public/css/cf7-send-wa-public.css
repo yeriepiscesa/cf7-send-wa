@@ -70,6 +70,15 @@ input[type=button].sp-woopos-minus {
 	padding: 10px;
 	position: relative;
 }
+
+#cf7sendwa-checkout .grid-50,
+#cf7sendwa-checkout .mobile-grid-50,
+#cf7sendwa-checkout .grid-100,
+#cf7sendwa-checkout .mobile-grid-100 {
+	padding-left:0px;
+	padding-right:0px;		
+}
+
 #cf7sendwa-quickshop-container .product-item .item-price {
 	padding-top: 5px;
 	padding-bottom: 5px;

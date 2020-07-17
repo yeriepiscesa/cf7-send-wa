@@ -135,6 +135,60 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
             return vm;
         }
     } );
+    
+    var sticky_num = 0;
+    var sticky_state = {};
+    function do_initiate_sticky( $sticker, spot_selector, property ) {
+	    var sticker_id = $sticker.attr( 'id' );
+	    if( sticker_id == undefined ) {
+		    sticker_id = 'cf7sendwa-stick-'+sticky_num;
+		    $sticker.attr( 'id', sticker_id );
+		    sticky_num++;
+	    }
+	    if( !sticky_state[ sticker_id ] ) {
+		    sticky_state[ sticker_id ] = {
+				'mode': 'unstick',
+				'prop': {}
+			};
+	    }
+        $(window).on('resize scroll', function() {
+	        if( $( spot_selector ).length ) {
+	            var spot = $( spot_selector ).offset().top;
+	            var viewport = $( this ).scrollTop() + parseInt(property.viewport_bottom);
+	            var s_id = $sticker.attr( 'id' );
+	            if( $sticker.length ) {
+	                if( viewport >= spot ) {
+		                if( sticky_state[ s_id ].mode == 'sticky' ) {
+	                		$sticker.unstick( sticky_state[ s_id ].prop );
+	                		sticky_state[ s_id ].mode = 'unstick';
+	                	}
+	                } else {
+		                if( sticky_state[ s_id ].mode == 'unstick' ) {
+							var _top = 0;
+							var _bottom = 0;
+							if( $( '#wpadminbar' ).length && cf7sendwa.is_mobile == '0' ) {
+								_top = 30;
+							}
+						    if( property.top != '' ) {
+							    _top = _top + parseInt(property.top);
+						    }
+						    if( property.bottom != '' ) {
+							    _bottom = parseInt(property.bottom);
+						    }
+						    var prop = {
+			                    'topSpacing': _top,
+			                    'bottomSpacing': _bottom
+		                    };
+		                    $sticker.sticky( prop );
+	                		sticky_state[ s_id ].mode = 'sticky';
+	                		sticky_state[ s_id ].prop = prop;
+		                }
+	                }
+				}
+				
+	        }
+		} );
+	}
 	
 	$( document ).ready( function() {
 		ko.applyBindings( vm );
@@ -292,14 +346,11 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 		} );
 		
 	    if( cf7sendwa_qsreview.sticky == 'yes' ) { // sticky checkout
-		    var prop = {};
-		    if( cf7sendwa_qsreview.top != '' ) {
-			    prop.topSpacing = Hooks.apply_filters( 'cf7sendwa_checkout_sticky_top', parseInt(cf7sendwa_qsreview.top), { atts: cf7sendwa_qsreview } );
-		    }
-		    if( cf7sendwa_qsreview.bottom != '' ) {
-			    prop.bottomSpacing = Hooks.apply_filters( 'cf7sendwa_checkout_sticky_bottom', parseInt(cf7sendwa_qsreview.bottom), { atts: cf7sendwa_qsreview } );
-		    }
-		    $( '.cf7sendwa-quickshop-checkout-container' ).sticky(prop);
+		    do_initiate_sticky( $( '.cf7sendwa-quickshop-checkout-container' ), cf7sendwa_qsreview.stickyend, {
+				'top': cf7sendwa_qsreview.top,
+				'bottom': cf7sendwa_qsreview.bottom,
+				'viewport_bottom': cf7sendwa_qsreview.viewport_bottom    
+		    } );
 	    }
 	    
 	    if( $( '#cf7sendwa_woo_ajax_filter' ).length ) {

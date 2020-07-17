@@ -741,6 +741,8 @@ class Cf7_Send_Wa_Public {
                     'max-height' => '',
 					'top' => '',
 					'bottom' => '',
+					'stickyend' => '.site-footer', // selector that indicate end of sticky
+					'viewport_bottom' => 300, 
 					'redirect' => 'cart',
 					'button_append_to' => '',
 					'loader_selector' => '',

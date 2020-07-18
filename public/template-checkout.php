@@ -51,6 +51,7 @@ do_action( 'woocommerce_before_main_content' );
 
 
 echo do_shortcode( '[contact-form-7-wa id="' . get_option( 'cf7sendwa_woo_checkout', '' ) . '"]' );
+echo apply_filters( 'the_content', '' );
 
 
 /**

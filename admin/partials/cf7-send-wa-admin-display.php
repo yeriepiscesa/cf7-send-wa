@@ -28,18 +28,58 @@
 					<td><input type="text" id="cf7sendwa_number" 
                                placeholder="628123456789" 
                                name="whatsapp_number" size="20"
-                               value="<?= $whatsapp_number ?>">
+                               value="<?php echo $whatsapp_number; ?>">
                         <p class="description">
                             Phone number must include the country code (eg. 62 for Indonesia)
                         </p>
                     </td>
 				</tr>
 				<tr>
+					<th scope="row"><label for="cf7sendwa_globalform">Global Form</label></th>
+					<td>
+				        <select class="cf7-checkout-form" name="cf7sendwa_global_form" id="cf7sendwa_globalform" style="width: 300px;">
+				        <?php 
+					    $cf7_global = get_option( 'cf7sendwa_global_form', '' );    
+					    if( $cf7_global != '' ) { 
+					        $__p = get_post( $cf7_global );
+					        echo '<option value="'. $__p->ID .'" selected="selected">' . $__p->post_title . '</option>'; 
+					    } ?>
+			        	</select>
+			        	<p class="description">
+				        	Displayed as floating green WhatsApp button, form will display as pop up when button click.
+			        	</p>
+			        	<label style="display:block;padding-top:10px;font-weight:600;">Button Position</label>
+			        	<select classs="select2" name="cf7sendwa_global_position" style="width:300px; margin-top:10px;">
+				        	<?php
+					        $cf7_global_position = get_option( 'cf7sendwa_global_position', '' );	
+					        $options = array(
+						        'bottom-right' => 'Bottom Right',
+						        'bottom-left' => 'Bottom Left',
+						        'top-right' => 'Top Right',
+						        'top-left' => 'Top Left'
+					        );	
+				        	echo '<option value="">Select options</option>';
+					        foreach( $options as $k=>$v ) {
+						        $selected = '';
+						        if( $cf7_global_position == $k ) {
+							        $selected = ' selected="selected"';
+						        }
+					        	echo '<option value="' . $k . '"' . $selected . '>' . $v . '</option>';	
+				        	}
+				        	?>
+			        	</select>
+			        	<label style="display:block;padding-top:10px;font-weight:600;">Button tooltip text</label>
+			        	<input style="display:block;margin-top:5px" 
+			        		   name="cf7sendwa_global_tooltip" value="<?php echo $cf7sendwa_global_tooltip; ?>" 
+			        	       type="text" placeholder="Click to chat">
+					</td>
+				</tr>
+				<tr>
                     <th scope="row"><label for="cf7sendwa_country">Default Country Code</label></th>
                     <td><input type="text" id="cf7sendwa_country" 
                                placeholder="62" 
                                name="default_country" size="3"
-                               value="<?= $default_country ?>">
+                               value="<?php echo $default_country; ?>">
                         <p class="description">
                             Default country code to use, when your user not defined country code on mobile number entry.
                         </p>
@@ -54,7 +94,7 @@
                             $checked1 = ' checked="checked"';
                         }
                         ?>
-                        <input type="checkbox" id="cf7sendwa_disablemail"<?= $checked1 ?>  
+                        <input type="checkbox" id="cf7sendwa_disablemail"<?php echo $checked1; ?>  
                                name="disable_send_mail" value="1">
                     </td>
 				</tr>
@@ -66,9 +106,9 @@
         <table class="form-table">
 	        <tbody>
 		        <tr>
-			        <th scope="row"><label>Checkout Form</label></th>
+			        <th scope="row"><label for="cf7sendwa_woo_form">Checkout Form</label></th>
 			        <td>
-				        <select class="cf7-checkout-form" name="woo_checkout" style="width: 300px;">
+				        <select class="cf7-checkout-form" name="woo_checkout" id="cf7sendwa_woo_form" style="width: 300px;">
 				        <?php 
 					    $cf7_woo = get_option( 'cf7sendwa_woo_checkout', '' );    
 					    if( $cf7_woo != '' ) { 
@@ -88,7 +128,7 @@
                             $checked3 = ' checked="checked"';
                         }
                         ?>
-                        <input type="checkbox" id="cf7sendwa_fullcart"<?= $checked3 ?>  
+                        <input type="checkbox" id="cf7sendwa_fullcart"<?php echo $checked3; ?>  
                                name="full_cart" value="1">
                         <p style="display:inline" class="description">When checked, Cart totals container will be 100% width (default to 50%)</p>
 			        </td>
@@ -102,7 +142,7 @@
                             $checked2 = ' checked="checked"';
                         }
                         ?>
-                        <input type="checkbox" id="cf7sendwa_requireshipping"<?= $checked2 ?>  
+                        <input type="checkbox" id="cf7sendwa_requireshipping"<?php echo $checked2; ?>  
                                name="require_shipping" value="1">
                         <p style="display:inline" class="description">When checked, shippable cart must have shipping method</p>
 			        </td>
@@ -150,7 +190,7 @@
                             $checked4 = ' checked="checked"';
                         }
 					    ?>				        
-                        <input type="checkbox" id="quickshop_excerpt"<?= $checked4 ?>  
+                        <input type="checkbox" id="quickshop_excerpt"<?php echo $checked4; ?>  
                                name="quickshop_excerpt" value="1">
                         <p style="display:inline" class="description">Show product's short description</p>       
 			        </td>
@@ -164,7 +204,7 @@
                             $checked7 = ' checked="checked"';
                         }
 					    ?>				        
-                        <input type="checkbox" id="quickshop_sku"<?= $checked7 ?>  
+                        <input type="checkbox" id="quickshop_sku"<?php echo $checked7; ?>  
                                name="quickshop_sku" value="1">
                         <p style="display:inline" class="description">Show product's SKU</p>       
 			        </td>
@@ -178,7 +218,7 @@
                             $checked5 = ' checked="checked"';
                         }
 					    ?>				        
-                        <input type="checkbox" id="quickshop_outofstock"<?= $checked5 ?>  
+                        <input type="checkbox" id="quickshop_outofstock"<?php echo $checked5; ?>  
                                name="quickshop_outofstock" value="1">
                         <p style="display:inline" class="description">When checked, out of stock product will be displayed</p>       
 			        </td>
@@ -192,7 +232,7 @@
                             $checked6 = ' checked="checked"';
                         }
 					    ?>				        
-                        <input type="checkbox" id="quickshop_unsemantic"<?= $checked6 ?>  
+                        <input type="checkbox" id="quickshop_unsemantic"<?php echo $checked6; ?>  
                                name="quickshop_unsemantic" value="1">
                         <p style="display:inline" class="description">Check if your theme using Unsemantic CSS Grid (eg. GeneratePress)</p>
 			        </td>
@@ -228,19 +268,19 @@
 						<th scope="row"><label for="cf7sendwa_twilio_sid">Account SID</label></th>
 	                    <td><input type="text" name="twilio_sid" size="40" 
 	                               id="cf7sendwa_twilio_sid"
-	                               value="<?= $twilio_sid ?>"></td>
+	                               value="<?php echo $twilio_sid; ?>"></td>
 	                </tr>
 					<tr>
 						<th scope="row"><label for="cf7sendwa_twilio_token">Auth Token</label></th>
 	                    <td><input type="text" name="twilio_token" size="40" 
 	                               id="cf7sendwa_twilio_token"
-	                               value="<?= $twilio_token ?>"></td>
+	                               value="<?php echo $twilio_token; ?>"></td>
 	                </tr>
 					<tr>
 						<th scope="row"><label for="cf7sendwa_twilio_from">WhatsApp From</label></th>
 	                    <td><input type="text" name="twilio_from" size="20" 
 	                               id="cf7sendwa_twilio_from"
-	                               value="<?= $twilio_from ?>">
+	                               value="<?php echo $twilio_from; ?>">
 	                        <p class="description">
 	                            Twilio valid number or your own WhatsApps' approved number.
 	                        </p>
@@ -258,7 +298,7 @@
 						<th scope="row"><label for="cf7sendwa_fonnte_token">Token</label></th>
 	                    <td><input type="text" name="fonnte_token" size="40" 
 	                               id="cf7sendwa_fonnte_token"
-	                               value="<?= $fonnte_token ?>"></td>
+	                               value="<?php echo $fonnte_token; ?>"></td>
 	                </tr>
 				</tbody>
 			</table>
@@ -272,13 +312,13 @@
 						<th scope="row"><label for="cf7sendwa_wablas_domain">Domain API</label></th>
 	                    <td><input type="text" name="wablas_domain" size="40" 
 	                               id="cf7sendwa_wablas_domain" placeholder="https://ampel.wablas.com"
-	                               value="<?= $wablas_domain ?>"></td>
+	                               value="<?php echo $wablas_domain; ?>"></td>
 	                </tr>
 					<tr>
 						<th scope="row"><label for="cf7sendwa_wablas_token">Token</label></th>
 	                    <td><input type="text" name="wablas_token" size="40" 
 	                               id="cf7sendwa_wablas_token"
-	                               value="<?= $wablas_token ?>"></td>
+	                               value="<?php echo $wablas_token; ?>"></td>
 	                </tr>
 				</tbody>
 			</table>
@@ -292,7 +332,7 @@
 						<th scope="row"><label for="cf7sendwa_ruangwa_token">Token</label></th>
 	                    <td><input type="text" name="ruangwa_token" size="40" 
 	                               id="cf7sendwa_ruangwa_token"
-	                               value="<?= $ruangwa_token ?>"></td>
+	                               value="<?php echo $ruangwa_token; ?>"></td>
 	                </tr>
 				</tbody>
 			</table>

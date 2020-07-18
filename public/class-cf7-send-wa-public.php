@@ -45,6 +45,8 @@ class Cf7_Send_Wa_Public {
 	protected $bodies = array();
 	protected $numbers = array();
 	protected $resends = array();
+	protected $global_form = null;
+	protected $global_btn_tooltip = '';
 
     protected $provider = '';
 
@@ -113,6 +115,8 @@ class Cf7_Send_Wa_Public {
 				$this->ruangwa_token = get_option( 'cf7sendwa_ruangwa_token', '' );     
 	        	break;
         }        
+        $this->global_form = get_option( 'cf7sendwa_global_form', '' );
+        $this->global_btn_tooltip = get_option( 'cf7sendwa_global_tooltip', 'Click to chat' );
         if( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 	        $this->woo_is_active = true;
 	        // REST API CALL ( Next Features )
@@ -139,6 +143,12 @@ class Cf7_Send_Wa_Public {
 		wp_register_style( 'jquery-modal', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/jquery.modal.min.css' );
 		wp_register_style( 'select2', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/select2.min.css' );
 		wp_register_style( 'fotorama', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/fotorama.min.css' );
+		wp_register_style( 'tooltipster', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/tooltipster.bundle.min.css', array(), '4.2.8' );
+		
+		wp_enqueue_style( $this->plugin_name );
+		if( $this->global_form != '' ) {
+			wp_enqueue_style( 'tooltipster' );
+		}
 	}
 
 	/**
@@ -154,6 +164,10 @@ class Cf7_Send_Wa_Public {
 		wp_register_script( 'select2', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/select2.min.js' );
 		wp_register_script( 'fotorama', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/fotorama.min.js' );
 		wp_register_script( 'sticky', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/jquery.sticky.js' );
+		wp_register_script( 'tooltipster', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/tooltipster.bundle.min.js', array( 'jquery' ), '4.2.8' );
+		if( $this->global_form != '' ) {
+			wp_enqueue_script( 'tooltipster' );
+		}
 	}
 	
     public function check_skip_mail( $skip_mail, $contact_form ) {
@@ -239,11 +253,14 @@ class Cf7_Send_Wa_Public {
 		        if( $atts['buttonclass'] != '' ) {
 			        $_bclass = $atts['buttonclass'];
 		        }
-		        $html .= '<a href="'.$selector.'" rel="modal:open" class="'.$_bclass.'">';
+		        $p_button = '';
+		        $p_button = '<a href="'.$selector.'" rel="modal:open" class="'.$_bclass.'">';
 		        if( $atts['buttonicon'] != '' ) {
-		        	$html .= '<i class="'.$atts['buttonicon'].'"></i> ';
+		        	$p_button .= '<i class="'.$atts['buttonicon'].'"></i> ';
 		        }
-	        	$html .= $atts['buttontext'] .'</a>';
+	        	$p_button .= $atts['buttontext'] .'</a>';
+	        	
+	        	$html .= apply_filters( 'cf7sendwa_popup_button', $p_button, $selector, $atts );
 	        }
         }
         
@@ -701,13 +718,11 @@ class Cf7_Send_Wa_Public {
     public function switch_woo_checkout( $template ) {
         if( is_checkout() && get_option( 'cf7sendwa_woo_checkout', '' ) != '' && 
             !is_checkout_pay_page() && !is_wc_endpoint_url( 'order-received' ) ) {
-
 	        $this->woo_cart = cf7sendwa_woo_get_cart_items();
 	        $this->woo_shippings = cf7sendwa_woo_get_shippings();
             remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20 );
             add_filter( 'woocommerce_show_page_title', '__return_false' );
-	        $template = apply_filters( 'cf7sendwa_product_checkout_template', plugin_dir_path( __FILE__ ) . 'template-checkout.php' );
-	        
+	        $template = apply_filters( 'cf7sendwa_product_checkout_template', plugin_dir_path( __FILE__ ) . 'template-checkout.php', $this );
         }
 	    return $template;
     }
@@ -1215,7 +1230,51 @@ class Cf7_Send_Wa_Public {
 		
 		return $html;    		
 	}
-
+	
+	public function floating_button( $btn, $selector, $atts ){
+		if( $atts['id'] == $this->global_form ) {
+			$cf7sendwa_global_position = get_option( 'cf7sendwa_global_position', '' );
+			$style = ' style="right:0px; bottom: 0px;"';
+			$_top = 0;
+			if( is_admin_bar_showing() ) {
+				$_top = $top + 30;
+			}
+			switch( $cf7sendwa_global_position ){
+				case 'bottom-left':
+					$style = ' style="left:0px; bottom: 0px;"';
+					break;
+				case 'top-left':
+					$style = ' style="left:0px; top: '.$_top.'px;"';
+					break;
+				case 'top-right':
+					$style = ' style="right:0px; top: '.$_top.'px;"';
+					break;
+			}
+			$btn = '<div class="cf7sendwa-floating-button"' . $style . '>
+				<div class="cf7sendwa-float-button-wrapper">
+				<a href="'.$selector.'" rel="modal:open" class="cf7sendwa-btn-link">
+					<img class="tooltip" 
+					     title="'. $this->global_btn_tooltip .'"
+					     src="' .plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/img/whatsapp.svg' . '"></a>
+				</div>
+			</div>';	
+		}
+		return $btn;
+	}
+	
+	public function render_global_form_on_shop() {
+		if( $this->global_form != '' ) {
+			echo apply_filters( 'the_content', '' );
+		}
+	}
+	public function render_global_form( $content ){
+		if( $this->global_form != '' ) {
+			add_filter( 'cf7sendwa_popup_button', array( $this, 'floating_button' ), 10, 3 );
+			$content .= do_shortcode( '[contact-form-7-wa id="' . $this->global_form . '" popup="button"]' );
+		}
+		return $content;
+	}
+	
 	public function render_script_footer() {
 		$cf7sendwa_is_custom_api = has_action( 'cf7sendwa_custom_send_api' );
 		if( !empty( $this->ids ) && !$this->script_loaded ) : ob_start(); ?>
@@ -1225,6 +1284,7 @@ var cf7wa_country = '<?php echo get_option( 'cf7sendwa_country', '62' ) == '' ? 
 var cf7wa_numbers = <?php echo json_encode( $this->numbers ); ?>; 
 var cf7wa_bodies = <?php echo json_encode( $this->bodies ) ?>;
 var cf7wa_resends = <?php echo json_encode( $this->resends ) ?>;
+var cf7wa_global_form = '<?php echo $this->global_form; ?>';
 <?php if( $this->provider != '' || $cf7sendwa_is_custom_api ): ?>
 var cf7wa_security = '<?php echo wp_create_nonce( 'cf7sendwa-api-action' ); ?>';
 var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
@@ -1389,6 +1449,11 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
         }            
 	}
 	$(document).ready( function(){
+		if( cf7wa_global_form != '' ) {
+			$('.tooltip').tooltipster({
+				theme:'tooltipster-noir'
+			});			
+		}
 		Hooks.add_action( 'cf7sendwa_after_mailsent', function( options ){
 			var the_id = options.cf7event.detail.contactFormId;		
 			if( cf7wa_resends.hasOwnProperty( the_id ) ) {

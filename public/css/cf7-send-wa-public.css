@@ -262,7 +262,21 @@ table.quickshop-product-attributes td {
     padding:5px;
     border-bottom: 1px solid #eee;
 }
-
+.cf7sendwa-floating-button {
+	position: fixed;
+	padding: 10px;
+}
+.cf7sendwa-float-button-wrapper {
+	position:relative;
+}
+.cf7sendwa-floating-button a img {
+	width: 50px;
+	border-radius: 50%;
+}
+.modal .cf7sendwa-cf7-container .wpcf7 {
+	padding-top: 25px;
+	padding-bottom: 25px;
+}
 @media only screen and (max-width: 750px) {
 	.cf7sendwa-woo-filter .filter-block:nth-child(2) input[type="text"] {
 		margin-top: 20px;

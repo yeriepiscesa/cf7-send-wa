@@ -232,7 +232,7 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 			} );
 		}
 		
-		var html_hidden = '<input type="hidden" name="quickshop_cart" id="cf7sendwa_quickshop_cart" value="">';
+		var html_hidden = '<input type="hidden" name="quickshop_cart" id="cf7sendwa_quickshop_cart" value="">';		
 		if( $( '.cf7sendwa-cf7-container' ).length ) {
 			$( '.cf7sendwa-cf7-container .wpcf7-submit' ).parent().append( html_hidden );
 			Hooks.do_action( 'cf7sendwa_after_cf7_submit' );

@@ -47,6 +47,7 @@ class Cf7_Send_Wa_Public {
 	protected $resends = array();
 	protected $global_form = null;
 	protected $global_btn_tooltip = '';
+	protected $load_fontawesome = false;
 
     protected $provider = '';
 
@@ -120,6 +121,10 @@ class Cf7_Send_Wa_Public {
         if(  $this->global_btn_tooltip == '' ) {
 	        $this->global_btn_tooltip = 'Click to chat';
         }
+		$fa_load = get_option( 'cf7sendwa_load_fontawesome', '0' );
+		if( $fa_load == '1' ) {
+			$this->load_fontawesome = true;
+        }
         if( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 	        $this->woo_is_active = true;
 	        // REST API CALL ( Next Features )
@@ -147,10 +152,12 @@ class Cf7_Send_Wa_Public {
 		wp_register_style( 'select2', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/select2.min.css' );
 		wp_register_style( 'fotorama', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/fotorama.min.css' );
 		wp_register_style( 'tooltipster', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/tooltipster.bundle.min.css', array(), '4.2.8' );
-		
 		wp_enqueue_style( $this->plugin_name );
 		if( $this->global_form != '' ) {
 			wp_enqueue_style( 'tooltipster' );
+		}
+		if( $this->load_fontawesome ) {
+			wp_register_style( 'fontawesome', 'https://use.fontawesome.com/releases/v5.13.0/css/all.css', array(), '5.13.0' );
 		}
 	}
 
@@ -201,6 +208,9 @@ class Cf7_Send_Wa_Public {
 		
 		wp_enqueue_script( 'cf7sendwa-commonlib' );
         wp_enqueue_script( 'underscore' );
+        if( $this->load_fontawesome ) {
+	        wp_enqueue_style( 'fontawesome' );
+        }
         
         $is_popup = false;
         if( $atts['popup'] == 'button' || $atts['popup'] == 'auto' ) {
@@ -239,13 +249,16 @@ class Cf7_Send_Wa_Public {
 	        if( $atts['modalwidth'] != '' && is_numeric( $atts['modalwidth'] ) ) {
 		        $_width = 'min-width: ' . $atts['modalwidth'] . 'px;';
 	        }
-	        $html .= '<div id="' . str_replace( '#', '', $selector) . '" class="modal'.$_class.'" style="'.$_width.'display:none;'.$_style.'">';
+	        $html .= '<div id="' . str_replace( '#', '', $selector) . '" class="modal'.$_class.'" style="'.$_width.'display:none;padding:0px;'.$_style.';">';
 	        $html .= '<div class="cf7sendwa-form-content">';
 	        if( isset( $atts['title'] ) && $atts['title'] != '' ) {
 		        $html .= '<h3 class="cf7sendwa-modal-title">'.$atts['title'].'</h3>';
+	        } else {
+		        $__p = get_post( $atts['id'] );
+		        $html .= '<h3 class="cf7sendwa-modal-title">' . $__p->post_title . '</h3>';
 	        }
         }
-        $html .= '<div class="cf7sendwa-cf7-container">'. do_shortcode( $shortcode ) . '</div>';
+        $html .= '<div class="cf7sendwa-cf7-container' . ( $is_popup?' form-popup':'' ) . '">'. do_shortcode( $shortcode ) . '</div>';
         if( $is_popup ) {
 	        $html .= '</div></div>';
 	        if( $atts['popup'] == 'auto' ) {
@@ -1453,13 +1466,20 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 		}
 		if( $( '.wpcf7-submit' ).length ) {
 			$( '.wpcf7-submit' ).each( function(){
-				var $btn = $(this);
+				var $btn = $(this);				
 				var $frm = $btn.parents("form");
 				var frm_id = $frm.find( 'input[name=_wpcf7]' ).val();
 				if( _.indexOf( cf7wa_ids, frm_id ) ) {
-					var btn_label = $btn.html();
-					var new_html = '<i class="fa fa-whatsapp"></i>&nbsp;' + btn_label;
-					$btn.html( new_html );
+					if( $btn.prop('tagName') == 'INPUT' ) {
+						var _val = $btn.val();
+						var _cls = $btn.attr('class');
+						$btn.replaceWith( '<button type="submit" class="' + _cls + ' cf7-basic-submit"><i class="fa fa-whatsapp"></i>&nbsp;' + _val + '</button>' );						
+					} else {
+						var btn_label = $btn.html();
+						var new_html = '<i class="fa fa-whatsapp"></i>&nbsp;' + btn_label;
+						$btn.html( new_html );
+						$btn.addClass( 'cf7-basic-submit' );
+					}
 				}
 			} );
 		}

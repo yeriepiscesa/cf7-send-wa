@@ -274,9 +274,51 @@ table.quickshop-product-attributes td {
 	width: 50px;
 	border-radius: 50%;
 }
-.modal .cf7sendwa-cf7-container .wpcf7 {
-	padding-top: 25px;
-	padding-bottom: 25px;
+.cf7sendwa-cf7-container.form-popup br { display:none; }
+.cf7sendwa-cf7-container.form-popup .wpcf7-not-valid-tip { 
+	font-size: 0.90em; 
+	font-family: inherit; font-weight: 500;
+}
+.cf7sendwa-modal-title {
+	background-color: #000;
+	color: #fff;
+	padding: 15px 25px;
+	margin-bottom: 10px;
+}
+.cf7sendwa-cf7-container.form-popup .wpcf7 {
+	padding: 15px 25px 25px;
+}
+.cf7sendwa-cf7-container.form-popup .wpcf7 p {
+	margin: 0px;
+}
+.cf7sendwa-cf7-container.form-popup label {
+	display:block;
+	font-weight: 600;
+	padding-bottom: 6px;
+}
+.cf7sendwa-cf7-container.form-popup .wpcf7 input,
+.cf7sendwa-cf7-container.form-popup .wpcf7 select,
+.cf7sendwa-cf7-container.form-popup .wpcf7 textarea {
+	width: 100%;
+	background-color: #fff;
+	border-radius: 5px;
+	border: 1px solid #666;
+	margin-bottom: 5px;
+	display:block;
+}
+.cf7sendwa-cf7-container.form-popup .wpcf7 textarea {
+	height: 60px;
+}
+.cf7sendwa-cf7-container.form-popup button {
+	padding: 10px 25px;
+	border: 0px;
+	border-radius: 5px;
+	background-color: #21c972;
+}
+.cf7sendwa-cf7-container.form-popup .wpcf7-response-output {
+	margin: 5px 0px;
+	border-radius: 5px;
+	font-family:inherit
 }
 @media only screen and (max-width: 750px) {
 	.cf7sendwa-woo-filter .filter-block:nth-child(2) input[type="text"] {

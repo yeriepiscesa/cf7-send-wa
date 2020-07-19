@@ -98,6 +98,21 @@
                                name="disable_send_mail" value="1">
                     </td>
 				</tr>
+		        <tr>
+			        <th scope="row"><label for="cf7sendwa_fontawesome">Load Fontawesome</label></th>
+			        <td>
+				        <?php
+                        $checked8 = '';
+                        if( $cf7sendwa_fontawesome == '1' ) {
+                            $checked8 = ' checked="checked"';
+                        }
+					    ?>				        
+                        <input type="checkbox" id="cf7sendwa_fontawesome"<?php echo $checked8; ?>  
+                               name="cf7sendwa_fontawesome" value="1">
+                        <p style="display:inline" class="description">Check if your theme doesn't load font awesome</p>
+			        </td>
+		        </tr>
+				
 				<?php do_action( 'cf7sendwa_custom_whatsapp_settings' ); ?>
 			</tbody>
 		</table>

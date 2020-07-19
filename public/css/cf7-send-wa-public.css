@@ -278,6 +278,7 @@ table.quickshop-product-attributes td {
 .cf7sendwa-cf7-container.form-popup .wpcf7-not-valid-tip { 
 	font-size: 0.90em; 
 	font-family: inherit; font-weight: 500;
+	display:block!important;
 }
 .cf7sendwa-modal-title {
 	background-color: #000;
@@ -296,7 +297,7 @@ table.quickshop-product-attributes td {
 	font-weight: 600;
 	padding-bottom: 6px;
 }
-.cf7sendwa-cf7-container.form-popup .wpcf7 input,
+.cf7sendwa-cf7-container.form-popup .wpcf7 input:not([type="submit"]),
 .cf7sendwa-cf7-container.form-popup .wpcf7 select,
 .cf7sendwa-cf7-container.form-popup .wpcf7 textarea {
 	width: 100%;
@@ -306,6 +307,12 @@ table.quickshop-product-attributes td {
 	margin-bottom: 5px;
 	display:block;
 }
+.cf7sendwa-cf7-container.form-popup .wpcf7 input.wpcf7-submit {
+	border-radius: 5px;
+	border:0px;	
+	background-color: #000000;
+	padding: 10px 25px;
+}
 .cf7sendwa-cf7-container.form-popup .wpcf7 textarea {
 	height: 60px;
 }
@@ -313,7 +320,7 @@ table.quickshop-product-attributes td {
 	padding: 10px 25px;
 	border: 0px;
 	border-radius: 5px;
-	background-color: #21c972;
+	background-color: #13c067;
 }
 .cf7sendwa-cf7-container.form-popup .wpcf7-response-output {
 	margin: 5px 0px;

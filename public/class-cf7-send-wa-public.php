@@ -121,7 +121,7 @@ class Cf7_Send_Wa_Public {
         if(  $this->global_btn_tooltip == '' ) {
 	        $this->global_btn_tooltip = 'Click to chat';
         }
-		$fa_load = get_option( 'cf7sendwa_load_fontawesome', '0' );
+		$fa_load = get_option( 'cf7sendwa_fontawesome', '0' );
 		if( $fa_load == '1' ) {
 			$this->load_fontawesome = true;
         }
@@ -190,7 +190,7 @@ class Cf7_Send_Wa_Public {
         }
         return $skip_mail;
     }
-
+    
 	public function render_contact_form( $atts ) {
 		
 		$_atts = $atts;
@@ -206,6 +206,10 @@ class Cf7_Send_Wa_Public {
 		), $atts );
 		$atts = array_merge( $atts, $_atts );
 		
+        $quickshop_unsemantic = get_option( 'quickshop_unsemantic', '0' );
+		if( $quickshop_unsemantic == '0' ) {		    
+	    	wp_enqueue_style( 'unsemantic-grid' );
+	    }
 		wp_enqueue_script( 'cf7sendwa-commonlib' );
         wp_enqueue_script( 'underscore' );
         if( $this->load_fontawesome ) {
@@ -1470,11 +1474,7 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 				var $frm = $btn.parents("form");
 				var frm_id = $frm.find( 'input[name=_wpcf7]' ).val();
 				if( _.indexOf( cf7wa_ids, frm_id ) ) {
-					if( $btn.prop('tagName') == 'INPUT' ) {
-						var _val = $btn.val();
-						var _cls = $btn.attr('class');
-						$btn.replaceWith( '<button type="submit" class="' + _cls + ' cf7-basic-submit"><i class="fa fa-whatsapp"></i>&nbsp;' + _val + '</button>' );						
-					} else {
+					if( $btn.prop('tagName') == 'BUTTON' ) {
 						var btn_label = $btn.html();
 						var new_html = '<i class="fa fa-whatsapp"></i>&nbsp;' + btn_label;
 						$btn.html( new_html );

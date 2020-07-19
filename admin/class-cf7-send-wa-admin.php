@@ -144,6 +144,13 @@ class Cf7_Send_Wa_Admin {
 
             update_option( 'cf7sendwa_global_tooltip', $_POST['cf7sendwa_global_tooltip'] );
             
+            $cf7sendwa_fontawesome = '0';
+            if( isset( $_POST['cf7sendwa_fontawesome'] ) ) {
+	        	$cf7sendwa_fontawesome = $_POST['cf7sendwa_fontawesome'];    
+				if( $cf7sendwa_fontawesome != '1' ) $cf7sendwa_fontawesome = '0';
+            }
+            update_option( 'cf7sendwa_fontawesome', $cf7sendwa_fontawesome );
+            
             $_woo_checkout = '';
             if( isset( $_POST['woo_checkout'] ) ) {
 	            $_woo_checkout = $_POST['woo_checkout'];
@@ -217,6 +224,8 @@ class Cf7_Send_Wa_Admin {
 		$default_country = get_option( 'cf7sendwa_country' );        
 		$cf7sendwa_global_tooltip = get_option( 'cf7sendwa_global_tooltip', '' );
         $disable_mail = get_option( 'cf7sendwa_disablemail', '0' );
+        $cf7sendwa_fontawesome = get_option( 'cf7sendwa_fontawesome', '0' );
+        
         $full_cart = get_option( 'cf7sendwa_fullcart', '0' );
         $require_shipping = get_option( 'cf7sendwa_requireshipping', '0' );
 

@@ -1451,6 +1451,18 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 				theme:'tooltipster-noir'
 			});			
 		}
+		if( $( '.wpcf7-submit' ).length ) {
+			$( '.wpcf7-submit' ).each( function(){
+				var $btn = $(this);
+				var $frm = $btn.parents("form");
+				var frm_id = $frm.find( 'input[name=_wpcf7]' ).val();
+				if( _.indexOf( cf7wa_ids, frm_id ) ) {
+					var btn_label = $btn.html();
+					var new_html = '<i class="fa fa-whatsapp"></i>&nbsp;' + btn_label;
+					$btn.html( new_html );
+				}
+			} );
+		}
 		Hooks.add_action( 'cf7sendwa_after_mailsent', function( options ){
 			var the_id = options.cf7event.detail.contactFormId;		
 			if( cf7wa_resends.hasOwnProperty( the_id ) ) {

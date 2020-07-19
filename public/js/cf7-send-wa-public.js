@@ -2,7 +2,7 @@
 function wcqib_refresh_quantity_increments() {
     jQuery("div.quantity:not(.buttons_added), td.quantity:not(.buttons_added)").each(function(a, b) {
         var c = jQuery(b);
-        c.addClass("buttons_added"), c.children().first().before('<input type="button" value="-" class="sp-woopos-minus" />'), c.children().last().after('<input type="button" value="+" class="sp-woopos-plus" />')
+        c.addClass("buttons_added"), c.children().first().before('<a href="javascript:void(0);" class="button sp-woopos-minus">-</a>'), c.children().last().after('<a href="javascript:void(0);" class="button sp-woopos-plus">+</a>')
     });
 }
 String.prototype.getDecimals || (String.prototype.getDecimals = function() {
@@ -123,8 +123,8 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
         $( '#'+id ).attr( 'step', '1' )
         $( '#'+id ).addClass( 'input-text qty text' );
         $( '#'+id ).wrap( '<div class="quantity buttons_added"></div>' );		
-        $( '#'+id ).parent().prepend( '<input type="button" data-bind="enable: qty_btn_enable_minus" value="-" class="button sp-woopos-minus">' );
-        $( '#'+id ).parent().append( '<input type="button" data-bind="enable: qty_btn_enable_add" value="+" class="button sp-woopos-plus">' );
+        $( '#'+id ).parent().prepend( '<a href="javascript:void(0);" class="button sp-woopos-minus">-</a>' );
+        $( '#'+id ).parent().append( '<a href="javascript:void(0);" class="button sp-woopos-plus">+</a>' );
     } 
 	
 	var ajax_search_txt = '';

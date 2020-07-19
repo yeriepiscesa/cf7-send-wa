@@ -198,7 +198,7 @@ class Cf7_Send_Wa_Public {
 			'popup' => 'false',
 			'popupdelay' => '2',
 			'buttontext' => 'Open Form',
-			'buttonicon' => 'fa fa-whatsapp',	
+			'buttonicon' => 'fab fa-whatsapp',	
 			'buttonclass' => '',
 			'style' => '',
 			'class' => '',
@@ -1476,7 +1476,7 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 				if( _.indexOf( cf7wa_ids, frm_id ) ) {
 					if( $btn.prop('tagName') == 'BUTTON' ) {
 						var btn_label = $btn.html();
-						var new_html = '<i class="fa fa-whatsapp"></i>&nbsp;' + btn_label;
+						var new_html = '<i class="fab fa-whatsapp"></i>&nbsp;' + btn_label;
 						$btn.html( new_html );
 						$btn.addClass( 'cf7-basic-submit' );
 					}

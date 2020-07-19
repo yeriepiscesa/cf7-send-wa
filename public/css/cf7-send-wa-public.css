@@ -10,18 +10,17 @@ input[type=button].sp-woopos-minus {
     float:left;
 }
 .quantity .input-text.qty {
- width: 35px;
- height: 39px;
- padding: 0 5px;
- text-align: center;
- background-color: transparent;
- border: 1px solid #efefef;
+	padding: 15 0px;
+	text-align: center;
+	background-color: transparent;
+	border: 1px solid #efefef;
 }
 .quantity.buttons_added {
- text-align: left;
- position: relative;
- white-space: nowrap;
- vertical-align: top; }
+	text-align: left;
+	position: relative;
+	white-space: nowrap;
+	vertical-align: top; 
+}
 .quantity.buttons_added input {
  display: inline-block;
  margin: 0;
@@ -30,13 +29,13 @@ input[type=button].sp-woopos-minus {
 }
 .quantity.buttons_added .sp-woopos-minus,
 .quantity.buttons_added .sp-woopos-plus {
- padding: 7px 15px 8px 15px;
- height: 40px;
- border: 1px solid #efefef;
+ padding: 8px 15px;
+ border: 0px;
+ border-radius: 5px;
  cursor:pointer;
  -webkit-appearance: none;
+ -webkit-border-radius: 5px;
 }
-
 .quantity input::-webkit-outer-spin-button,
 .quantity input::-webkit-inner-spin-button {
  -webkit-appearance: none;
@@ -46,6 +45,14 @@ input[type=button].sp-woopos-minus {
 .quantity.buttons_added .sp-woopos-minus:focus,
 .quantity.buttons_added .sp-woopos-plus:focus {
  outline: none; }
+
+#cf7sendwa-quickshop-container button.variant-option-button {
+	border:0px;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	font-size:0.90em;
+	font-weight: 500;
+}
 
 #cf7sendwa-quickshop-container * {
 	font-size: 1em;	

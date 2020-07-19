@@ -208,8 +208,7 @@ class Cf7_Send_Wa {
 		$this->loader->add_filter( 'wpcf7_ajax_json_echo', $plugin_public, 'feedback_ajax_json_echo', 10, 2 );
         $this->loader->add_filter( 'wpcf7_form_elements', $plugin_public, 'do_shortcode_inside_form' );
         
-        $this->loader->add_filter( 'the_content', $plugin_public, 'render_global_form', 999, 1 );
-        $this->loader->add_action( 'woocommerce_after_shop_loop', $plugin_public, 'render_global_form_on_shop' );
+        $this->loader->add_action( 'wp_footer', $plugin_public, 'render_global_form', 5 );
         
         $providers = [ 'twilio', 'fonnte', 'wablas', 'ruangwa' ];
         foreach( $providers as $provider ) {

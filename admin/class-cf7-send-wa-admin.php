@@ -130,15 +130,26 @@ class Cf7_Send_Wa_Admin {
             update_option( 'cf7sendwa_disablemail', $disable_mail );
 			update_option( 'cf7sendwa_country', $_POST['default_country'] );	
             
+            $_global_form = '';
             if( isset( $_POST['cf7sendwa_global_form'] ) ) {
-	            update_option( 'cf7sendwa_global_form', $_POST['cf7sendwa_global_form'] );
-            }
+	            $_global_form = $_POST['cf7sendwa_global_form'];
+            } 
+	        update_option( 'cf7sendwa_global_form', $_global_form );
+
+			$_global_position = '';
             if( isset( $_POST['cf7sendwa_global_position'] ) ) {
-	            update_option( 'cf7sendwa_global_position', $_POST['cf7sendwa_global_position'] );
-            }
+	            $_global_position = $_POST['cf7sendwa_global_position'];
+	        }
+	        update_option( 'cf7sendwa_global_position', $_global_position );
+
             update_option( 'cf7sendwa_global_tooltip', $_POST['cf7sendwa_global_tooltip'] );
             
-            update_option( 'cf7sendwa_woo_checkout', $_POST['woo_checkout'] );
+            $_woo_checkout = '';
+            if( isset( $_POST['woo_checkout'] ) ) {
+	            $_woo_checkout = $_POST['woo_checkout'];
+            }
+            update_option( 'cf7sendwa_woo_checkout', $_woo_checkout );
+
             update_option( 'cf7sendwa_woo_order_redirect', $_POST['woo_order_redirect'] );
 
             $full_cart = '0'; 

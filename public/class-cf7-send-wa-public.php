@@ -116,7 +116,10 @@ class Cf7_Send_Wa_Public {
 	        	break;
         }        
         $this->global_form = get_option( 'cf7sendwa_global_form', '' );
-        $this->global_btn_tooltip = get_option( 'cf7sendwa_global_tooltip', 'Click to chat' );
+        $this->global_btn_tooltip = get_option( 'cf7sendwa_global_tooltip', '' );
+        if(  $this->global_btn_tooltip == '' ) {
+	        $this->global_btn_tooltip = 'Click to chat';
+        }
         if( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 	        $this->woo_is_active = true;
 	        // REST API CALL ( Next Features )
@@ -1262,17 +1265,11 @@ class Cf7_Send_Wa_Public {
 		return $btn;
 	}
 	
-	public function render_global_form_on_shop() {
-		if( $this->global_form != '' ) {
-			echo apply_filters( 'the_content', '' );
-		}
-	}
-	public function render_global_form( $content ){
+	public function render_global_form(){
 		if( $this->global_form != '' ) {
 			add_filter( 'cf7sendwa_popup_button', array( $this, 'floating_button' ), 10, 3 );
-			$content .= do_shortcode( '[contact-form-7-wa id="' . $this->global_form . '" popup="button"]' );
+			echo do_shortcode( '[contact-form-7-wa id="' . $this->global_form . '" popup="button"]' );
 		}
-		return $content;
 	}
 	
 	public function render_script_footer() {

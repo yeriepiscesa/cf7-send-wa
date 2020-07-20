@@ -6,6 +6,13 @@ This is a WordPress plugin, require Contact Form 7 plugin to be activated.
 - Download the stable version at https://solusipress.com/download/contact-form-7-send-to-whatsapp/
 - See the demo https://bisnisdemo.solusipress.com/contact-form-7-to-wa-test/
 
+## Release 0.11.0
+- Add global contact form popup, triggered on floating button click.
+- Add alternate WA numbers. Could be used in select_channel field tag, allowing user/visitor select channel/number to send.
+- Restyling quickshop list.
+- Bugs Fixed.
+- Code cleanups.
+
 ## Release 0.10.16
 - Redesign quickshop's product detail popup.
 - Improve sticky functionality on quickshop order review.

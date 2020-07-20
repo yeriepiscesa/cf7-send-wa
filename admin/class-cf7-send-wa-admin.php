@@ -151,6 +151,12 @@ class Cf7_Send_Wa_Admin {
             }
             update_option( 'cf7sendwa_fontawesome', $cf7sendwa_fontawesome );
             
+            $cf7sendwa_channel = '';
+            if( isset( $_POST['cf7sendwa_channel'] ) ) {
+            	$cf7sendwa_channel = $_POST['cf7sendwa_channel'];
+            }
+	        update_option( 'cf7sendwa_channel', $cf7sendwa_channel );
+            
             $_woo_checkout = '';
             if( isset( $_POST['woo_checkout'] ) ) {
 	            $_woo_checkout = $_POST['woo_checkout'];
@@ -216,8 +222,9 @@ class Cf7_Send_Wa_Admin {
 	    wp_localize_script( $this->plugin_name, 'cf7sendwa', array(
 			'ajaxurl' => admin_url( 'admin-ajax.php' ),
 	        'security' => wp_create_nonce( 'cf7sendwa-settings' ),
-	        'provider' => get_option( 'cf7sendwa_provider', '' )
+	        'provider' => get_option( 'cf7sendwa_provider', '' ),
 	    ) );
+	    wp_enqueue_script( 'underscore' );
 	    wp_enqueue_script( $this->plugin_name );
         
         $whatsapp_number = get_option( 'cf7sendwa_number', '628123456789' );
@@ -225,6 +232,7 @@ class Cf7_Send_Wa_Admin {
 		$cf7sendwa_global_tooltip = get_option( 'cf7sendwa_global_tooltip', '' );
         $disable_mail = get_option( 'cf7sendwa_disablemail', '0' );
         $cf7sendwa_fontawesome = get_option( 'cf7sendwa_fontawesome', '0' );
+        $cf7sendwa_channel = get_option( 'cf7sendwa_channel', '' );
         
         $full_cart = get_option( 'cf7sendwa_fullcart', '0' );
         $require_shipping = get_option( 'cf7sendwa_requireshipping', '0' );
@@ -379,4 +387,22 @@ class Cf7_Send_Wa_Admin {
 			$contact_form->save();
 		}
     }
+    
+    public function add_custom_field_tags() {
+		remove_action( 'wpcf7_init', 'wpcf7_add_form_tag_select', 10, 0 );
+		add_action( 'wpcf7_init', [ $this, 'wpcf7_add_form_tag_select' ], 20, 0 );
+		add_filter( 'wpcf7_validate_select_channel', 'wpcf7_select_validation_filter', 10, 2 );
+		add_filter( 'wpcf7_validate_select_channel*', 'wpcf7_select_validation_filter', 10, 2 );
+    }
+    
+	public function wpcf7_add_form_tag_select() {
+		wpcf7_add_form_tag( array( 'select', 'select*', 'select_channel', 'select_channel*' ),
+			'wpcf7_select_form_tag_handler',
+			array(
+				'name-attr' => true,
+				'selectable-values' => true,
+			)
+		);
+	}
+    
 }

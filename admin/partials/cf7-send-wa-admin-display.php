@@ -85,6 +85,32 @@
                         </p>
                     </td>
                 </tr>
+		        <tr>
+			        <th scope="row"><label>Alternative Numbers</label>
+				        <p class="description">
+					        If you have multiple numbers like staff or customer service
+				        </p>
+			        </th>
+			        <td>
+					    <a href="#" data-bind="click: addChannel"
+					       class="page-title-action">Add Channel</a>
+				        <div style="width:500px;margin-top:10px;">
+					        <table class="wp-list-table widefat fixed striped">
+						        <tbody data-bind="foreach: channelItems">
+							        <tr>
+								        <td style="width:250px"><input type="text" style="width:100%" placeholder="Title" data-bind="value: $data.title"></td>
+								        <td style="width:170px"><input type="text" style="width:100%" placeholder="WA Number" data-bind="value: $data.number"></td>
+								        <td style="width:80px"><a class="button" data-bind="click: $parent.removeChannel">Remove</a></td>
+							        </tr>
+						        </tbody>
+					        </table>
+				        </div>
+				        <p class="description">
+					        You can use [select_channel field-name] tag to allow guest/user select WA number to send.
+				        </p>
+				        <input type="hidden" name="cf7sendwa_channel" id="cf7sendwa_channel" value="<?php echo $cf7sendwa_channel; ?>">
+			        </td>
+		        </tr>
 				<tr>
 					<th scope="row"><label for="cf7sendwa_disablemail">Disable mail sending</label></th>
 					<td>
@@ -112,7 +138,6 @@
                         <p style="display:inline" class="description">Check if your theme doesn't load font awesome</p>
 			        </td>
 		        </tr>
-				
 				<?php do_action( 'cf7sendwa_custom_whatsapp_settings' ); ?>
 			</tbody>
 		</table>

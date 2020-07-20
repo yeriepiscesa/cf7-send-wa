@@ -191,6 +191,20 @@ class Cf7_Send_Wa_Public {
         return $skip_mail;
     }
     
+    public function filter_wpcf7_load_channel( $scanned_tag, $this_exec ) {
+	    if( $scanned_tag['type'] == 'select_channel' || $scanned_tag['type'] == 'select_channel*' ) {
+		    $channels = get_option( 'cf7sendwa_channel', '' );
+		    if( $channels != '' ) {
+			    $channels = json_decode( urldecode( $channels ), true );
+			    foreach( $channels as $cnl ) {
+				    $scanned_tag['values'][] = $cnl['number'];
+				    $scanned_tag['labels'][] = $cnl['title'];
+			    }
+		    }
+	    }
+	    return $scanned_tag;
+    }
+    
 	public function render_contact_form( $atts ) {
 		
 		$_atts = $atts;
@@ -1373,12 +1387,14 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 			if( the_phone.substr(0, 1) == '0' ) {
                 the_phone = cf7wa_country + the_phone.substring(1);
             }
+            
+            var frm_id = $(event.target).attr('id');
             			
             <?php if( $this->provider != '' || $cf7sendwa_is_custom_api ): ?>  
             	$( '.wpcf7-response-output' ).wrap( '<div id="cf7sendwa_element_'+the_id+'" style="display:none;"></div>' );              
                 var cf7sendwa_send_data = { 
-	                'to_number': Hooks.apply_filters( 'cf7sendwa_to_number', the_phone ), 
-	                'message': Hooks.apply_filters( 'cf7sendwa_text_message', the_text ), 
+	                'to_number': Hooks.apply_filters( 'cf7sendwa_to_number', the_phone, { 'frm_id': frm_id, 'inputs': inputs } ), 
+	                'message': Hooks.apply_filters( 'cf7sendwa_text_message', the_text, { 'frm_id': frm_id, 'inputs': inputs } ), 
 	                'security': cf7wa_security,
 	                'cf7_id': the_id,
 	                'cf7_inputs': inputs,
@@ -1404,7 +1420,6 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 					}
                 }
                 
-                var frm_id = $(event.target).attr('id');
                 var $btn = $( '#'+frm_id ).find( 'button' );
                 var btn_text = $btn.html();
                 $btn.attr( 'disabled', true );
@@ -1430,7 +1445,9 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 	            }
             }
             the_text = window.encodeURIComponent( Hooks.apply_filters( 'cf7sendwa_text_message', the_text ) );
-			var url = 'https://api.whatsapp.com/send?phone=' + Hooks.apply_filters( 'cf7sendwa_to_number', the_phone ) + '&text=' + the_text;
+			var url = 'https://api.whatsapp.com/send?phone=' + 
+					   Hooks.apply_filters( 'cf7sendwa_to_number', the_phone, { 'frm_id': frm_id, 'inputs': inputs } ) + 
+					   '&text=' + Hooks.apply_filters( 'cf7sendwa_text_message', the_text, { 'frm_id': frm_id, 'inputs': inputs } );
 			var isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
 			var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;			
 			if( isSafari && iOS ) {
@@ -1500,6 +1517,14 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 					}, 3000 );
 				}
 			}
+		} );
+		Hooks.add_filter( 'cf7sendwa_to_number', function( val, options ){
+			var $find = $( '#' + options.frm_id + ' .wpcf7-select_channel' );
+			if( $find.length ) {
+				var phone = $find.val();
+				return phone;
+			}
+			return val;
 		} );
 	} );
 })(jQuery);

@@ -185,7 +185,8 @@ class Cf7_Send_Wa {
 		$this->loader->add_filter( 'wpcf7_collect_mail_tags', $plugin_admin, 'wpcf7_collect_mail_tags_for_wa', 10, 3 );
 		$this->loader->add_filter( 'wpcf7_contact_form_properties', $plugin_admin, 'cf7_form_properties', 10, 2 );
 		$this->loader->add_action( 'wpcf7_save_contact_form', $plugin_admin, 'save_contact_form_settings', 10, 3 );
-
+				
+		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'add_custom_field_tags', 20 );	
 	}
 
 	/**
@@ -205,8 +206,16 @@ class Cf7_Send_Wa {
         $this->loader->add_filter( 'wpcf7_skip_mail', $plugin_public, 'check_skip_mail', 20, 2 );
         $this->loader->add_action( 'wpcf7_before_send_mail', $plugin_public, 'prepare_attachments', 15, 1 );
 		$this->loader->add_action( 'wp_footer', $plugin_public, 'render_script_footer', 99 );
-		$this->loader->add_filter( 'wpcf7_ajax_json_echo', $plugin_public, 'feedback_ajax_json_echo', 10, 2 );
+		
+		$wpcf7 = get_option( 'wpcf7', '' );
+		if( $wpcf7 != '' && $wpcf7['version'] >= '5.2' ) {
+			$this->loader->add_filter( 'wpcf7_feedback_response', $plugin_public, 'feedback_ajax_json_echo', 10, 2 );
+		} else {
+			$this->loader->add_filter( 'wpcf7_ajax_json_echo', $plugin_public, 'feedback_ajax_json_echo', 10, 2 );
+		}
+		
         $this->loader->add_filter( 'wpcf7_form_elements', $plugin_public, 'do_shortcode_inside_form' );
+        $this->loader->add_filter( 'wpcf7_form_tag', $plugin_public, 'filter_wpcf7_load_channel', 10, 2 );
         
         $this->loader->add_action( 'wp_footer', $plugin_public, 'render_global_form', 5 );
         
@@ -217,7 +226,7 @@ class Cf7_Send_Wa {
         }
         $this->loader->add_action( 'wp_ajax_cf7sendwa_api', $plugin_public, 'cf7sendwa_api' );
         $this->loader->add_action( 'wp_ajax_nopriv_cf7sendwa_api', $plugin_public, 'cf7sendwa_api' );
-        
+                
         /* woocommerce integration */
 		if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 			$this->loader->add_action( 'wpcf7_init', $plugin_public, 'custom_cf7_tags' );

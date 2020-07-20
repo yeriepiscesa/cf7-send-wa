@@ -283,10 +283,11 @@ table.quickshop-product-attributes td {
 }
 
 .cf7sendwa-modal-title {
-	background-color: #000;
-	color: #fff;
+	background-color: #000000;
+	color: #ffffff;
 	padding: 15px 25px;
-	margin-bottom: 10px;
+	margin-bottom: 14px;
+	font-weight:600;
 }
 
 .cf7sendwa-cf7-container.form-popup br { display:none; }

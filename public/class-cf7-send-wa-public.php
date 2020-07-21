@@ -1495,7 +1495,9 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 						var btn_label = $btn.html();
 						var new_html = '<i class="fab fa-whatsapp"></i>&nbsp;' + btn_label;
 						$btn.html( new_html );
-						$btn.addClass( 'cf7-basic-submit' );
+						if( !$frm.find( '#cf7sendwa_quickshop_cart' ).length ) {
+							$btn.addClass( 'cf7-basic-submit' );
+						}
 					}
 				}
 			} );

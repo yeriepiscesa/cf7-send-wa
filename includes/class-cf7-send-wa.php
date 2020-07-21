@@ -205,7 +205,7 @@ class Cf7_Send_Wa {
         
         $this->loader->add_filter( 'wpcf7_skip_mail', $plugin_public, 'check_skip_mail', 20, 2 );
         $this->loader->add_action( 'wpcf7_before_send_mail', $plugin_public, 'prepare_attachments', 15, 1 );
-		$this->loader->add_action( 'wp_footer', $plugin_public, 'render_script_footer', 99 );
+		$this->loader->add_action( 'wp_footer', $plugin_public, 'render_script_footer', 999 );
 		
 		$wpcf7 = get_option( 'wpcf7', '' );
 		if( $wpcf7 != '' && $wpcf7['version'] >= '5.2' ) {

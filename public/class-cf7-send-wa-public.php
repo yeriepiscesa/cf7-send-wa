@@ -601,6 +601,7 @@ class Cf7_Send_Wa_Public {
 	 */
     public function cf7sendwa_api() {
         check_ajax_referer( 'cf7sendwa-api-action', 'security' );
+        $form_id = $_POST['cf7_id'];
         $data = [
 	    	'message' => $_POST['message'],
 	    	'to_number' => $_POST['to_number'],
@@ -611,7 +612,10 @@ class Cf7_Send_Wa_Public {
 		}
 		$data = $this->autorespond_message( $data, $_POST );
 		$data = apply_filters( 'cf7sendwa_custom_api_data', $data );
-        do_action( 'cf7sendwa_custom_send_api', $data );
+		
+        do_action( 'cf7sendwa_custom_send_api', $data, $form_id );
+        do_action( 'cf7sendwa_custom_send_api_' . $form_id, $data );
+        
         wp_die();        
     }
 
@@ -1305,6 +1309,14 @@ class Cf7_Send_Wa_Public {
 	
 	public function render_script_footer() {
 		$cf7sendwa_is_custom_api = has_action( 'cf7sendwa_custom_send_api' );
+		$cf7sendwa_custom_apis = [];
+		if( !empty( $this->ids ) ) {
+			foreach( $this->ids as $_id ) {
+				if( has_action( 'cf7sendwa_custom_send_api_' . $_id ) ) {
+					array_push( $cf7sendwa_custom_apis, $_id );
+				}				
+			}
+		}
 		if( !empty( $this->ids ) && !$this->script_loaded ) : ob_start(); ?>
 <script type="text/javascript">
 var cf7wa_ids = <?php echo json_encode( $this->ids ); ?>; 
@@ -1313,10 +1325,13 @@ var cf7wa_numbers = <?php echo json_encode( $this->numbers ); ?>;
 var cf7wa_bodies = <?php echo json_encode( $this->bodies ) ?>;
 var cf7wa_resends = <?php echo json_encode( $this->resends ) ?>;
 var cf7wa_global_form = '<?php echo $this->global_form; ?>';
-<?php if( $this->provider != '' || $cf7sendwa_is_custom_api ): ?>
+
+<?php if( $this->provider != '' || $cf7sendwa_is_custom_api || !empty( $cf7sendwa_custom_apis ) ): ?>
 var cf7wa_security = '<?php echo wp_create_nonce( 'cf7sendwa-api-action' ); ?>';
 var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
+var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
 <?php endif; ?>
+
 (function( $ ){
 	<?php if( $this->quickshop_rendered ): ?>
 	function quickshop_get_cart_text() {
@@ -1390,7 +1405,8 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
             
             var frm_id = $(event.target).attr('id');
             			
-            <?php if( $this->provider != '' || $cf7sendwa_is_custom_api ): ?>  
+            <?php if( $this->provider != '' || $cf7sendwa_is_custom_api || !empty( $cf7sendwa_custom_apis ) ): ?>  
+            	
             	$( '.wpcf7-response-output' ).wrap( '<div id="cf7sendwa_element_'+the_id+'" style="display:none;"></div>' );              
                 var cf7sendwa_send_data = { 
 	                'to_number': Hooks.apply_filters( 'cf7sendwa_to_number', the_phone, { 'frm_id': frm_id, 'inputs': inputs } ), 
@@ -1409,7 +1425,7 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 		            cf7sendwa_send_data.order_id = api_response.woo_order;
 		            cf7sendwa_send_data.order_links = api_response.woo_links;
 	            }
-                <?php if( $cf7sendwa_is_custom_api ): ?>
+                <?php if( $cf7sendwa_is_custom_api || !empty( $cf7sendwa_custom_apis ) ): ?>
                 	cf7sendwa_send_data.action = 'cf7sendwa_api';
                 <?php else: ?>
                 	cf7sendwa_send_data.action = 'send_<?php echo $this->provider; ?>';
@@ -1435,27 +1451,31 @@ var cf7wa_ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 						$btn.html( btn_text );
                     }
                 });
+                
             <?php else: ?>
-            if( api_response.attachments != undefined ) {
-		        if( api_response.attachments.length ) {
-			        the_text += "\n\n"+"*Attachments*";
-		            _.each( api_response.attachments, function( url, index, list ){
-			            the_text += "\n"+url;
-		            } );
+            
+	            if( api_response.attachments != undefined ) {
+			        if( api_response.attachments.length ) {
+				        the_text += "\n\n"+"*Attachments*";
+			            _.each( api_response.attachments, function( url, index, list ){
+				            the_text += "\n"+url;
+			            } );
+		            }
 	            }
-            }
-            the_text = window.encodeURIComponent( Hooks.apply_filters( 'cf7sendwa_text_message', the_text ) );
-			var url = 'https://api.whatsapp.com/send?phone=' + 
-					   Hooks.apply_filters( 'cf7sendwa_to_number', the_phone, { 'frm_id': frm_id, 'inputs': inputs } ) + 
-					   '&text=' + Hooks.apply_filters( 'cf7sendwa_text_message', the_text, { 'frm_id': frm_id, 'inputs': inputs } );
-			var isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
-			var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;			
-			if( isSafari && iOS ) {
-				location = url;
-			} else {
-				window.open( url, '_blank' );
-			}		
-			redirect_woo_order_received( api_response );
+	            
+	            the_text = window.encodeURIComponent( Hooks.apply_filters( 'cf7sendwa_text_message', the_text ) );
+				var url = 'https://api.whatsapp.com/send?phone=' + 
+						   Hooks.apply_filters( 'cf7sendwa_to_number', the_phone, { 'frm_id': frm_id, 'inputs': inputs } ) + 
+						   '&text=' + Hooks.apply_filters( 'cf7sendwa_text_message', the_text, { 'frm_id': frm_id, 'inputs': inputs } );
+				var isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
+				var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+				if( isSafari && iOS ) {
+					location = url;
+				} else {
+					window.open( url, '_blank' );
+				}		
+				redirect_woo_order_received( api_response );
+			
             <?php endif; ?>
             
 			Hooks.do_action( 'cf7sendwa_after_mailsent', { cf7event: event, phone: the_phone, text: the_text } );

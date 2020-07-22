@@ -116,6 +116,7 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 
 (function( $ ) {
 	'use strict';	
+	var frm_ids = [];
     function wrap_spinner( id ) {
         $( '#'+id ).css( 'display','inline-block' )
                    .css( 'margin-top', '0px' )
@@ -190,16 +191,12 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 		} );
 	}
 	
-	function quickshop_checkout_button( has_form, html_hidden ){
+	function quickshop_checkout_button( $element, has_form, html_hidden ){
 		var button_html = '<button class="button cf7sendwa-add-to-cart">' + cf7sendwa_qsreview.cart_label + '</button>';
-		var button_container_selector = '.cf7sendwa-quickshop-checkout';
-		if( cf7sendwa_qsreview.button_append_to != '' ) {
-			button_container_selector = cf7sendwa_qsreview.button_append_to;
-		}
 		if( !has_form ) {
-			$( button_container_selector ).append( html_hidden );
+			$element.append( button_html );
 		}
-		$( button_container_selector ).parent().append( button_html );
+		$element.append( html_hidden );			
 	}
 	
 	$( document ).ready( function() {
@@ -233,17 +230,33 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 		}
 		
 		var html_hidden = '<input type="hidden" name="quickshop_cart" id="cf7sendwa_quickshop_cart" value="">';		
-		if( $( '.cf7sendwa-cf7-container' ).length ) {
-			$( '.cf7sendwa-cf7-container .wpcf7-submit' ).parent().append( html_hidden );
-			Hooks.do_action( 'cf7sendwa_after_cf7_submit' );
-			if( cf7wa_global_form != '' && $( '.cf7sendwa-quickshop-checkout' ).length ) {
-				if( cf7wa_ids.length == 1 && cf7wa_ids[0] == cf7wa_global_form ) {
-					quickshop_checkout_button( true, html_hidden );
+		$( '.cf7sendwa-cf7-container' ).each( function(){
+			var $frm = $( this ).find( 'form' );
+			if( $frm.length ) {				
+				if( $frm.find( '#cf7sendwa-quickshop-container' ).length ) {
+					frm_ids.push( $frm.find( 'input[name=_wpcf7]' ).val() );
+					quickshop_checkout_button( $frm.find( '.cf7sendwa-quickshop-checkout' ), true, html_hidden );
+					Hooks.do_action( 'cf7sendwa_after_cf7_submit', { 'frm': $frm } );
 				}
 			}
-		} else if( $( '.cf7sendwa-quickshop-checkout' ).length ) {
-			quickshop_checkout_button( false, html_hidden );
-		}
+		} );
+		if( $( '#cf7sendwa-checkout' ).length ) {
+			var $checkout = $( '#cf7sendwa-checkout' );
+			var $frm = $checkout.find( 'form' );
+			if( $frm.length == 0 ) {
+				$frm = $checkout.closest( 'form' );
+			}
+			if( $frm.length ) {
+				var frm_id = $frm.find( 'input[name=_wpcf7]' ).val();
+				if( _.indexOf( frm_ids, frm_id ) == -1 ) {
+					frm_ids.push( frm_id );
+					quickshop_checkout_button( $frm, true, html_hidden );
+				}
+			} else {
+				quickshop_checkout_button( $checkout.find( '.cf7sendwa-quickshop-checkout-container' ), false, html_hidden );
+			}
+		};
+		
 		$( 'body' ).on( 'change', '.product-item .qty', product_qty_change );
 		$( 'body' ).on( 'keyup', '.product-item .qty', product_qty_change );
 		$( 'body' ).on( 'focus', '.product-item .qty', function(evt){

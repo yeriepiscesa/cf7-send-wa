@@ -1,5 +1,6 @@
 ## Contact Form 7 Send to WhatsApp
 Send Contact Form 7 message to WhatsApp.
+
 This is a WordPress plugin, require Contact Form 7 plugin to be activated. Some features to highlight:
 
  - Redirect message to WhatsApp (via WA link or 3rd party services) after mail sent status (either you have set skip_mail option or not)
@@ -12,4 +13,5 @@ This is a WordPress plugin, require Contact Form 7 plugin to be activated. Some 
  - Alternative number.
 
 More information [https://solusipress.com/download/contact-form-7-send-to-whatsapp/](https://solusipress.com/download/contact-form-7-send-to-whatsapp/)
+
 See the demo [https://bisnisdemo.solusipress.com/contact-form-7-to-wa-test/](https://bisnisdemo.solusipress.com/contact-form-7-to-wa-test/)

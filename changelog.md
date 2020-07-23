@@ -1,3 +1,6 @@
+## Release 0.11.1
+- Bugs fixed and code improvements for basic form and checkout form.
+
 ## Release 0.11.0
 - Add global contact form popup, triggered on floating button click.
 - Add alternate WA numbers. Could be used in select_channel field tag, allowing user/visitor select channel/number to send.

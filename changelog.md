@@ -1,3 +1,7 @@
+## Release 0.11.2
+- Move template processing at server side on form submission.
+- Special mail tag can be used on Whatsapp template.
+
 ## Release 0.11.1
 - Bugs fixed and code improvements for basic form and checkout form.
 

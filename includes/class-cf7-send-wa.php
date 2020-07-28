@@ -226,6 +226,8 @@ class Cf7_Send_Wa {
         }
         $this->loader->add_action( 'wp_ajax_cf7sendwa_api', $plugin_public, 'cf7sendwa_api' );
         $this->loader->add_action( 'wp_ajax_nopriv_cf7sendwa_api', $plugin_public, 'cf7sendwa_api' );
+        
+        $this->loader->add_action( 'wpcf7_before_send_mail', $plugin_public, 'apply_content_tags_submit', 10, 1 );
                 
         /* woocommerce integration */
 		if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {

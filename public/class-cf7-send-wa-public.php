@@ -42,13 +42,13 @@ class Cf7_Send_Wa_Public {
     
 	protected $ids = array();
 	protected $script_loaded = false;
-	protected $bodies = array();
 	protected $numbers = array();
 	protected $resends = array();
 	protected $global_form = null;
 	protected $global_btn_tooltip = '';
 	protected $load_fontawesome = false;
 
+    public $wa_submitted_text = '';
     protected $provider = '';
 
     protected $twilio_sid = null;
@@ -301,7 +301,6 @@ class Cf7_Send_Wa_Public {
         array_push( $this->ids, intval($atts['id']) );
         $_wa = get_post_meta( $atts['id'], '_whatsapp', true );
         if( $_wa && isset( $_wa['body'] ) && trim($_wa['body']) != '' ) {
-	        $this->bodies[$atts['id']] = trim($_wa['body']);
 	        $allow_resend = '0';
 	        $resend_label = '';
 	        if( isset( $_wa['allowresend'] ) ) {
@@ -314,13 +313,7 @@ class Cf7_Send_Wa_Public {
 	        	'allow' => $allow_resend,
 	        	'label' => $resend_label
 	        );
-        } else {
-	        $_mail = get_post_meta( $atts['id'], '_mail', true );
-	        if( $_mail && isset( $_mail['body'] ) ) {
-	            $this->bodies[$atts['id']] = $_mail['body'];
-	        }        
-        }
-        
+        }    
         $this->instance_count++;
         
 		return $html;
@@ -693,6 +686,24 @@ class Cf7_Send_Wa_Public {
 		return $attachments;
     }
     
+    /*
+	 * Content tags replace value on submit
+	 * @since 0.11.2
+	 * @access public
+	 */
+    public function apply_content_tags_submit( $contact_form ) {
+	    $wa = $contact_form->prop('whatsapp');
+	    $body = '';
+	    if( is_array( $wa ) && !empty( $wa ) ) {
+			$body = trim( $wa['body'] );		    	
+	    }
+	    if( $body == '' ) {
+			$mail = $contact_form->prop('mail');    
+			$body = $mail['body'];
+	    }
+        $mailtag = new WPCF7_MailTaggedText( $body );
+        $this->wa_submitted_text = $mailtag->replace_tags();
+    }
     
     /*
 	 * Feedback ajax json echo 
@@ -711,6 +722,8 @@ class Cf7_Send_Wa_Public {
 		    $response['redirect'] = $this->woo_order_received_url;
 		    $response['woo_links'] = $this->woo_order_links;
 	    }
+	    $response['wa_text'] = $this->wa_submitted_text;
+	    $this->wa_submitted_text = '';
 	    $response['message'] = do_shortcode( $response['message'] );
 	    
 	    return $response;
@@ -824,7 +837,7 @@ class Cf7_Send_Wa_Public {
 		}			
 		return $html;    		
 	}
-	    
+	
     /**
 	 * Create Woocommerce Order 
 	 * @since 0.6.0
@@ -1322,7 +1335,6 @@ class Cf7_Send_Wa_Public {
 var cf7wa_ids = <?php echo json_encode( $this->ids ); ?>; 
 var cf7wa_country = '<?php echo get_option( 'cf7sendwa_country', '62' ) == '' ? get_option( 'cf7sendwa_country' ) : '62'; ?>';
 var cf7wa_numbers = <?php echo json_encode( $this->numbers ); ?>; 
-var cf7wa_bodies = <?php echo json_encode( $this->bodies ) ?>;
 var cf7wa_resends = <?php echo json_encode( $this->resends ) ?>;
 var cf7wa_global_form = '<?php echo $this->global_form; ?>';
 
@@ -1369,21 +1381,7 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
 		if( _.indexOf( cf7wa_ids, the_id ) ) {			
 			var inputs = event.detail.inputs;
 			var api_response = event.detail.apiResponse;
-			var the_text = cf7wa_bodies[the_id];
-			var input_array = {};						
-			$.each( inputs, function( index, detail ) {
-				the_text = the_text.replace( '[' + detail.name + ']', detail.value );
-				if( detail.name.indexOf( '[]' ) >= 0 ) {
-					var _key = detail.name.replace('[]','');
-					if( input_array[ _key ] == undefined ) {
-						input_array[ _key ] = [];
-					}
-					input_array[ _key ].push( detail.value );
-				}
-			} );	
-			_.each( input_array, function( val, key, list ) {
-				the_text = the_text.replace( '[' + key + ']', val.join(", ") );
-			} );			
+			var the_text = api_response.wa_text;
 			<?php 
 			$woo_order = '';
 			if( $this->quickshop_rendered ) {

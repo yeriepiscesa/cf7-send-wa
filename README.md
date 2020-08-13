@@ -15,3 +15,5 @@ This is a WordPress plugin, require Contact Form 7 plugin to be activated. Some 
 More information [https://solusipress.com/download/contact-form-7-send-to-whatsapp/](https://solusipress.com/download/contact-form-7-send-to-whatsapp/)
 
 See the demo [https://bisnisdemo.solusipress.com/contact-form-7-to-wa-test/](https://bisnisdemo.solusipress.com/contact-form-7-to-wa-test/)
+
+[![](https://cdn.buymeacoffee.com/buttons/default-orange.png)](https://www.buymeacoffee.com/yeriepiscesa)

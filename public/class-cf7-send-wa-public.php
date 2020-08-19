@@ -1288,7 +1288,7 @@ class Cf7_Send_Wa_Public {
 			$style = ' style="right:0px; bottom: 0px;"';
 			$_top = 0;
 			if( is_admin_bar_showing() ) {
-				$_top = $top + 30;
+				$_top = $_top + 30;
 			}
 			switch( $cf7sendwa_global_position ){
 				case 'bottom-left':

@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 0.3.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'CF7_SEND_WA_VERSION', '0.11.2' );
+define( 'CF7_SEND_WA_VERSION', '0.11.3' );
 
 /**
  * The code that runs during plugin activation.

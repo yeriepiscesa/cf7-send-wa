@@ -164,7 +164,8 @@ input[type=button].sp-woopos-minus {
 }
 #cf7sendwa-checkout .sticky-wrapper .cf7sendwa-quickshop-checkout {
 	max-height: 70vh;
-	overflow: scroll;
+	overflow-x: auto;
+	overflow-y: auto;
 }
 button.cf7sendwa-add-to-cart { width: 100%; font-size: 0.975em; }
 

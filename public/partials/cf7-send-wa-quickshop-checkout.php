@@ -26,7 +26,7 @@ if( $atts['max-width'] != '' ) {
 		</div>
 		<?php do_action( 'cf7sendwa_quickshop_before_order_review_list' ); ?>		
 		<div class="wrap cf7sendwa-quickshop-checkout">
-			<table width="100%" border="0" class="table-cart" style="overflow-x:auto;">
+			<table width="100%" border="0" class="table-cart">
 				<tbody data-bind="foreach:items">
 					<tr>
 						<td width="60%" class="cart-item">

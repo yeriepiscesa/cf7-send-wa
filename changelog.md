@@ -1,3 +1,8 @@
+## Release 0.11.3
+- Fix undefined variable warning
+- Fix styling for quickshop order review
+
+
 ## Release 0.11.2
 - Move template processing at server side on form submission.
 - Special mail tag can be used on Whatsapp template.

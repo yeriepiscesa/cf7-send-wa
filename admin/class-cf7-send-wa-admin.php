@@ -305,11 +305,32 @@ class Cf7_Send_Wa_Admin {
 	 *
 	 */	   
     public function whatsapp_panel( $panels ) {
+
 		$panels['cf7sendwa-settings-panel'] = array(
 			'title' => __( 'WhatsApp', 'cf7sendwa' ),
 			'callback' => array( $this, 'wpcf7_editor_panel_whatsapp' ),
 		);
+		
+		$order = array( 'form-panel','mail-panel','cf7sendwa-settings-panel' );
+		$new_order = [];		
+		
+		foreach( $order as $panel ) {
+			$new_order[ $panel ] = $panels[ $panel ];
+		}
+		foreach( $panels as $tab=>$panel ) {
+			if( !isset( $new_order[ $tab ] ) ) {
+				$new_order[ $tab ] = $panel;
+			}	
+		}
+		$panels = $new_order;
+		
+	    $disable_mail = get_option( 'cf7sendwa_disablemail', '0' );
+		if( $disable_mail == '1' ) {
+			unset( $panels['mail-panel'] );
+		}
+		
 	    return $panels;
+	    
     }
     
     /**

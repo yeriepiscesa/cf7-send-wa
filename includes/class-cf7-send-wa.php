@@ -244,6 +244,8 @@ class Cf7_Send_Wa {
 			
 			$this->loader->add_action( 'wp_ajax_cf7sendwa_products', $plugin_public, 'web_list_product' );
 			$this->loader->add_action( 'wp_ajax_nopriv_cf7sendwa_products', $plugin_public, 'web_list_product' );
+			
+			$this->loader->add_action( 'woocommerce_single_product_summary', $plugin_public, 'cf7_wa_button', 90 );
 
 			$this->loader->add_action( 'wp_ajax_cf7sendwa_add_to_cart', $plugin_public, 'quickshop_add_to_cart' );
 			$this->loader->add_action( 'wp_ajax_nopriv_cf7sendwa_add_to_cart', $plugin_public, 'quickshop_add_to_cart' );

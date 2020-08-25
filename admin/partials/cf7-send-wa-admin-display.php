@@ -150,15 +150,40 @@
 			        <td>
 				        <select class="cf7-checkout-form" name="woo_checkout" id="cf7sendwa_woo_form" style="width: 300px;">
 				        <?php 
-					    $cf7_woo = get_option( 'cf7sendwa_woo_checkout', '' );    
-					    if( $cf7_woo != '' ) { 
-					        $__p = get_post( $cf7_woo );
+					    if( $woo_checkout != '' ) { 
+					        $__p = get_post( $woo_checkout );
 					        echo '<option value="'. $__p->ID .'" selected="selected">' . $__p->post_title . '</option>'; 
 					    } ?>
 			        	</select>
 						<p class="description">Contact Form which contain [cf7sendwa_woo_checkout] tag</p>
 			        </td>
 		        </tr>
+		        <tr>
+			        <th scope="row"><label for="cf7sendwa_woo_singl_form">Single Product Form</label></th>
+			        <td>
+				        <select class="cf7-checkout-form" name="woo_single_product"
+					        data-bind="selectedOptions: single_product"  
+					        id="cf7sendwa_woo_single_product" style="width: 300px;">
+				        <?php 
+					    if( $woo_single_product != '' ) { 
+					        $__p = get_post( $woo_single_product );
+					        echo '<option value="'. $__p->ID .'" selected="selected">' . $__p->post_title . '</option>'; 
+					    } ?>
+			        	</select>
+			        	<div data-bind="visible:single_product() != ''" style="padding-top:5px;">
+				        	
+				        	<label for="cf7sendwa_single_button"><strong>Button Text</strong></label><br>
+				        	<input type="text" id="cf7sendwa_single_button" 
+                               placeholder="Chat Seller" 
+                               name="single_button" size="39"
+                               value="<?php echo $single_button; ?>">
+                            <br><br>
+                            <label for="cf7sendwa_single_greet"><strong>Opening Text</strong><label><br>   
+                            <textarea id="cf7sendwa_single_greet" rows="3" cols="60" name="single_product_greet"><?php echo $single_product_greet; ?></textarea><br>
+                            <p class="description">You can use these tags for dynamic value: {{product_name}} {{product_sku}}</p>
+			        	</div>
+			        </td>
+		        </tr>		        
 		        <tr>
 			        <th scope="row"><label>Full Width Cart Totals</label></th>
 			        <td>

@@ -162,6 +162,14 @@ class Cf7_Send_Wa_Admin {
 	            $_woo_checkout = $_POST['woo_checkout'];
             }
             update_option( 'cf7sendwa_woo_checkout', $_woo_checkout );
+            
+            $_woo_single_product = '';
+            if( isset( $_POST['woo_single_product'] ) ) {
+	            $_woo_single_product = $_POST['woo_single_product'];
+            }
+            update_option( 'cf7sendwa_woo_single_product', $_woo_single_product ); 
+            update_option( 'cf7sendwa_single_button', $_POST['single_button'] );         
+            update_option( 'cf7sendwa_single_product_greet', $_POST['single_product_greet'] );  
 
             update_option( 'cf7sendwa_woo_order_redirect', $_POST['woo_order_redirect'] );
 
@@ -219,10 +227,13 @@ class Cf7_Send_Wa_Admin {
             do_action( 'cf7sendwa_custom_settings_save' );
         }
         
+        $woo_single_product = get_option( 'cf7sendwa_woo_single_product', '' );
+        
 	    wp_localize_script( $this->plugin_name, 'cf7sendwa', array(
 			'ajaxurl' => admin_url( 'admin-ajax.php' ),
 	        'security' => wp_create_nonce( 'cf7sendwa-settings' ),
 	        'provider' => get_option( 'cf7sendwa_provider', '' ),
+	        'single_product' => $woo_single_product,
 	    ) );
 	    wp_enqueue_script( 'underscore' );
 	    wp_enqueue_script( $this->plugin_name );
@@ -243,6 +254,8 @@ class Cf7_Send_Wa_Admin {
         $quickshop_unsemantic = get_option( 'quickshop_unsemantic', '0' );
         
         $woo_checkout = get_option( 'cf7sendwa_woo_checkout', '' );
+        $single_button = get_option( 'cf7sendwa_single_button', '' );
+        $single_product_greet = get_option( 'cf7sendwa_single_product_greet', '' );
         $woo_order_redirect = get_option( 'cf7sendwa_woo_order_redirect', '' );
         
         $twilio_sid = get_option( 'cf7sendwa_twilio_sid', '' );

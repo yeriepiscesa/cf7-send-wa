@@ -1320,6 +1320,18 @@ class Cf7_Send_Wa_Public {
 		}
 	}
 	
+	public function cf7_wa_button() {
+		if( is_product() ) {			
+			$form_id = get_option( 'cf7sendwa_woo_single_product', '' );
+			if( $form_id != '' ) {
+				$text = get_option( 'cf7sendwa_single_button', 'Chat Seller' );
+				echo '<div class="cf7sendwa-single-product-button">';
+				echo do_shortcode( '[contact-form-7-wa id="' . $form_id . '" popup="button" buttontext="' . $text . '"]' );
+				echo '</div>';
+			}
+		}
+	}
+	
 	public function render_script_footer() {
 		$cf7sendwa_is_custom_api = has_action( 'cf7sendwa_custom_send_api' );
 		$cf7sendwa_custom_apis = [];
@@ -1337,6 +1349,7 @@ var cf7wa_country = '<?php echo get_option( 'cf7sendwa_country', '62' ) == '' ? 
 var cf7wa_numbers = <?php echo json_encode( $this->numbers ); ?>; 
 var cf7wa_resends = <?php echo json_encode( $this->resends ) ?>;
 var cf7wa_global_form = '<?php echo $this->global_form; ?>';
+var cf7wa_single_product = '<?php echo get_option( 'cf7sendwa_woo_single_product', '' ); ?>';
 
 <?php if( $this->provider != '' || $cf7sendwa_is_custom_api || !empty( $cf7sendwa_custom_apis ) ): ?>
 var cf7wa_security = '<?php echo wp_create_nonce( 'cf7sendwa-api-action' ); ?>';
@@ -1503,6 +1516,31 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
 				theme:'tooltipster-noir'
 			});			
 		}
+		<?php if( is_product() ): ?>
+		if( $( '.cf7sendwa-single-product-button' ).length && cf7wa_single_product != '' ) {
+			<?php 
+			$product = get_product( get_the_ID() ); 
+			$greeting = get_option( 'cf7sendwa_single_product_greet', '' );	
+			$greeting = str_replace( '{{product_name}}', $product->get_name(), $greeting );
+			$greeting = str_replace( '{{product_sku}}', $product->get_sku(), $greeting );
+			$greeting = urlencode( $greeting );			
+			?>
+			$( 'input[name="_wpcf7"]' ).each( function(){
+				if( $(this).val() == cf7wa_single_product ) {
+					var $frm = $(this).closest('form');
+					var greet_text = '<?php echo $greeting ?>';	
+					greet_text = greet_text.replace( /\+/g, '%20' );
+					$frm.find( 'textarea' ).val( decodeURIComponent( greet_text ) );
+					Hooks.add_action( 'cf7sendwa_after_mailsent', function({}){
+						var _int = window.setInterval( function(){
+							$frm.find( 'textarea' ).val( decodeURIComponent( greet_text ) );
+							window.clearInterval( _int );
+						}, 3000 );
+					} );
+				}
+			} );
+		}
+		<?php endif; ?>
 		if( $( '.wpcf7-submit' ).length ) {
 			$( '.wpcf7-submit' ).each( function(){
 				var $btn = $(this);				

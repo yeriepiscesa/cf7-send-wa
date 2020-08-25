@@ -3,7 +3,8 @@
 	
 	function SendWA_ViewModel() {
 		var self = this;
-		self.provider = ko.observable(cf7sendwa.provider);
+		self.provider = ko.observable( cf7sendwa.provider );
+		self.single_product = ko.observable( cf7sendwa.single_product );
 
 		self.channelItems = ko.observableArray();
 		self.addChannel = function(){

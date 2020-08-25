@@ -8,6 +8,7 @@ This is a WordPress plugin, require Contact Form 7 plugin to be activated. Some 
  - Auto respond WA message (using third party service).
  - WooCommerce checkout replacement.
  - WooCommerce product list inside form.
+ - Contextual form inside WooCommerce's single product.
  - Display form as popup.
  - Set a form as global contact form (visible all over pages) by clicking WA floating button.
  - Alternative number.

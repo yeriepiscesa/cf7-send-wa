@@ -306,7 +306,7 @@ class Cf7_Send_Wa_Admin {
 	 */	   
     public function config_custom_validation( $contact_form ) {	   
 	    $disable_mail = get_option( 'cf7sendwa_disablemail', '0' );
-	    if( $disable_mail == '1' ) {
+	    if( is_admin() && $disable_mail == '1' ) {
 		    $config_errors = get_post_meta( $contact_form->id(), '_config_errors', true );
 		    if( is_array( $config_errors ) && !empty( $config_errors ) ) {
 				$updated = false;

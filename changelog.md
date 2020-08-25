@@ -1,6 +1,11 @@
+## Release 0.11.4
+- Add form inside WooCommerce's single product page.
+- Remove Mail tab when "Disable mail sending" option enabled.
+- Remove mail config validation when "Disable mail sending" option enabled.
+
 ## Release 0.11.3
-- Fix undefined variable warning
-- Fix styling for quickshop order review
+- Fix undefined variable warning.
+- Fix styling for quickshop order review.
 
 
 ## Release 0.11.2

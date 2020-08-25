@@ -178,6 +178,7 @@ class Cf7_Send_Wa {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
         
+        $this->loader->add_action( 'wpcf7_contact_form', $plugin_admin, 'config_custom_validation' );
         $this->loader->add_action( 'wp_ajax_select_contact_form', $plugin_admin, 'contact_forms_lookup' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'create_menu' );
 		$this->loader->add_filter( 'wpcf7_contact_form_shortcode', $plugin_admin, 'cf7_extended_shortcode', 10, 3 );

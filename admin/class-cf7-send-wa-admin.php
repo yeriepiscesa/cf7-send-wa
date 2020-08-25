@@ -299,6 +299,31 @@ class Cf7_Send_Wa_Admin {
     }
     
     /**
+	 * Custom validation on mail sending disabled
+	 * @since 0.11.4
+	 * @access public
+	 *
+	 */	   
+    public function config_custom_validation( $contact_form ) {	   
+	    $disable_mail = get_option( 'cf7sendwa_disablemail', '0' );
+	    if( $disable_mail == '1' ) {
+		    $config_errors = get_post_meta( $contact_form->id(), '_config_errors', true );
+		    if( is_array( $config_errors ) && !empty( $config_errors ) ) {
+				$updated = false;
+				foreach( $config_errors as $key=>$config ) {
+					if( strpos( $key, 'mail.' ) !== false ) {
+						unset( $config_errors[$key] );
+						$updated = true;
+					}
+				}
+				if( $updated ) {
+					update_post_meta( $contact_form->id(), '_config_errors', $config_errors );
+				}
+		    }
+	    }
+    }
+    
+    /**
 	 * WhatsApp setting panel
 	 * @since 0.9.0
 	 * @access public

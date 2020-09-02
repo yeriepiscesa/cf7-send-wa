@@ -253,7 +253,8 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 					quickshop_checkout_button( $frm, true, html_hidden );
 				}
 			} else {
-				quickshop_checkout_button( $checkout.find( '.cf7sendwa-quickshop-checkout-container' ), false, html_hidden );
+				var $_el = $checkout.find( '.cf7sendwa-quickshop-checkout-container' );
+				quickshop_checkout_button( Hooks.apply_filters( 'cf7sendwa_quickshop_button_container', $_el ), false, html_hidden );
 			}
 		};
 		

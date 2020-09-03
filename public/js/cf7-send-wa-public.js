@@ -393,6 +393,13 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 					do_ajax_search( text );
 				}						
 			});
+            $( '#cf7sendwa_woo_ajax_filter' ).keyup( function(evt){
+                if( evt.keyCode == 8 || evt.keyCode == 46 ) {
+                    if( $(this).val() == '' ) {
+                        do_ajax_search( '' );
+                    }    
+                }
+            } );			
 			$( '#cf7sendwa_woo_ajax_filter_button' ).click( function(evt){
 				var text = $( '#cf7sendwa_woo_ajax_filter' ).val();
 				do_ajax_search( text );

@@ -377,6 +377,13 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 				'viewport_bottom': cf7sendwa_qsreview.viewport_bottom    
 		    } );
 	    }
+        if( $( '.cf7sendwa-sticky' ).length ) {            
+            do_initiate_sticky( $( '.cf7sendwa-sticky' ), cf7sendwa_qsreview.stickyend, {
+                'top': cf7sendwa_qsreview.top,
+                'bottom': cf7sendwa_qsreview.bottom,
+                'viewport_bottom': cf7sendwa_qsreview.viewport_bottom    
+            } );
+        }
 	    
 	    if( $( '#cf7sendwa_woo_ajax_filter' ).length ) {
 			$( '#cf7sendwa_woo_ajax_filter' ).keydown(function(evt){

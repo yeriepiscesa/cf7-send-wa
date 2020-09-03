@@ -66,6 +66,7 @@ function Woo_QuickShop_Cart() {
 				$target.fadeOut(250).fadeIn(250);
 				window.clearInterval( _x );
 			}, 300);
+			Hooks.do_action( 'cf7sendwa_after_order_review_item_click', { 'item': $target } );
 		}
 	}
 	self.removeItem = function(e){

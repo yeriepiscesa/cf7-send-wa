@@ -1,3 +1,11 @@
+## Release 0.11.5
+- Filterable container element for quickshop button
+- Add sticky handler
+- Clear ajax filter on empty textbox
+- Add hook action after order review item click
+- Fix error when woocommerce not active
+
+
 ## Release 0.11.4
 - Add form inside WooCommerce's single product page.
 - Remove Mail tab when "Disable mail sending" option enabled.

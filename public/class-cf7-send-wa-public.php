@@ -1516,7 +1516,7 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
 				theme:'tooltipster-noir'
 			});			
 		}
-		<?php if( is_product() ): ?>
+		<?php if( $this->$woo_is_active && is_product() ): ?>
 		if( $( '.cf7sendwa-single-product-button' ).length && cf7wa_single_product != '' ) {
 			<?php 
 			$product = get_product( get_the_ID() ); 

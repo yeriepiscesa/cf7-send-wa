@@ -660,6 +660,12 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 				}, delay );
 			} );
 		}
+        if( $( '#cf7sendwa-quickshop-container' ).length ) {
+            var _scroll = window.setInterval( function(){
+                $( 'body' ).scrollTo( $( '#cf7sendwa-quickshop-container' ), 400, { offset: Hooks.apply_filters( 'cf7sendwa_scroll_to_quickshop_container_offset', -100 ) } );
+                clearInterval( _scroll );
+            }, 500 );
+        }		
 	}
 	// select2
 	if( $( '.cf7sendwa-woo-categories' ).length ) {

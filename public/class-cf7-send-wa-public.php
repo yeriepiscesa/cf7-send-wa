@@ -1168,9 +1168,12 @@ class Cf7_Send_Wa_Public {
 					$_variation = null;
 					$_product_id = $item['prop']['product_id'];
 					if( $item['prop']['product_type'] == 'variation' ) {
-						$_variation = $item['prop']['pa'];
-						$_variation_id = $item['prop']['variation_id'];
-					}
+	                    $_variation = [];
+	                    foreach( $item['prop']['pa'] as $k=>$v ) {
+	                        $_variation[ 'attribute_' . $k ] = $v;
+	                    }
+	                    $_variation_id = $item['prop']['variation_id'];
+	                }
 					WC()->cart->add_to_cart( $_product_id, $item['qty'], $_variation_id, $_variation );
 					$added++;
 				}			

@@ -345,7 +345,7 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 			if( quickshop && quickshop.total > 0 ) {
                 var btn_text = $this_button.html();
                 $this_button.attr( 'disabled', true );
-                $this_button.html( btn_text + '&nbsp;<img src="' + cf7sendwa.assets_dir + 'img/ajax-loader.gif">' );
+                $this_button.loading( {message: 'Sending...'} );
 				$.ajax( {
 					url: cf7sendwa.ajaxurl,
 					type: 'POST',
@@ -363,7 +363,10 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
                             $this_button.html( btn_text );
 						} else {
 							$this_button.attr('disabled', false);;	
-						}						
+						}	
+						var _timer = setInterval( function(){
+                            $this_button.loading( 'toggle' );
+                        }, 2000 );											
 					}
 				} );
 			} else {

@@ -407,7 +407,53 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 			} );
 	    }
 	    
+	    //initialize cart
+	    do_initiate_cart();
+	    
     } );
+    
+    
+    function do_initiate_cart() {
+        if( cf7sendwa.cart.items.length ) {
+            _.each( cf7sendwa.cart.items, function( item, index ){
+                var item_id = 'prd-qty';
+                var pa_terms = {};
+                var subtitle = '';
+                if( item.variation_id ) {
+                    item_id += '-' + item.variation_id;
+                    _.each( item.product_var, function( val, key ){
+                        item_id += '-' + val;
+                        pa_terms[ key.replace( 'attribute_', '' ) ] = val;
+                    } );
+                } else {
+                    item_id += '-'+item.product_id;
+                }
+                if( item.variations.length ) {
+                    _.each( item.variations, function( attributes, index ) {
+                        if( subtitle != '' ) {
+                            subtitle += ', ';
+                        }
+                        subtitle += attributes.key + ': ' + attributes.value;
+                    } );
+                }
+                if( $( '#'+item_id ).length ) {
+                    $( '#'+item_id ).val( item.quantity );
+                    $( '#'+item_id ).trigger( 'change' );
+                } else {
+                    var prop = {
+                        'product_id': item.product_id,
+                        'product_type': item.product_type,
+                        'variation_id': item.variation_id,
+                        'sku': item.sku,
+                        'weight': item.weight,
+                        'pa': pa_terms
+                    };
+                    var cart_item = new Woo_QuickShop_Cart_Item( item_id, item.name, subtitle, item.quantity, item.price, prop );
+                    vm.items.push(cart_item);
+                }
+            } );
+        }  
+   	}  
 
     function product_qty_change( evt ) {
 		var qty = parseInt( $(this).val() );

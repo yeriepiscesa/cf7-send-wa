@@ -1162,6 +1162,8 @@ class Cf7_Send_Wa_Public {
 		if( $this->woo_is_active ) {
 			$added = 0;
 			if( isset( $_POST['quickshop_cart'] ) ) {
+				WC()->cart->empty_cart();
+				WC()->session->set('cart', array());  
 				$cart = json_decode( str_replace( "\\", "", $_POST['quickshop_cart'] ), true );
 				foreach( $cart['items'] as $item ) {
 					$_variation_id = null;
@@ -1265,6 +1267,9 @@ class Cf7_Send_Wa_Public {
 				'quickshop_atts' 	 => $atts,
                 'assets_dir'         => plugin_dir_url( dirname(__FILE__) ) .'includes/assets/'
 			);
+			if( is_page() || is_shop() || is_single() ) {
+                $_arr['cart'] = cf7sendwa_woo_get_cart_items();
+            }			
 			wp_localize_script( $this->plugin_name, 'cf7sendwa', $_arr );
 			wp_enqueue_script( 'cf7sendwa-commonlib' );
 			wp_enqueue_script( $this->plugin_name );

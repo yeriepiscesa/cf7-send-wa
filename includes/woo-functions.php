@@ -75,50 +75,64 @@ function cf7sendwa_woo_get_cart_items() {
 		'coupons' => array(),
 		'subtotal' => 0,
 	);
-	foreach ( WC()->cart->get_cart() as $key => $item ) {
-        $product = new WC_product( $item['product_id'] );
-        $name = $product->get_name();        
-        $item_meta = [];
-        if( isset( $item['variation_id'] ) && $item['variation_id'] != '' ) {
-            $variation = new WC_Product_Variation( $item['variation_id'] );
-            $product_var = $item['variation'];
-            foreach( $product_var as $k => $v ) {
-                $_k = str_replace('attribute_', '', $k);
-                $_term = get_term_by( 'slug', $v, $_k );
-                if( $_term ) {
-                    $label = wc_attribute_label( $_term->taxonomy, $product );
-                    array_push( $item_meta, [
-                        'key' => $label,
-                        'value' => $_term->name
-                    ] );
-                } else {
-                    $label = wc_attribute_label( $_k, $product );
-                    array_push( $item_meta, [
-                        'key' => $label,
-                        'value' => $v
-                    ] );
+	
+    $cart_items = WC()->cart->get_cart();
+    if( !empty( $cart_items ) ) {		
+		foreach ( $cart_items as $key => $item ) {	
+            $product = new WC_product( $item['product_id'] );
+            $product_id = $product->get_id();
+            $variation_id = null;
+            $product_var = null;
+            $product_type = $product->get_type();
+            $name = $product->get_name();        
+            $item_meta = [];
+            if( isset( $item['variation_id'] ) && $item['variation_id'] != '' ) {
+                $variation = new WC_Product_Variation( $item['variation_id'] );
+                $product_var = $item['variation'];
+                $product_type = $variation->get_type();
+                foreach( $product_var as $k => $v ) {
+                    $_k = str_replace('attribute_', '', $k);
+                    $_term = get_term_by( 'slug', $v, $_k );
+                    if( $_term ) {
+                        $label = wc_attribute_label( $_term->taxonomy, $product );
+                        array_push( $item_meta, [
+                            'key' => $label,
+                            'value' => $_term->name,
+                        ] );
+                    } else {
+                        $label = wc_attribute_label( $_k, $product );
+                        array_push( $item_meta, [
+                            'key' => $label,
+                            'value' => $v
+                        ] );
+                    }
                 }
+                $variation_id = $variation->get_id();
+                $name = $variation->get_title();
+                $weight = $variation->get_weight();
+                $sku = $variation->get_sku();
+                $price = $variation->get_price();
+                $price_html = $variation->get_price_html();
+                $attributes = $item['variation'];
+            } else {
+                $weight = $product->get_weight();    
+                $sku = $product->get_sku();
+                $price = $product->get_price();
+                $price_html = $product->get_price_html();
             }
-            $name = $variation->get_title();
-            $weight = $variation->get_weight();
-            $sku = $variation->get_sku();
-            $price = $variation->get_price();
-            $price_html = $variation->get_price_html();
-            $attributes = $item['variation'];
-        } else {
-            $weight = $product->get_weight();    
-            $sku = $product->get_sku();
-            $price = $product->get_price();
-            $price_html = $product->get_price_html();
-        }
-		array_push( $return['items'], array(
-			'name' => $name,
-			'sku' => $sku,
-			'weight' => $weight,
-			'price' => $price,
-			'quantity' => $item['quantity'],
-			'variations' => $item_meta			
-		) );
+            array_push( $return['items'], array(
+                'product_id' => $product_id,
+                'product_type' => $product_type,
+                'variation_id' => $variation_id,
+                'name' => $name,
+                'sku' => $sku,
+                'weight' => $weight,
+                'price' => $price,
+                'quantity' => $item['quantity'],
+                'product_var' => $product_var,
+                'variations' => $item_meta			
+            ) );				
+		}		
 	}
 	
 	$subtotal = WC()->cart->subtotal;
@@ -127,12 +141,14 @@ function cf7sendwa_woo_get_cart_items() {
 	}
 	
 	$coupons = WC()->cart->coupon_discount_totals;
-	foreach ( $coupons as $code => $amount ){
-		array_push( $return['coupons'], array(
-			'code' => $code,
-			'amount' => $amount,
-		) );
-	}	
+	if( !empty( $coupons ) ) {
+		foreach ( $coupons as $code => $amount ){
+			array_push( $return['coupons'], array(
+				'code' => $code,
+				'amount' => $amount,
+			) );
+		}	
+	}
 	return $return;
 	
 }

@@ -151,8 +151,7 @@ class Cf7_Send_Wa_Public {
 		wp_register_style( 'jquery-modal', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/jquery.modal.min.css' );
 		wp_register_style( 'select2', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/select2.min.css' );
 		wp_register_style( 'fotorama', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/fotorama.min.css' );
-		wp_register_style( 'tooltipster', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/tooltipster.bundle.min.css', array(), '4.2.8' );
-		wp_enqueue_style( $this->plugin_name );
+		wp_register_style( 'tooltipster', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/tooltipster.bundle.min.css', array(), '4.2.8' );		
 		if( $this->global_form != '' ) {
 			wp_enqueue_style( 'tooltipster' );
 		}

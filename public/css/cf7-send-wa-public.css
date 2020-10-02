@@ -25,12 +25,6 @@ input[type=button].sp-woopos-minus {
 	white-space: nowrap;
 	vertical-align: top; 
 }
-.quantity.buttons_added input {
- display: inline-block;
- margin: 0;
- vertical-align: top;
- box-shadow: none;
-}
 .quantity.buttons_added .sp-woopos-minus,
 .quantity.buttons_added .sp-woopos-plus {
  padding: 8px 15px;
@@ -40,16 +34,9 @@ input[type=button].sp-woopos-minus {
  -webkit-appearance: none;
  -webkit-border-radius: 5px;
 }
-.quantity input::-webkit-outer-spin-button,
-.quantity input::-webkit-inner-spin-button {
- -webkit-appearance: none;
- -moz-appearance: none;
- margin: 0; }
- 
-.quantity.buttons_added .sp-woopos-minus:focus,
-.quantity.buttons_added .sp-woopos-plus:focus {
- outline: none; }
-
+#cf7sendwa-quickshop-container input[type="number"] {
+    -moz-appearance: textfield;
+}
 #cf7sendwa-quickshop-container button.variant-option-button {
 	border:0px;
 	border-radius: 5px;

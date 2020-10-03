@@ -1267,7 +1267,7 @@ class Cf7_Send_Wa_Public {
 				'quickshop_atts' 	 => $atts,
                 'assets_dir'         => plugin_dir_url( dirname(__FILE__) ) .'includes/assets/'
 			);
-			if( is_page() || is_shop() || is_single() ) {
+			if( is_page() || is_shop() || is_single() || is_product_category() || is_product_tag() ) {
                 $_arr['cart'] = cf7sendwa_woo_get_cart_items();
             }			
 			wp_localize_script( $this->plugin_name, 'cf7sendwa', $_arr );

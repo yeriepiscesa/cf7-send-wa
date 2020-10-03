@@ -417,7 +417,7 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
     
     
     function do_initiate_cart() {
-        if( cf7sendwa.cart.items.length ) {
+        if( cf7sendwa.cart !== undefined && cf7sendwa.cart.items.length ) {
             _.each( cf7sendwa.cart.items, function( item, index ){
                 var item_id = 'prd-qty';
                 var pa_terms = {};

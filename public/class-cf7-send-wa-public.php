@@ -1226,6 +1226,11 @@ class Cf7_Send_Wa_Public {
 			), $atts, 'cf7sendwa-quickshop' );
 			
 		    $product_categories = array();
+		    
+		    if( is_product_category() || is_product_tag() ) {
+			    
+		    }
+		    
 		    $categories = cf7sendwa_woo_list_categories( $atts['category'] );
 		    foreach( $categories as $cat ) {
 		        array_push( $product_categories, [
@@ -1322,6 +1327,7 @@ class Cf7_Send_Wa_Public {
 	
 	public function render_global_form(){
 		if( $this->global_form != '' ) {
+			wp_enqueue_style( $this->plugin_name );
 			add_filter( 'cf7sendwa_popup_button', array( $this, 'floating_button' ), 10, 3 );
 			echo do_shortcode( '[contact-form-7-wa id="' . $this->global_form . '" popup="button"]' );
 		}

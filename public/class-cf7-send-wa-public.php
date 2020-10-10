@@ -824,7 +824,7 @@ class Cf7_Send_Wa_Public {
 					'shipping' => ''
 				), $atts, 'cf7sendwa-checkout');
 				$html = '';
-				wp_localize_script( $this->plugin_name, 'cf7sendwa_qsreview', $atts );
+				wp_localize_script( $this->plugin_name, 'cf7sendwa_qsreview', apply_filters( 'cf7sendwa_quickshop_checkout_atts', $atts ) );
 				if( $atts['sticky'] == 'yes' ) {
 					wp_enqueue_script( 'sticky' );
 				}

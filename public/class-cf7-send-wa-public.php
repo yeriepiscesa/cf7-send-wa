@@ -61,12 +61,12 @@ class Cf7_Send_Wa_Public {
 
     protected $ruangwa_token = null;
     
-    protected $instance_count = 0;
+    public $instance_count = 0;
     
-    protected $woo_is_active = false;
-    protected $woo_cart = null;
+    public $woo_is_active = false;
+    public $woo_cart = null;
     
-    protected $quickshop_rendered = false;
+    public $quickshop_rendered = false;
     
     protected $woo_shippings = null;
     protected $woo_order_id = null;
@@ -314,6 +314,8 @@ class Cf7_Send_Wa_Public {
 	        );
         }    
         $this->instance_count++;
+        
+        do_action( 'cf7sendwa_after_render_form', $this );
         
 		return $html;
 	}

@@ -1,3 +1,9 @@
+## Release 0.11.6
+- Add custom hook(cf7sendwa_after_render_form) after form render function
+- Load cart items session into quickshop
+- Disable input zoom on mobile
+- Serveral Bugs Fixed and Improvements
+
 ## Release 0.11.5
 - Filterable container element for quickshop button
 - Add sticky handler

@@ -1556,8 +1556,8 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
 			} );
 		}
 		<?php endif; ?>
-		if( $( '.wpcf7-submit' ).length ) {
-			$( '.wpcf7-submit' ).each( function(){
+		if( $( '.cf7sendwa-cf7-container .wpcf7-submit' ).length ) {
+			$( '.cf7sendwa-cf7-container .wpcf7-submit' ).each( function(){
 				var $btn = $(this);				
 				var $frm = $btn.parents("form");
 				var frm_id = $frm.find( 'input[name=_wpcf7]' ).val();

@@ -1229,15 +1229,13 @@ class Cf7_Send_Wa_Public {
 			
 		    $product_categories = array();
 		    
-		    if( $atts['category'] != '' ) {
-			    $categories = cf7sendwa_woo_list_categories( $atts['category'] );
-			    foreach( $categories as $cat ) {
-			        array_push( $product_categories, [
-			            'id' => $cat->term_id,
-			            'slug' => $cat->slug,
-			            'name' => $cat->name,
-			        ] );
-			    }
+		    $categories = cf7sendwa_woo_list_categories( $atts['category'] );
+		    foreach( $categories as $cat ) {
+		        array_push( $product_categories, [
+		            'id' => $cat->term_id,
+		            'slug' => $cat->slug,
+		            'name' => $cat->name,
+		        ] );
 		    }
 		    
 	        $quickshop_unsemantic = get_option( 'quickshop_unsemantic', '0' );

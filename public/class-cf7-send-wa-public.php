@@ -1229,10 +1229,6 @@ class Cf7_Send_Wa_Public {
 			
 		    $product_categories = array();
 		    
-		    if( is_product_category() || is_product_tag() ) {
-			    
-		    }
-		    
 		    $categories = cf7sendwa_woo_list_categories( $atts['category'] );
 		    foreach( $categories as $cat ) {
 		        array_push( $product_categories, [

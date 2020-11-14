@@ -1229,14 +1229,17 @@ class Cf7_Send_Wa_Public {
 			
 		    $product_categories = array();
 		    
-		    $categories = cf7sendwa_woo_list_categories( $atts['category'] );
-		    foreach( $categories as $cat ) {
-		        array_push( $product_categories, [
-		            'id' => $cat->term_id,
-		            'slug' => $cat->slug,
-		            'name' => $cat->name,
-		        ] );
+		    if( $atts['category'] != '' ) {
+			    $categories = cf7sendwa_woo_list_categories( $atts['category'] );
+			    foreach( $categories as $cat ) {
+			        array_push( $product_categories, [
+			            'id' => $cat->term_id,
+			            'slug' => $cat->slug,
+			            'name' => $cat->name,
+			        ] );
+			    }
 		    }
+		    
 	        $quickshop_unsemantic = get_option( 'quickshop_unsemantic', '0' );
 			if( $quickshop_unsemantic == '0' ) {		    
 		    	wp_enqueue_style( 'unsemantic-grid' );

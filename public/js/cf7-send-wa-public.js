@@ -9,10 +9,6 @@ String.prototype.getDecimals || (String.prototype.getDecimals = function() {
     var a = this,
         b = ("" + a).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
     return b ? Math.max(0, (b[1] ? b[1].length : 0) - (b[2] ? +b[2] : 0)) : 0
-}), jQuery(document).ready(function() {
-    wcqib_refresh_quantity_increments()
-}), jQuery(document).on("updated_wc_div", function() {
-    wcqib_refresh_quantity_increments()
 }), jQuery(document).on("click", ".sp-woopos-plus, .sp-woopos-minus", function() {
     var a = jQuery(this).closest(".quantity").find(".qty"),
         b = parseFloat(a.val()),

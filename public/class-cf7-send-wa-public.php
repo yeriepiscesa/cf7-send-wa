@@ -67,6 +67,7 @@ class Cf7_Send_Wa_Public {
     public $woo_cart = null;
     
     public $quickshop_rendered = false;
+    public $current_product_checkout = false;
     
     protected $woo_shippings = null;
     protected $woo_order_id = null;
@@ -82,7 +83,7 @@ class Cf7_Send_Wa_Public {
 
 	/* WooCommerce customer */
 	protected $customer = null;
-
+	
 	
 	/**
 	 * Initialize the class and set its properties.
@@ -1236,6 +1237,12 @@ class Cf7_Send_Wa_Public {
 		            'slug' => $cat->slug,
 		            'name' => $cat->name,
 		        ] );
+		    }
+		    
+		    if( isset( $atts['products'] ) && $this->woo_is_active && is_product() && strtolower( $atts['products'] ) == 'current' ) {
+			    $atts['products'] = get_the_ID();
+			    $atts['is_current_product'] = 'yes';
+			    $this->current_product_checkout = true;
 		    }
 		    
 	        $quickshop_unsemantic = get_option( 'quickshop_unsemantic', '0' );

@@ -1,11 +1,13 @@
 <div class="product-items page-<?php echo $products['page']; ?>" data-total="<?php echo $products['total'] ?>">
 	<?php foreach( $products['results'] as $product ): 
-				$grid1 = '60';
-				$grid2 = '40';
-				if( $product['prop']['type'] == 'variable' ) {
+				if( $product['prop']['type'] == 'variable' || isset( $args['is_current_product'] ) ) {
 					$grid1 = '70';
 					$grid2 = '30';
-				} ?>
+				} else {
+					$grid1 = '60';
+					$grid2 = '40';
+				}
+				?>
 		<div class="product-item prd-<?php echo $product['prop']['id']; ?>">			
 			<div class="grid-<?php echo $grid1 ?> tablet-grid-100 mobile-grid-100 item-block">
 				<a href="#" class="woo-link-detail"><img src="<?php echo $product['prop']['images'][0]['src']; ?>" width="120" align="left" border="0"></a>
@@ -28,9 +30,21 @@
 					<?php endif; ?>
 				</div>
 			</div>
+			
+			<?php
+			if( !isset( $args['is_current_product'] ) ) {
+				$grid_class = 'grid-50 mobile-grid-50 tablet-grid-50';				
+				$variations_grid1 = 'grid-50';
+				$variations_grid2 = 'grid-50';
+			} else {
+				$grid_class = 'grid-100';
+				$variations_grid1 = 'grid-65';
+				$variations_grid2 = 'grid-35';
+			}
+			?>
 			<div class="grid-<?php echo $grid2 ?> tablet-grid-100 mobile-grid-100 grid-parent item-block item-price">
 				<?php if( $product['prop']['type'] != 'variable' ): ?>
-				<div class="grid-50 mobile-grid-50 tablet-grid-50">
+				<div class="<?php echo $grid_class ?>">
 					<?php
 					$n_readonly = '';
 					if( $args['editableqty'] == 'no' ) {
@@ -48,9 +62,13 @@
 						class="input-text qty text" id="prd-qty-<?php echo $product['prop']['id']; ?>"
 						style="display: inline-block; margin-top: 0px; width: 40%; border: 0px;">
 				</div>
-				<div class="grid-50 mobile-grid-50 tablet-grid-50">
+
+				<?php if( !isset( $args['is_current_product'] ) ) : ?>
+				<div class="<?php echo $grid_class ?>">
 					<div class="item-subtotal"></div>
 				</div>
+				<?php endif; ?>
+				
 				<?php else: ?>
 				<button class="button variant-option-button" data-var-id="<?php echo $product['prop']['id']; ?>">
 					<span class="angle-down"><i class="fa fa-angle-down"></i> <?php echo __( 'Select Options', 'cf7sendwa' ) ?></span>
@@ -58,6 +76,7 @@
 				</button>
 				<?php endif; ?>
 			</div>
+			
 			<textarea style="display:none;" class="woo-product-prop"><?php echo json_encode($product['prop']); ?></textarea>
 		</div>
 
@@ -66,7 +85,7 @@
 				?>
 			<?php foreach( $product['prop']['variations'] as $prd ): ?>
 				<div class="product-item variations var-<?php echo $product['prop']['id']; ?>">
-					<div class="grid-50 tablet-grid-100 mobile-grid-100 item-block">
+					<div class="<?php echo $variations_grid1; ?> tablet-grid-100 mobile-grid-100 item-block">
 						<div class="product-item-info">
 							<h4><?php echo $prd['name']; ?></h4>
 							<?php
@@ -81,8 +100,8 @@
 							<?php endif; ?>
 						</div>
 					</div>
-					<div class="grid-50 tablet-grid-100 mobile-grid-100 grid-parent item-block item-price">
-						<div class="grid-50 mobile-grid-50 tablet-grid-50">
+					<div class="<?php echo $variations_grid2; ?> tablet-grid-100 mobile-grid-100 grid-parent item-block item-price">
+						<div class="<?php echo $grid_class ?>">
 							<?php
 							$var_txt = '';
 							if(!empty($prd['prop']['pa_terms'])) {
@@ -116,9 +135,13 @@
 								class="input-text qty text" id="<?php echo $qty_id; ?>"
 								style="display: inline-block; margin-top: 0px; width: 40%; border: 0px;">
 						</div>
-						<div class="grid-50 mobile-grid-50 tablet-grid-50">
+						
+						<?php if( !isset( $args['is_current_product'] ) ) : ?>
+						<div class="<?php echo $grid_class ?>">
 							<div class="item-subtotal"></div>
 						</div>
+						<?php endif; ?>
+						
 					</div>
 				</div>
 			<?php endforeach; ?>

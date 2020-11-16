@@ -12,7 +12,7 @@ if( $atts['max-width'] != '' ) {
     }
     ?>
 	<div class="grid-100 parent-grid cf7sendwa-quickshop-checkout-container"<?php echo $style_height; ?>>
-		<div class="cf7sendwa-quickshop-checkout-header">
+		<div class="cf7sendwa-quickshop-checkout-header <?php echo $this->current_product_checkout ? 'single-product':''; ?>">
 			<table width="100%" border="0" class="table-cart">
 				<thead>
 					<?php do_action( 'cf7sendwa_quickshop_before_total_review' ); ?>		
@@ -24,8 +24,9 @@ if( $atts['max-width'] != '' ) {
 				</thead>
 			</table>
 		</div>
-		<?php do_action( 'cf7sendwa_quickshop_before_order_review_list' ); ?>		
-		<div class="wrap cf7sendwa-quickshop-checkout">
+		<?php do_action( 'cf7sendwa_quickshop_before_order_review_list' ); ?>	
+		
+		<div class="wrap cf7sendwa-quickshop-checkout" <?php echo $this->current_product_checkout?'style="display:none;"':''; ?>>
 			<table width="100%" border="0" class="table-cart">
 				<tbody data-bind="foreach:items">
 					<tr>
@@ -43,6 +44,7 @@ if( $atts['max-width'] != '' ) {
 				</tbody>
 			</table>
 		</div>
+		
 		<?php 
 		do_action( 'cf7sendwa_quickshop_after_order_review_list' );
 		if( $content != '' ) {

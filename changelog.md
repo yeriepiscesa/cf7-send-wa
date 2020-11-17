@@ -1,3 +1,8 @@
+## Release 0.12.0
+- Add special attribute value: current for quickshop's products attribte
+- Handle rendering form when single product form using "current" setting above
+- Serval bugs fixing and code cleanup
+
 ## Release 0.11.6
 - Add custom hook(cf7sendwa_after_render_form) after form render function
 - Load cart items session into quickshop

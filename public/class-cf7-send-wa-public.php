@@ -1226,6 +1226,7 @@ class Cf7_Send_Wa_Public {
 		        'order' => '',
 		        'limit' => '10',
 		        'paging' => 'auto',
+		        'mode' => 'standard'
 			), $atts, 'cf7sendwa-quickshop' );
 			
 		    $product_categories = array();
@@ -1241,6 +1242,10 @@ class Cf7_Send_Wa_Public {
 		    
 		    if( isset( $atts['products'] ) && $this->woo_is_active && is_product() && strtolower( $atts['products'] ) == 'current' ) {
 			    $atts['products'] = get_the_ID();
+			    $atts['is_current_product'] = 'yes';
+			    $this->current_product_checkout = true;
+		    }
+		    if( isset( $atts['mode'] ) && $atts['mode'] == 'silent' ) {
 			    $atts['is_current_product'] = 'yes';
 			    $this->current_product_checkout = true;
 		    }

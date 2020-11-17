@@ -16,7 +16,7 @@
  * Plugin Name:       Contact Form 7 Send WhatsApp
  * Plugin URI:        https://solusipress.com/download/cf7-send-wa
  * Description:       Send contact form 7 input into WhatsApp message.
- * Version:           0.11.6
+ * Version:           0.12.0
  * Author:            Yerie Piscesa
  * Author URI:        https://solusipress.com
  * License:           GPL-2.0+

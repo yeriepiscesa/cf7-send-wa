@@ -1343,6 +1343,7 @@ class Cf7_Send_Wa_Public {
 		if( is_product() ) {			
 			$form_id = get_option( 'cf7sendwa_woo_single_product', '' );
 			if( $form_id != '' ) {
+				wp_enqueue_style( $this->plugin_name );
 				$text = get_option( 'cf7sendwa_single_button', 'Chat Seller' );
 				echo '<div class="cf7sendwa-single-product-button">';
 				echo do_shortcode( '[contact-form-7-wa id="' . $form_id . '" popup="button" buttontext="' . $text . '"]' );

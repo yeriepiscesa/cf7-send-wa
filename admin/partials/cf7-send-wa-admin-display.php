@@ -325,20 +325,6 @@
                         <p style="display:inline" class="description">When checked, out of stock product will be displayed</p>       
 			        </td>
 		        </tr>
-		        <tr>
-			        <th scope="row"><label for="quickshop_unsemantic">Unload Unsemantic CSS Grid</label></th>
-			        <td>
-				        <?php
-                        $checked6 = '';
-                        if( $quickshop_unsemantic == '1' ) {
-                            $checked6 = ' checked="checked"';
-                        }
-					    ?>				        
-                        <input type="checkbox" id="quickshop_unsemantic"<?php echo $checked6; ?>  
-                               name="quickshop_unsemantic" value="1">
-                        <p style="display:inline" class="description">Check if your theme using Unsemantic CSS Grid (eg. GeneratePress)</p>
-			        </td>
-		        </tr>
 		        <?php do_action( 'cf7sendwa_custom_quickshop_settings' ); ?>
 	        </tbody>
         </table>

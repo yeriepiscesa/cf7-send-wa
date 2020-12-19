@@ -1256,10 +1256,7 @@ class Cf7_Send_Wa_Public {
 			    $this->current_product_checkout = true;
 		    }
 		    
-	        $quickshop_unsemantic = get_option( 'quickshop_unsemantic', '0' );
-			if( $quickshop_unsemantic == '0' ) {		    
-		    	wp_enqueue_style( 'unsemantic-grid' );
-		    }
+	    	wp_enqueue_style( 'unsemantic-grid' );
 			
 			if( $atts['filter'] == 'yes' ) {
 				wp_enqueue_style( 'select2' );

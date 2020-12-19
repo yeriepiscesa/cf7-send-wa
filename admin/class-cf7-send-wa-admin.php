@@ -221,13 +221,6 @@ class Cf7_Send_Wa_Admin {
             }
             update_option( 'quickshop_outofstock', $quickshop_outofstock );
 
-            $quickshop_unsemantic = '0';
-            if( isset( $_POST['quickshop_unsemantic'] ) ) {
-	        	$quickshop_unsemantic = $_POST['quickshop_unsemantic'];    
-				if( $quickshop_unsemantic != '1' ) $quickshop_unsemantic = '0';
-            }
-            update_option( 'quickshop_unsemantic', $quickshop_unsemantic );
-
             update_option( 'cf7sendwa_provider', $_POST['provider'] );
             update_option( 'cf7sendwa_twilio_sid', $_POST['twilio_sid'] );
             update_option( 'cf7sendwa_twilio_token', $_POST['twilio_token'] );
@@ -265,7 +258,6 @@ class Cf7_Send_Wa_Admin {
         $quickshop_excerpt = get_option( 'quickshop_excerpt', '0' );
         $quickshop_sku = get_option( 'quickshop_sku', '0' );
         $quickshop_outofstock = get_option( 'quickshop_outofstock', '0' );
-        $quickshop_unsemantic = get_option( 'quickshop_unsemantic', '0' );
         
         $woo_checkout = get_option( 'cf7sendwa_woo_checkout', '' );
         $single_button = get_option( 'cf7sendwa_single_button', '' );

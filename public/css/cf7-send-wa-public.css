@@ -9,9 +9,15 @@ input[type=button].sp-woopos-minus {
     display:inline;
     float:left;
 }
-.cf7sendwa-single-product-button {
-	padding-top: 10px;
-	padding-bottom: 5px;
+span.cf7sendwa-single-product-button {
+	display:inline-block;
+	padding: 0px 5px;
+	width: auto;
+}
+div.cf7sendwa-single-product-button {
+	padding: 10px 0px;
+	display: table;
+	width: 100%;
 }
 .quantity .input-text.qty {
 	padding: 15 0px;

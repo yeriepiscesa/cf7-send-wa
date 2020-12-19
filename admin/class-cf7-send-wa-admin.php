@@ -169,7 +169,20 @@ class Cf7_Send_Wa_Admin {
             }
             update_option( 'cf7sendwa_woo_single_product', $_woo_single_product ); 
             update_option( 'cf7sendwa_single_button', $_POST['single_button'] );         
+            
+            $single_button_wrap_div = '0';
+            if( isset( $_POST['single_button_wrap_div'] ) ) {
+	        	$single_button_wrap_div = $_POST['single_button_wrap_div'];    
+				if( $single_button_wrap_div != '1' ) $single_button_wrap_div = '0';
+            }
+            update_option( 'cf7sendwa_single_button_wrap_div', $single_button_wrap_div );
+            
             update_option( 'cf7sendwa_single_product_greet', $_POST['single_product_greet'] );  
+            
+ 			if( isset( $_POST['cf7sendwa_single_hook'] ) ) {
+	 			$button_hook = $_POST['cf7sendwa_single_hook'];
+	 			update_option( 'cf7sendwa_single_button_hook', $button_hook );
+ 			}
 
             update_option( 'cf7sendwa_woo_order_redirect', $_POST['woo_order_redirect'] );
 
@@ -228,6 +241,7 @@ class Cf7_Send_Wa_Admin {
         }
         
         $woo_single_product = get_option( 'cf7sendwa_woo_single_product', '' );
+        $woo_button_hook = get_option( 'cf7sendwa_single_button_hook', '' );
         
 	    wp_localize_script( $this->plugin_name, 'cf7sendwa', array(
 			'ajaxurl' => admin_url( 'admin-ajax.php' ),
@@ -255,6 +269,8 @@ class Cf7_Send_Wa_Admin {
         
         $woo_checkout = get_option( 'cf7sendwa_woo_checkout', '' );
         $single_button = get_option( 'cf7sendwa_single_button', '' );
+        $single_button_wrap_div = get_option( 'cf7sendwa_single_button_wrap_div', '0' );
+        
         $single_product_greet = get_option( 'cf7sendwa_single_product_greet', '' );
         $woo_order_redirect = get_option( 'cf7sendwa_woo_order_redirect', '' );
         

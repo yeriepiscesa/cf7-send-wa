@@ -12,7 +12,7 @@ if( $atts['max-width'] != '' ) {
     }
     ?>
 	<div class="grid-100 parent-grid cf7sendwa-quickshop-checkout-container"<?php echo $style_height; ?>>
-		<div class="cf7sendwa-quickshop-checkout-header <?php echo $this->current_product_checkout ? 'single-product':''; ?>">
+		<div class="cf7sendwa-quickshop-checkout-header <?php echo $this->current_product_checkout && ( $this->woo_is_active && is_product() ) ? 'single-product':''; ?>">
 			<table width="100%" border="0" class="table-cart">
 				<thead>
 					<?php do_action( 'cf7sendwa_quickshop_before_total_review' ); ?>		

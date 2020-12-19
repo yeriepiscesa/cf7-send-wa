@@ -169,7 +169,7 @@
 					        $__p = get_post( $woo_single_product );
 					        echo '<option value="'. $__p->ID .'" selected="selected">' . $__p->post_title . '</option>'; 
 					    } ?>
-			        	</select>
+			        	</select>			        	
 			        	<div data-bind="visible:single_product() != ''" style="padding-top:5px;">
 				        	
 				        	<label for="cf7sendwa_single_button"><strong>Button Text</strong></label><br>
@@ -177,7 +177,44 @@
                                placeholder="Chat Seller" 
                                name="single_button" size="39"
                                value="<?php echo $single_button; ?>">
-                            <br><br>
+                            <br>
+                            
+                            <?php
+	                        $button_hooks = apply_filters( 'cf7sendwa_single_button_locations', array(
+		                        'woocommerce_before_add_to_cart_form' => 'Before add to cart form',
+		                        'woocommerce_before_add_to_cart_button' => 'Before add to cart button',
+		                        'woocommerce_before_add_to_cart_quantity' => 'Before add to cart quantity',
+		                        'woocommerce_after_add_to_cart_quantity' => 'After add to cart quantity',
+		                        'woocommerce_after_add_to_cart_button' => 'After add to cart button',
+		                        'woocommerce_after_add_to_cart_form' => 'After add to cart form',
+	                        ) );    
+	                        ?>
+				        	<label for="cf7sendwa_single_hook"><strong>Hook Location</strong></label><br>
+				        	<select class="select2" name="cf7sendwa_single_hook" id="cf7sendwa_single_hook">
+					        	<option value="">Select WooCommerce hook</option>
+					        	<?php
+						        foreach( $button_hooks as $key=>$val ) {
+							        $_selected = '';
+							        if( $woo_button_hook == $key ) {
+								        $_selected = ' selected="selected"';
+							        }
+							        $opt = '<option value="' . $key . '"' . $_selected . '>' .$val. '</option>';
+							        echo $opt;
+						        }	
+						        ?>
+				        	</select>&nbsp;
+				        	<?php
+	                        $checked_wrapdiv = '';
+	                        if( $single_button_wrap_div == '1' ) {
+	                            $checked_wrapdiv = ' checked="checked"';
+	                        }
+					        ?>
+				        	<label for="cf7sendwa_single_button_wrap_div">
+				        		<input type="checkbox" value="1" name="single_button_wrap_div" id="cf7sendwa_single_button_wrap_div"<?php echo $checked_wrapdiv ?>>
+				        		<strong>Wrap with div tag<strong>
+				        	</label><br><br>
+                            
+                            
                             <label for="cf7sendwa_single_greet"><strong>Opening Text</strong><label><br>   
                             <textarea id="cf7sendwa_single_greet" rows="3" cols="60" name="single_product_greet"><?php echo $single_product_greet; ?></textarea><br>
                             <p class="description">You can use these tags for dynamic value: {{product_name}} {{product_sku}}</p>

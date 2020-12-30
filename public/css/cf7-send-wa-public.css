@@ -40,9 +40,16 @@ div.cf7sendwa-single-product-button {
  -webkit-appearance: none;
  -webkit-border-radius: 5px;
 }
-#cf7sendwa-quickshop-container input[type="number"] {
-    -moz-appearance: textfield;
+#cf7sendwa-quickshop-container input[type="number"]::-webkit-outer-spin-button,
+#cf7sendwa-quickshop-container input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
+/* Firefox */
+#cf7sendwa-quickshop-container input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 #cf7sendwa-quickshop-container button.variant-option-button {
 	border:0px;
 	border-radius: 5px;

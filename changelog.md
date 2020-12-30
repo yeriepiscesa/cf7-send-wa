@@ -1,3 +1,10 @@
+## Release 0.12.2
+- Single product button improvements
+- Add location setting for single product button
+- Add silent mode to quickshop to hide subtotal and checkout detail
+- Fix quantity input on quickshop
+- Fix currency setting on quickshop
+
 ## Release 0.12.0
 - Add special attribute value: current for quickshop's products attribte
 - Handle rendering form when single product form using "current" setting above

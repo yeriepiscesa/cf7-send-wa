@@ -8,8 +8,8 @@
 					$grid2 = '40';
 				}
 				?>
-		<div class="product-item prd-<?php echo $product['prop']['id']; ?>">			
-			<div class="grid-<?php echo $grid1 ?> tablet-grid-100 mobile-grid-100 item-block">
+		<div class="product-item prd-<?php echo $product['prop']['id']; ?>">						
+			<div class="grid-<?php echo $grid1 ?> tablet-grid-100 mobile-grid-100 item-block<?php echo isset( $args['is_current_product'] ) && $args['is_current_product'] =='yes' ? ' grid-parent':''; ?>">
 				<a href="#" class="woo-link-detail"><img src="<?php echo $product['prop']['images'][0]['src']; ?>" width="120" align="left" border="0"></a>
 				<div class="product-item-info">
 					<h4><a href="#" class="woo-link-detail"><?php echo $product['name']; ?></a></h4>	

@@ -1235,6 +1235,10 @@ class Cf7_Send_Wa_Public {
 		        'mode' => 'standard'
 			), $atts, 'cf7sendwa-quickshop' );
 			
+			if( $atts['products'] == 'current' ) {
+				$atts['mode'] = 'silent';
+			}
+			
 		    $product_categories = array();
 		    
 		    $categories = cf7sendwa_woo_list_categories( $atts['category'] );

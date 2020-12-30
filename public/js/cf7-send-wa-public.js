@@ -30,7 +30,7 @@ function Woo_QuickShop_Cart() {
 		return total;
 	} );
 	self.price_total = ko.pureComputed( function(){			
-		return 'Rp ' + jQuery.number( self.total(), cf7sendwa.decimals, cf7sendwa.decimal_separator, cf7sendwa.thousand_separator );
+		return cf7sendwa.currency + ' ' + jQuery.number( self.total(), cf7sendwa.decimals, cf7sendwa.decimal_separator, cf7sendwa.thousand_separator );
 	} );
 
 	self.weight_total = ko.pureComputed( function(){
@@ -106,7 +106,7 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 		return jQuery.number(self.price, cf7sendwa.decimals, cf7sendwa.decimal_separator, cf7sendwa.thousand_separator);
 	} );
 	self.subtotal_html = ko.pureComputed( function(){
-		return 'Rp ' + jQuery.number(self.subtotal(), cf7sendwa.decimals, cf7sendwa.decimal_separator, cf7sendwa.thousand_separator );
+		return cf7sendwa.currency + ' ' + jQuery.number(self.subtotal(), cf7sendwa.decimals, cf7sendwa.decimal_separator, cf7sendwa.thousand_separator );
 	} );
 	self.prop = prop;
 }
@@ -200,10 +200,14 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 		ko.applyBindings( vm );
 		if( $( '#quickshop-products' ).length ) {
 			var $qs = $( '#quickshop-products' );
-			$qs.loading();
+			if( cf7sendwa.quickshop_atts.mode != 'silent' ) {
+				$qs.loading();
+			}
 			var el_id = $qs.attr("id");
 			load_products( el_id, '', function(el_id, cat_slug, data_count){
-				$qs.loading( 'stop' );
+				if( cf7sendwa.quickshop_atts.mode != 'silent' ) {
+					$qs.loading( 'stop' );
+				}
 			} );
 		} else {
 			$( '.product-cat-container' ).each( function( index, element ){
@@ -683,8 +687,9 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 		$( '.product-items' ).remove();
 		$( '.cf7sendwa-quickshop-paging' ).remove();
 		if( $( '#quickshop-products' ).length ) {
-			var $qs = $( '#quickshop-products' );
-			$qs.loading();
+			var $qs = $( '#quickshop-products' );		
+				
+			$qs.loading();			
 			var el_id = $qs.attr("id");
 			load_products( el_id, '', function(el_id, cat_slug, data_count){
 				$qs.loading( 'stop' );

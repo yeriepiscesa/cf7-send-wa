@@ -1,3 +1,6 @@
+## Release 0.12.3
+- Bugs fixed after updating Contac Form 7 5.4
+
 ## Release 0.12.2
 - Single product button improvements
 - Add location setting for single product button

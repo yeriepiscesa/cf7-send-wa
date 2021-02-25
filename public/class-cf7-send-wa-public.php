@@ -167,7 +167,7 @@ class Cf7_Send_Wa_Public {
 	 * @since    0.3.0
 	 */
 	public function enqueue_scripts() {
-		wp_register_script( 'cf7sendwa-commonlib', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/commonlib.js' );
+		wp_register_script( 'cf7sendwa-commonlib', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/commonlib.js', array( 'jquery' ) );
 		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/cf7-send-wa-public.js', array( 'jquery' ), $this->version, true );
 		wp_register_script( 'jquery-modal', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/jquery.modal.min.js', array( 'jquery' ), '0.9.1', false );
 		wp_register_script( 'knockout', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/js/knockout.js' );
@@ -1428,7 +1428,7 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
 	<?php endif; ?>
 	document.addEventListener( 'wpcf7mailsent', function( event ) {
 		var the_id = event.detail.contactFormId;		
-		if( _.indexOf( cf7wa_ids, the_id ) ) {			
+		if( _.indexOf( cf7wa_ids, the_id ) >= 0 ) {			
 			var inputs = event.detail.inputs;
 			var api_response = event.detail.apiResponse;
 			var the_text = api_response.wa_text;
@@ -1583,7 +1583,7 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
 				var $btn = $(this);				
 				var $frm = $btn.parents("form");
 				var frm_id = $frm.find( 'input[name=_wpcf7]' ).val();
-				if( _.indexOf( cf7wa_ids, frm_id ) ) {
+				if( _.indexOf( cf7wa_ids, frm_id ) >= 0 ) {
 					if( $btn.prop('tagName') == 'BUTTON' ) {
 						var btn_label = $btn.html();
 						var new_html = '<i class="fab fa-whatsapp"></i>&nbsp;' + btn_label;

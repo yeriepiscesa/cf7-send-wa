@@ -633,6 +633,9 @@ class Cf7_Send_Wa_Public {
 		    $wp_upload_dir = wp_upload_dir();
 		    $parent_post_id = null;
 		    foreach( $attachments as $file_path ) {
+			    if( is_array( $file_path ) ) {
+				    $file_path = $file_path[0];
+			    }			    
 				$file_name = basename( $file_path );
 				$new_file_name = date('Ymdhis').'.'.uniqid().'-'.$file_name;
 				$new_file_path = $wp_upload_dir['basedir'].'/cf7sendwa/' . $new_file_name;

@@ -49,6 +49,7 @@ class Cf7_Send_Wa_Public {
 	protected $load_fontawesome = false;
 
     public $wa_submitted_text = '';
+    public $wa_replaced_tags;
     protected $provider = '';
 
     protected $twilio_sid = null;
@@ -99,6 +100,7 @@ class Cf7_Send_Wa_Public {
 		add_shortcode( 'contact-form-7-wa', array( $this, 'render_contact_form' ) );
 		add_shortcode( 'cf7sendwa-received-link', array( $this, 'render_woo_received_link' ) );
 		add_shortcode( 'cf7sendwa-payment-link', array( $this, 'render_woo_payment_link' ) );
+		add_shortcode( 'cf7sendwa-skip-empty', array( $this, 'render_skip_empty' ) );
         
         $this->provider = get_option( 'cf7sendwa_provider', '' );
         switch( $this->provider ) {
@@ -712,8 +714,23 @@ class Cf7_Send_Wa_Public {
 			$mail = $contact_form->prop('mail');    
 			$body = $mail['body'];
 	    }
-        $mailtag = new WPCF7_MailTaggedText( $body );
-        $this->wa_submitted_text = $mailtag->replace_tags();
+        $mailtag = new WPCF7_MailTaggedText( $body );        
+        $wa_text = $mailtag->replace_tags();
+        $this->wa_replaced_tags = $mailtag->get_replaced_tags();
+        $this->wa_submitted_text = do_shortcode( $wa_text );
+    }
+    
+    public function render_skip_empty( $atts, $content='' ) {
+		$content = trim( $content );
+		if( $content != '' && is_array( $this->wa_replaced_tags ) && !empty( $this->wa_replaced_tags ) ) {
+			foreach( $this->wa_replaced_tags as $tag => $val ) {
+				if( trim($val) == '' ) {
+					$content = '';
+				}
+			}
+		}
+	    
+	    return $content;
     }
     
     /*

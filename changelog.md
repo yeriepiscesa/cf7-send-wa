@@ -1,3 +1,7 @@
+## Release 0.12.4
+- Fix when sending file attachment
+- Introducing new tag [cf7sendwa-skip-empty] ... [/cf7sendwa-skip-empty]
+
 ## Release 0.12.3
 - Bugs fixed after updating Contac Form 7 5.4
 

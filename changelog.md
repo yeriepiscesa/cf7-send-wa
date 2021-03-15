@@ -1,3 +1,7 @@
+## Release 0.12.5
+- Fix cf7sendwa-skip-empty tag behavior.
+- Mask attachment url for more secure.
+
 ## Release 0.12.4
 - Fix when sending file attachment
 - Introducing new tag [cf7sendwa-skip-empty] ... [/cf7sendwa-skip-empty]

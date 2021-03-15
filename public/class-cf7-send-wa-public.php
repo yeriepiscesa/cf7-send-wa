@@ -736,10 +736,12 @@ class Cf7_Send_Wa_Public {
     }
     
     public function render_skip_empty( $atts, $content='' ) {
-		if( trim( $content ) != '' && is_array( $this->wa_replaced_tags ) && !empty( $this->wa_replaced_tags ) ) {	
+		$content = trim( $content );
+		if( $content != '' && is_array( $this->wa_replaced_tags ) && !empty( $this->wa_replaced_tags ) ) {	
 			foreach( $this->wa_replaced_tags as $tag => $val ) {								
 				if( strpos( $content, $tag ) !== false && trim($val) == '' ) {
 					$content = 'cf7sendwa__no__value';
+					break;
 				}						
 			}
 		}	   		

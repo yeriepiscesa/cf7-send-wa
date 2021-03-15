@@ -106,6 +106,9 @@ class Cf7_Send_Wa {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/woo-functions.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cf7-send-wa-products.php';
 		
+		/* request utility */		
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cf7-send-wa-request.php';
+			
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.

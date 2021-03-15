@@ -80,6 +80,8 @@ class Cf7_Send_Wa_Public {
     );
     
     protected $attachments = array();
+    protected $attachment_types = array();
+    protected $attachment_ids = array();
     protected $attachment_type = null;
 
 	/* WooCommerce customer */
@@ -651,9 +653,13 @@ class Cf7_Send_Wa_Public {
 					'post_content'   => '',
 					'post_status'    => 'inherit',
 				);		
-			    if( wp_insert_attachment( $post_info, $new_file_path, $parent_post_id ) ) {
+			    if( $attachment_id = wp_insert_attachment( $post_info, $new_file_path, $parent_post_id ) ) {			    
 				    array_push( $this->attachments, $post_info['guid'] );
+				    array_push( $this->attachment_types, $post_info['post_mime_type'] );
+				    array_push( $this->attachment_ids, $attachment_id );				    
 				    $this->attachment_type = $post_info['post_mime_type'];
+				    update_post_meta( $attachment_id, 'cf7sendwa_cf7_id', $contact_form->id() );
+				    update_post_meta( $attachment_id, 'cf7sendwa_cf7_uniqid', uniqid() );
 			    }
 		    }
 	    }
@@ -756,7 +762,13 @@ class Cf7_Send_Wa_Public {
     public function feedback_ajax_json_echo( $response, $result ) {
 	    
 	    if( !empty( $this->attachments ) ) {
-		    $response['attachments'] = $this->attachments;
+		    $response['attachments'] = array();
+		    for( $i=0; $i<count( $this->attachments ); $i++ ) {
+			    $url = home_url( '/cf7sendwa-media/' );
+			    $uniqid = get_post_meta( $this->attachment_ids[$i], 'cf7sendwa_cf7_uniqid', true );
+			    $url = $url . $uniqid;
+			    array_push( $response['attachments'], $url );
+		    }
 		    $response['attachment_type'] = $this->attachment_type;
 	    }
 	    
@@ -1668,6 +1680,6 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
         echo $script;
         endif;
 		$this->script_loaded = true;
-	}  
+	}  	
     
 }

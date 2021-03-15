@@ -714,22 +714,35 @@ class Cf7_Send_Wa_Public {
 			$mail = $contact_form->prop('mail');    
 			$body = $mail['body'];
 	    }
-        $mailtag = new WPCF7_MailTaggedText( $body );        
-        $wa_text = $mailtag->replace_tags();
-        $this->wa_replaced_tags = $mailtag->get_replaced_tags();
-        $this->wa_submitted_text = do_shortcode( $wa_text );
+        
+	    $mailtag = new WPCF7_MailTaggedText( $body );        
+		if( strpos( $body, 'cf7sendwa-skip-empty' ) !== false ) {
+	        $wa_text = $mailtag->replace_tags();
+	        $this->wa_replaced_tags = $mailtag->get_replaced_tags();    
+	        $_body = explode( "\n", do_shortcode( $body ) );
+	        $body = '';
+	        if( !empty($_body) ) {
+		        foreach( $_body as $line ) {
+			        if( $line != 'cf7sendwa__no__value' ) {
+				        if( $line == '' ) $line = "\n";
+				        elseif( $body != '' )  $body .= "\n"; 
+				        $body .= $line;
+			        }
+		        }
+	        }
+	        $mailtag = new WPCF7_MailTaggedText( $body );   
+		}
+        $this->wa_submitted_text = $mailtag->replace_tags();
     }
     
     public function render_skip_empty( $atts, $content='' ) {
-		$content = trim( $content );
-		if( $content != '' && is_array( $this->wa_replaced_tags ) && !empty( $this->wa_replaced_tags ) ) {
-			foreach( $this->wa_replaced_tags as $tag => $val ) {
-				if( trim($val) == '' ) {
-					$content = '';
-				}
+		if( trim( $content ) != '' && is_array( $this->wa_replaced_tags ) && !empty( $this->wa_replaced_tags ) ) {	
+			foreach( $this->wa_replaced_tags as $tag => $val ) {								
+				if( strpos( $content, $tag ) !== false && trim($val) == '' ) {
+					$content = 'cf7sendwa__no__value';
+				}						
 			}
-		}
-	    
+		}	   		
 	    return $content;
     }
     
@@ -755,6 +768,7 @@ class Cf7_Send_Wa_Public {
 	    $response['message'] = do_shortcode( $response['message'] );
 	    
 	    return $response;
+	    
     }
     
     /**

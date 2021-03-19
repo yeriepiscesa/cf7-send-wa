@@ -1,3 +1,7 @@
+## Release 0.12.6
+- Bugs fixed resend link not showing
+- Bugs fixed recevied & payment links not rendering html
+
 ## Release 0.12.5
 - Fix cf7sendwa-skip-empty tag behavior.
 - Mask attachment url for more secure.

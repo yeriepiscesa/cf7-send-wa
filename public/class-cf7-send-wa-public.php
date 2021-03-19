@@ -777,6 +777,9 @@ class Cf7_Send_Wa_Public {
 		    $response['redirect'] = $this->woo_order_received_url;
 		    $response['woo_links'] = $this->woo_order_links;
 	    }
+	    $response['woo_received_html'] = $this->order_woo_received_html;
+	    $response['woo_payment_html'] = $this->order_woo_payment_html;
+	     
 	    $response['wa_text'] = $this->wa_submitted_text;
 	    $this->wa_submitted_text = '';
 	    $response['message'] = do_shortcode( $response['message'] );
@@ -796,8 +799,8 @@ class Cf7_Send_Wa_Public {
 			$atts = shortcode_atts( array(
 				'title' => 'Received Order',
 			), $atts );
-		    $html = '<a href="'.$this->woo_order_links['received'].'" class="cf7sendwa-links" target="_blank">' . $atts['title'] . '</a>';
-	    }
+		    $html = '__woo_received__' . $atts['title'] . '__close_a__';
+	    }	   
 	    return $html;
     }
     
@@ -812,7 +815,7 @@ class Cf7_Send_Wa_Public {
 			$atts = shortcode_atts( array(
 				'title' => 'Pay Now',
 			), $atts );
-		    $html = '<a href="'.$this->woo_order_links['payment'].'" class="cf7sendwa-links" target="_blank">' . $atts['title'] . '</a>';
+			$html = '__woo_payment__' . $atts['title'] . '__close_a__';
 	    }
 	    return $html;
     }
@@ -1644,8 +1647,27 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
 			} );
 		}
 		Hooks.add_action( 'cf7sendwa_after_mailsent', function( options ){
-			var the_id = options.cf7event.detail.contactFormId;		
+			var the_id = options.cf7event.detail.contactFormId;
+			var woo_order_message = '';		
 			if( cf7wa_resends.hasOwnProperty( the_id ) ) {
+				if( options.cf7event.detail.apiResponse.woo_links ) {
+					var r = options.cf7event.detail.apiResponse.woo_links.received;
+					var p = options.cf7event.detail.apiResponse.woo_links.payment;	
+					var message = options.cf7event.detail.apiResponse.message;
+                    message = message.replace( '__woo_received__', '<a href="' + r + '" class="cf7sendwa-links" target="_blank">' );
+					message = message.replace( '__woo_payment__', '<a href="' + p + '" class="cf7sendwa-links" target="_blank">' );
+					message = message.replaceAll( /__close_a__/ig, '</a>' );
+					options.cf7event.detail.apiResponse.message = "";					
+					woo_order_message = message;
+				}
+				
+				document.addEventListener( 'wpcf7reset', function( event ) {
+                    if( woo_order_message != '' ) {
+                        $( options.cf7event.detail.apiResponse.into + ' .wpcf7-response-output' ).html( woo_order_message );
+                        woo_order_message = '';
+                    }
+                } );
+				
 				if( cf7wa_resends[the_id]['allow'] == '1' ) {
 					var label = 'Resend WA Message';
 					if( cf7wa_resends[the_id]['label'] != '' ) {
@@ -1653,7 +1675,7 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
 					}
 					var the_url = 'https://wa.me/'+options.phone+'?text=' + options.text;
 					var html = ' <a class="cf7sendwa-resend-link" href="' + the_url + '" target="_blank">' + label + '</a>';
-					var interval = window.setInterval( function(){
+					var interval = window.setInterval( function(){						
 						$( options.cf7event.detail.apiResponse.into + ' .wpcf7-response-output' ).append( html );
 						clearInterval( interval );
 					}, 3000 );

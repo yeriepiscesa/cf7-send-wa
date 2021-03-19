@@ -1651,11 +1651,10 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
 					if( cf7wa_resends[the_id]['label'] != '' ) {
 						label = cf7wa_resends[the_id]['label'] ;
 					}
-					var id = options.cf7event.detail.id;
 					var the_url = 'https://wa.me/'+options.phone+'?text=' + options.text;
 					var html = ' <a class="cf7sendwa-resend-link" href="' + the_url + '" target="_blank">' + label + '</a>';
 					var interval = window.setInterval( function(){
-						$( '#'+id+ ' .wpcf7-response-output' ).append( html );
+						$( options.cf7event.detail.apiResponse.into + ' .wpcf7-response-output' ).append( html );
 						clearInterval( interval );
 					}, 3000 );
 				}

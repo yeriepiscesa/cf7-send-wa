@@ -1607,7 +1607,7 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
 		<?php if( $this->woo_is_active && is_product() ): ?>
 		if( $( '.cf7sendwa-single-product-button' ).length && cf7wa_single_product != '' ) {
 			<?php 
-			$product = get_product( get_the_ID() ); 
+			$product = wc_get_product( get_the_ID() ); 
 			$greeting = get_option( 'cf7sendwa_single_product_greet', '' );	
 			$greeting = str_replace( '{{product_name}}', $product->get_name(), $greeting );
 			$greeting = str_replace( '{{product_sku}}', $product->get_sku(), $greeting );

@@ -1294,11 +1294,13 @@ class Cf7_Send_Wa_Public {
 		    
 		    $categories = cf7sendwa_woo_list_categories( $atts['category'] );
 		    foreach( $categories as $cat ) {
-		        array_push( $product_categories, [
-		            'id' => $cat->term_id,
-		            'slug' => $cat->slug,
-		            'name' => $cat->name,
-		        ] );
+                if( is_object( $cat ) ) {
+                    array_push( $product_categories, [
+                        'id' => $cat->term_id,
+                        'slug' => $cat->slug,
+                        'name' => $cat->name,
+                    ] );
+                }
 		    }
 		    
 		    if( isset( $atts['products'] ) && $this->woo_is_active && is_product() && strtolower( $atts['products'] ) == 'current' ) {
@@ -1502,8 +1504,8 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
                 the_phone = cf7wa_country + the_phone.substring(1);
             }
             
-            var frm_id = $(event.target).attr('id');
-            			
+            var frm_id = $(event.target).closest( '.wpcf7' ).attr('id');
+            
             <?php if( $this->provider != '' || $cf7sendwa_is_custom_api || !empty( $cf7sendwa_custom_apis ) ): ?>  
             	
             	$( '.wpcf7-response-output' ).wrap( '<div id="cf7sendwa_element_'+the_id+'" style="display:none;"></div>' );              
@@ -1536,9 +1538,12 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
                 }
                 
                 var $btn = $( '#'+frm_id ).find( 'button' );
-                var btn_text = $btn.html();
-                $btn.attr( 'disabled', true );
-                $btn.html( btn_text + '&nbsp;<img src="<?php echo plugin_dir_url( dirname(__FILE__) ) .'includes/assets/img/ajax-loader.gif' ; ?>">' );
+                var btn_text = '';
+                if( $btn ) {
+                    btn_text = $btn.html();
+                    $btn.attr( 'disabled', true );
+                    $btn.html( btn_text + '&nbsp;<img src="<?php echo plugin_dir_url( dirname(__FILE__) ) .'includes/assets/img/ajax-loader.gif' ; ?>">' );                    
+                }
                 $.ajax({
                     url: cf7wa_ajaxurl,
                     type: 'POST',
@@ -1546,8 +1551,10 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
                     success: function( response ) {
                         $( '.wpcf7-response-output' ).unwrap();
                         redirect_woo_order_received( api_response );
-						$btn.attr( 'disabled', false );
-						$btn.html( btn_text );
+                        if( $btn ) {
+                            $btn.attr( 'disabled', false );
+                            $btn.html( btn_text );
+                        }
                     }
                 });
                 

@@ -370,8 +370,9 @@ class Cf7_Send_Wa_Public {
 					}
 					$_tonumber = str_split( $data['to_number_2'] );
 					if( $_tonumber[0] == '0' ) {
+                        $country_code = get_option( 'cf7sendwa_country', '62' ) != '' ? get_option( 'cf7sendwa_country' ) : '62';
 						unset($_tonumber[0]);
-						$data['to_number_2'] = get_option( 'cf7sendwa_country', '62' ) . implode( '', $_tonumber );						
+						$data['to_number_2'] = $country_code . implode( '', $_tonumber );						
 					}
 				} else {
 					$data['to_number_2'] = get_option( 'cf7sendwa_number', '' );					
@@ -1435,7 +1436,7 @@ class Cf7_Send_Wa_Public {
 		if( !empty( $this->ids ) && !$this->script_loaded ) : ob_start(); ?>
 <script type="text/javascript">
 var cf7wa_ids = <?php echo json_encode( $this->ids ); ?>; 
-var cf7wa_country = '<?php echo get_option( 'cf7sendwa_country', '62' ) == '' ? get_option( 'cf7sendwa_country' ) : '62'; ?>';
+var cf7wa_country = '<?php echo get_option( 'cf7sendwa_country', '62' ) != '' ? get_option( 'cf7sendwa_country' ) : '62'; ?>';
 var cf7wa_numbers = <?php echo json_encode( $this->numbers ); ?>; 
 var cf7wa_resends = <?php echo json_encode( $this->resends ) ?>;
 var cf7wa_global_form = '<?php echo $this->global_form; ?>';

@@ -3,9 +3,10 @@
  * included in this file.
  */
 /* -- quantity box -- */
-.quantity {
- display: inline-block; text-align: center; }
-input[type=button].sp-woopos-minus {
+#cf7sendwa-quickshop-container .quantity {
+    display: inline-block; text-align: center; 
+}
+#cf7sendwa-quickshop-container input[type=button].sp-woopos-minus {
     display:inline;
     float:left;
 }
@@ -19,7 +20,7 @@ div.cf7sendwa-single-product-button {
 	display: table;
 	width: 100%;
 }
-.quantity .input-text.qty {
+#cf7sendwa-quickshop-container .quantity .input-text.qty {
 	padding: 10 0px;
 	text-align: center;
 	background-color: transparent;
@@ -27,15 +28,15 @@ div.cf7sendwa-single-product-button {
     width: 40px;
     margin: 0px 4px;
 }
-.quantity.buttons_added {
+#cf7sendwa-quickshop-container .quantity.buttons_added {
 	text-align: left;
 	position: relative;
 	white-space: nowrap;
 	vertical-align: top; 
     padding-right: 15px;
 }
-.quantity.buttons_added .sp-woopos-minus,
-.quantity.buttons_added .sp-woopos-plus {
+#cf7sendwa-quickshop-container .quantity.buttons_added .sp-woopos-minus,
+#cf7sendwa-quickshop-container .quantity.buttons_added .sp-woopos-plus {
      padding: 5px 10px;
      border: 0px;
      cursor:pointer;
@@ -125,7 +126,7 @@ div.cf7sendwa-single-product-button {
 #cf7sendwa-quickshop-container .product-item.grid-mode .product-item-info {
 	padding: 5px 5px;
 }
-.grid-mode-variation .product-item {
+#cf7sendwa-quickshop-container .grid-mode-variation .product-item {
     padding-bottom: 10px;
     border-bottom: 1px solid #eee;
     margin-bottom: 20px;
@@ -198,13 +199,13 @@ a.cf7sendwa-checkout-item-title { color: #000; text-decoration: none; }
 	font-family: inherit;
 	font-size: inherit;
 }
-.select2-container--default .select2-results__option {
+#cf7sendwa-quickshop-container .select2-container--default .select2-results__option {
 	font-size: 0.975em;
 }
 .cf7sendwa-woo-filter .select2-container {
 	margin-top:7px;
 }
-.select2-container--default .select2-selection--single .select2-selection__rendered {
+#cf7sendwa-quickshop-container .select2-container--default .select2-selection--single .select2-selection__rendered {
 	border:0px;
 }
 #cf7sendwa-quickshop-container div.cf7sendwa-product-sku,
@@ -218,32 +219,30 @@ div.cf7sendwa-product-sku {
 	z-index: 99999!important;
 }
 #cf7sendwa-quickshop-container .woo-link-detail { color: #000; text-decoration: none; }
-.product-item-detail h2 {
+#cf7sendwa-product-detail.product-item-detail h2 {
     font-weight: 700;
     padding-top:25px;
 }
-.product-item-detail-desc .woocommerce-Price-amount {
+#cf7sendwa-product-detail .product-item-detail-desc .woocommerce-Price-amount {
     font-size: 18px;
     font-weight: 500;
 }
-.product-item-detail .product-item-description { color: #666; margin-top:10px; }
-.product-item-detail .product-item-description p { margin-bottom: 0px; }
-.product-item-detail-description {
+#cf7sendwa-product-detail.product-item-detail .product-item-description { color: #666; margin-top:10px; }
+#cf7sendwa-product-detail.product-item-detail .product-item-description p { margin-bottom: 0px; }
+#cf7sendwa-product-detail .product-item-detail-description {
 	color: #666; padding-top: 20px;
 }
-#cf7sendwa-product-detail {
-}
-.product-item-detail .detail-image {
+#cf7sendwa-product-detail.product-item-detail .detail-image {
     padding:0px;
     margin:0px;
 }
-.product-item-detail .detail-content {
+#cf7sendwa-product-detail.product-item-detail .detail-content {
 	background-color: #ffffff;
 }
-.product-item-detail-desc {
+#cf7sendwa-product-detail .product-item-detail-desc {
     padding: 20px;
 }
-.product-item-detail-desc h3 {
+#cf7sendwa-product-detail .product-item-detail-desc h3 {
     font-weight: 700;
     font-size: 20px;
 }
@@ -348,7 +347,6 @@ table.quickshop-product-attributes td {
     align-items: center;
 }
 
-
 @media only screen and (min-width: 750px) {
 	.cf7sendwa-woo-filter .filter-block:first-child {
 		padding-left:0px;
@@ -370,7 +368,7 @@ table.quickshop-product-attributes td {
     .sp-flex-last {
         padding-right: 0px!important;
     }    
-    .quantity .input-text.qty {
+    #cf7sendwa-quickshop-container .quantity .input-text.qty {
         width: 50px;
     }    
     #cf7sendwa-quickshop-container .product-item:not(.variations) .product-item-info {

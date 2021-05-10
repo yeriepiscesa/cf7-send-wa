@@ -1,3 +1,8 @@
+## Release 0.13.0
+- Quick shop redesign
+- Remove unsemantic grid dependency
+- Fix default country code
+
 ## Release 0.12.6
 - Bugs fixed resend link not showing
 - Bugs fixed recevied & payment links not rendering html

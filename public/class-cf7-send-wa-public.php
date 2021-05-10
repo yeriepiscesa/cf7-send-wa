@@ -151,7 +151,6 @@ class Cf7_Send_Wa_Public {
 	 * @since    0.3.0
 	 */
 	public function enqueue_styles() {
-		wp_register_style( 'unsemantic-grid', plugin_dir_url( __FILE__ ) . 'css/unsemantic.grid.css' );
 		wp_register_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/cf7-send-wa-public.css', array(), $this->version, 'all' );
 		wp_register_style( 'jquery-modal', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/jquery.modal.min.css' );
 		wp_register_style( 'select2', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/select2.min.css' );
@@ -225,10 +224,6 @@ class Cf7_Send_Wa_Public {
 		), $atts );
 		$atts = array_merge( $atts, $_atts );
 		
-        $quickshop_unsemantic = get_option( 'quickshop_unsemantic', '0' );
-		if( $quickshop_unsemantic == '0' ) {		    
-	    	wp_enqueue_style( 'unsemantic-grid' );
-	    }
 		wp_enqueue_script( 'cf7sendwa-commonlib' );
         wp_enqueue_script( 'underscore' );
         if( $this->load_fontawesome ) {
@@ -1314,8 +1309,6 @@ class Cf7_Send_Wa_Public {
 			    $this->current_product_checkout = true;
 		    }
 		    
-	    	wp_enqueue_style( 'unsemantic-grid' );
-			
 			if( $atts['filter'] == 'yes' ) {
 				wp_enqueue_style( 'select2' );
 				wp_enqueue_script( 'select2' );

@@ -18,6 +18,10 @@ String.prototype.getDecimals || (String.prototype.getDecimals = function() {
     b && "" !== b && "NaN" !== b || (b = 0), "" !== c && "NaN" !== c || (c = ""), "" !== d && "NaN" !== d || (d = 0), "any" !== e && "" !== e && void 0 !== e && "NaN" !== parseFloat(e) || (e = 1), jQuery(this).is(".sp-woopos-plus") ? c && b >= c ? a.val(c) : a.val((b + parseFloat(e)).toFixed(e.getDecimals())) : d && b <= d ? a.val(d) : b > 0 && a.val((b - parseFloat(e)).toFixed(e.getDecimals())), a.trigger("change")
 });
 /* Main Class */
+function cf7sendwa_quickshop_nom_value( value ) {
+    return cf7sendwa.currency + ' ' + 
+        jQuery.number( value, cf7sendwa.decimals, cf7sendwa.decimal_separator, cf7sendwa.thousand_separator );    
+}
 function Woo_QuickShop_Cart() {
 	var self = this;
 	self.products = ko.observableArray();
@@ -30,7 +34,7 @@ function Woo_QuickShop_Cart() {
 		return total;
 	} );
 	self.price_total = ko.pureComputed( function(){			
-		return cf7sendwa.currency + ' ' + jQuery.number( self.total(), cf7sendwa.decimals, cf7sendwa.decimal_separator, cf7sendwa.thousand_separator );
+		return cf7sendwa_quickshop_nom_value( self.total() );
 	} );
 
 	self.weight_total = ko.pureComputed( function(){
@@ -116,13 +120,12 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 	var frm_ids = [];
     function wrap_spinner( id ) {
         $( '#'+id ).css( 'display','inline-block' )
-                   .css( 'margin-top', '0px' )
-                   .css( 'border', '0px' );
+                   .css( 'margin-top', '0px' );
         $( '#'+id ).attr( 'step', '1' )
         $( '#'+id ).addClass( 'input-text qty text' );
-        $( '#'+id ).wrap( '<div class="quantity buttons_added"></div>' );		
-        $( '#'+id ).parent().prepend( '<a href="javascript:void(0);" class="button sp-woopos-minus">-</a>' );
-        $( '#'+id ).parent().append( '<a href="javascript:void(0);" class="button sp-woopos-plus">+</a>' );
+        $( '#'+id ).wrap( '<div class="quantity buttons_added sp-mobile-flex-content"></div>' );		
+        $( '#'+id ).parent().prepend( '<a href="javascript:void(0);" class="button sp-woopos-minus"> - </a>' );
+        $( '#'+id ).parent().append( '<a href="javascript:void(0);" class="button sp-woopos-plus"> + </a>' );
     } 
 	
 	var ajax_search_txt = '';
@@ -589,7 +592,7 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 					} );
 				}
 				
-				$( '#'+el_id+' .item-subtotal' ).html( cf7sendwa.currency + ' 0' );
+				$( '#'+el_id+' .item-subtotal' ).html( cf7sendwa_quickshop_nom_value(0) );
 				$( '#'+el_id+' .product-items.page-'+ products_page + ' .qty' ).each( function(index, element) {
 					var qty_id = $(element).attr('id');
 					if( _.indexOf( qty_buttons, qty_id ) == -1 ) {

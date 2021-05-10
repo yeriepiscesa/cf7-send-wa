@@ -347,6 +347,14 @@ table.quickshop-product-attributes td {
     align-items: center;
 }
 
+/* single product */
+body.cf7sendwa-single-product form.cart {
+    display: flex;
+    align-items: center;
+}
+.cf7sendwa-single-product-button a.button { display:flex; align-items: center; }
+.cf7sendwa-single-product-button .buttonicon { margin-right: 7px; }
+
 @media only screen and (min-width: 750px) {
 	.cf7sendwa-woo-filter .filter-block:first-child {
 		padding-left:0px;
@@ -376,6 +384,13 @@ table.quickshop-product-attributes td {
         grid-template-columns: 50% 50%;
         justify-content: space-between;
     }    
+    #cf7sendwa-quickshop-container .product-item.current-single:not(.variations) .product-item-info { 
+        grid-template-columns: 60% 35%;
+    }
+    #cf7sendwa-quickshop-container .product-item.current-single {
+        padding: 0px;
+    }
+    
     #cf7sendwa-quickshop-container .product-item.variations {
         display: grid;
         grid-template-columns: 50% 50%;

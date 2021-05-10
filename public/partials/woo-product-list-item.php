@@ -9,8 +9,8 @@ function cf7sendwa_quickshop_item_qty( $product, $args ) {
 ?>
 <div class="product-items page-<?php echo $products['page']; ?>" data-total="<?php echo $products['total'] ?>">
 	<?php foreach( $products['results'] as $product ): ?>
-		<div class="product-item prd-<?php echo $product['prop']['id']; ?>">						
-			<div class="sp-mobile-flex-content item-block<?php echo isset( $args['is_current_product'] ) && $args['is_current_product'] =='yes' ? ' ':''; ?>">
+		<div class="product-item prd-<?php echo $product['prop']['id']; ?><?php echo isset( $args['is_current_product'] ) && $args['is_current_product'] =='yes' ? ' current-single':''; ?>">						
+			<div class="sp-mobile-flex-content item-block">
 				<a href="#" class="woo-link-detail"><img src="<?php echo $product['prop']['images'][0]['src']; ?>" width="100" align="left" border="0"></a>
 				<div class="product-item-info">
                     <div class="product-item-heading-wrap">                        

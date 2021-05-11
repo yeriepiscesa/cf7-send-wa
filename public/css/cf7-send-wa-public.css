@@ -18,7 +18,7 @@ span.cf7sendwa-single-product-button {
 div.cf7sendwa-single-product-button {
 	padding: 10px 0px;
 	display: table;
-	width: 100%;
+	width: auto;
 }
 #cf7sendwa-quickshop-container .quantity .input-text.qty {
 	padding: 10 0px;
@@ -352,7 +352,7 @@ body.cf7sendwa-single-product form.cart {
     display: flex;
     align-items: center;
 }
-.cf7sendwa-single-product-button a.button { display:flex; align-items: center; }
+.cf7sendwa-single-product-button a { display:flex; align-items: center; }
 .cf7sendwa-single-product-button .buttonicon { margin-right: 7px; }
 
 @media only screen and (min-width: 750px) {

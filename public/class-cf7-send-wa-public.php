@@ -46,7 +46,6 @@ class Cf7_Send_Wa_Public {
 	protected $resends = array();
 	protected $global_form = null;
 	protected $global_btn_tooltip = '';
-	protected $load_fontawesome = false;
 
     public $wa_submitted_text = '';
     public $wa_replaced_tags;
@@ -126,10 +125,6 @@ class Cf7_Send_Wa_Public {
         if(  $this->global_btn_tooltip == '' ) {
 	        $this->global_btn_tooltip = 'Click to chat';
         }
-		$fa_load = get_option( 'cf7sendwa_fontawesome', '0' );
-		if( $fa_load == '1' ) {
-			$this->load_fontawesome = true;
-        }
         if( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 	        $this->woo_is_active = true;
 	        // REST API CALL ( Next Features )
@@ -158,9 +153,6 @@ class Cf7_Send_Wa_Public {
 		wp_register_style( 'tooltipster', plugin_dir_url( dirname( __FILE__ ) ) . 'includes/assets/css/tooltipster.bundle.min.css', array(), '4.2.8' );		
 		if( $this->global_form != '' ) {
 			wp_enqueue_style( 'tooltipster' );
-		}
-		if( $this->load_fontawesome ) {
-			wp_register_style( 'fontawesome', 'https://use.fontawesome.com/releases/v5.13.0/css/all.css', array(), '5.13.0' );
 		}
 	}
 
@@ -226,9 +218,7 @@ class Cf7_Send_Wa_Public {
 		
 		wp_enqueue_script( 'cf7sendwa-commonlib' );
         wp_enqueue_script( 'underscore' );
-        if( $this->load_fontawesome ) {
-	        wp_enqueue_style( 'fontawesome' );
-        }
+        wp_enqueue_style( 'dashicons' );        
         
         $is_popup = false;
         if( $atts['popup'] == 'button' || $atts['popup'] == 'auto' ) {

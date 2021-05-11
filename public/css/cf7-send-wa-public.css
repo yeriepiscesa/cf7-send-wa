@@ -385,7 +385,8 @@ body.cf7sendwa-single-product form.variations_form {
     display: block;
 }
 
-.cf7sendwa-single-product-button a { display:flex; align-items: center; }
+.cf7sendwa-single-product-button a,
+.cf7sendwa-single-product-button .button { display:flex!important; align-items: center; }
 .cf7sendwa-single-product-button .buttonicon { margin-right: 7px; }
 
 @media only screen and (min-width: 750px) {

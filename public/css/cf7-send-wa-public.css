@@ -348,10 +348,15 @@ table.quickshop-product-attributes td {
 }
 
 /* single product */
-body.cf7sendwa-single-product form.cart {
+body.cf7sendwa-single-product form.cart:not(.variations_form),
+body.cf7sendwa-single-product form.variations_form .woocommerce-variation-add-to-cart {
     display: flex;
     align-items: center;
 }
+body.cf7sendwa-single-product form.variations_form {
+    display: block;
+}
+
 .cf7sendwa-single-product-button a { display:flex; align-items: center; }
 .cf7sendwa-single-product-button .buttonicon { margin-right: 7px; }
 
@@ -395,6 +400,9 @@ body.cf7sendwa-single-product form.cart {
         display: grid;
         grid-template-columns: 50% 50%;
         align-items: center;
+    }
+    body.cf7sendwa-single-product #cf7sendwa-quickshop-container .product-item.variations {
+        grid-template-columns: 65% 25%;        
     }
     
     .sp-product-detail {

@@ -32,8 +32,8 @@
 
     <?php else: ?>
     <button class="button variant-option-button" data-var-id="<?php echo $product['prop']['id']; ?>">
-        <span class="angle-down"><i class="fa fa-angle-down"></i> <?php echo __( 'Select Options', 'cf7sendwa' ) ?></span>
-        <span class="angle-up"><i class="fa fa-angle-up"></i> <?php echo __( 'Hide Options', 'cf7sendwa' ) ?></span>
+        <span class="angle-down"><i class="dashicons dashicons-arrow-down-alt2"></i> <?php echo __( 'Select Options', 'cf7sendwa' ) ?></span>
+        <span class="angle-up"><i class="dashicons dashicons-arrow-up-alt2"></i> <?php echo __( 'Hide Options', 'cf7sendwa' ) ?></span>
     </button>
     <?php endif; ?>
 </div>

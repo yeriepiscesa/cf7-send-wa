@@ -1409,20 +1409,23 @@ class Cf7_Send_Wa_Public {
     }
     
 	public function cf7_wa_button() {
-		if( is_product() ) {			
-			$form_id = get_option( 'cf7sendwa_woo_single_product', '' );
-			if( $form_id != '' ) {
-				wp_enqueue_style( $this->plugin_name );
-				$text = get_option( 'cf7sendwa_single_button', 'Chat Seller' );
-				$wrap_div = get_option( 'cf7sendwa_single_button_wrap_div', '0' );
-				echo '<' . ($wrap_div == '1' ? 'div':'span') . ' class="cf7sendwa-single-product-button">';				
-				$form = do_shortcode( '[contact-form-7-wa id="' . $form_id . '" in_woo="yes" popup="button" buttonicon="dashicons dashicons-whatsapp" buttontext="' . $text . '"]' );
-				echo $this->woo_popup_button;
-				echo '</' . ($wrap_div == '1' ? 'div':'span') . '>';
-				add_action( 'wp_footer', function() use( $form ) {
-					echo $form;					
-				}, 999 );
-			}
+		if( is_product() ) {		
+            global $product;
+            if( $product->is_type( 'simple' ) || $product->is_type( 'variable' ) ) {
+                $form_id = get_option( 'cf7sendwa_woo_single_product', '' );
+                if( $form_id != '' ) {
+                    wp_enqueue_style( $this->plugin_name );
+                    $text = get_option( 'cf7sendwa_single_button', 'Chat Seller' );
+                    $wrap_div = get_option( 'cf7sendwa_single_button_wrap_div', '0' );
+                    echo '<' . ($wrap_div == '1' ? 'div':'span') . ' class="cf7sendwa-single-product-button">';				
+                    $form = do_shortcode( '[contact-form-7-wa id="' . $form_id . '" in_woo="yes" popup="button" buttonicon="dashicons dashicons-whatsapp" buttontext="' . $text . '"]' );
+                    echo $this->woo_popup_button;
+                    echo '</' . ($wrap_div == '1' ? 'div':'span') . '>';
+                    add_action( 'wp_footer', function() use( $form ) {
+                        echo $form;					
+                    }, 999 );
+                }
+            }                
 		}
 	}
 	

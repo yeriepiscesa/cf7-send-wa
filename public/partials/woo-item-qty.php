@@ -1,7 +1,7 @@
 <div class="item-block item-price sp-mobile-flex-content">
     <?php if( $product['prop']['type'] != 'variable' ): ?>
 
-        <div class="">
+        <div class="cf7sendwa-div-wrapper">
             <?php
             $n_readonly = '';
             if( $args['editableqty'] == 'no' ) {

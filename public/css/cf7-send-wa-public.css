@@ -35,15 +35,26 @@ div.cf7sendwa-single-product-button {
 	vertical-align: top; 
     padding-right: 15px;
 }
+body.cf7sendwa-single-product #cf7sendwa-quickshop-container .quantity.buttons_added { 
+    padding-right: 0px;
+}
 #cf7sendwa-quickshop-container .quantity.buttons_added .sp-woopos-minus,
 #cf7sendwa-quickshop-container .quantity.buttons_added .sp-woopos-plus {
-     padding: 5px 10px;
-     border: 0px;
-     cursor:pointer;
-     -webkit-appearance: none;
+    padding: 5px 10px;
+    border: 0px;
+    cursor:pointer;
+    -webkit-appearance: none;
     color:#fff;
     background: #000;
     text-decoration: none!important;
+    border-radius: 5px;
+    width: 35px;
+    text-align: center;
+    font-weight: 600;
+}
+body.cf7sendwa-single-product #cf7sendwa-quickshop-container .quantity.buttons_added .sp-woopos-minus,
+body.cf7sendwa-single-product #cf7sendwa-quickshop-container .quantity.buttons_added .sp-woopos-plus {
+    padding: 8px 10px;
 }
 #cf7sendwa-quickshop-container input[type="number"]::-webkit-outer-spin-button,
 #cf7sendwa-quickshop-container input[type="number"]::-webkit-inner-spin-button {
@@ -59,17 +70,28 @@ div.cf7sendwa-single-product-button {
 	border:0px;
 	font-size:0.90em;
 	font-weight: 500;
+    border-radius: 5px;
 }
-
+#cf7sendwa-quickshop-container button.variant-option-button .angle-down,
+#cf7sendwa-quickshop-container button.variant-option-button .angle-up {
+    display: flex;
+    align-items: center;
+}
+#cf7sendwa-quickshop-container button.variant-option-button .dashicons, 
+#cf7sendwa-quickshop-container button.variant-option-button .dashicons-before:before {
+    line-height: unset!important;
+}
+body.cf7sendwa-single-product #cf7sendwa-quickshop-container button.variant-option-button .dashicons, 
+body.cf7sendwa-single-product #cf7sendwa-quickshop-container button.variant-option-button .dashicons-before:before {
+    margin-top:7px;
+}
 #cf7sendwa-quickshop-container * {
 	font-size: 1em;	
 }
-
 #cf7sendwa-quickshop-container .quantity a.minus,
 #cf7sendwa-quickshop-container .quantity a.plus {
     display:none;
 }
-
 #cf7sendwa-quickshop-container .category-title {
 	font-weight: 600;
 	border-bottom: 1px solid #eee;
@@ -120,6 +142,9 @@ div.cf7sendwa-single-product-button {
 #cf7sendwa-quickshop-container .product-item-info {
 	padding: 10px 20px;
 }
+body.cf7sendwa-single-product #cf7sendwa-quickshop-container .product-item-info {
+	padding-right: 0px;
+}
 #cf7sendwa-quickshop-container .variations .product-item-info {
 	padding: 5px 0px;
 }
@@ -148,9 +173,12 @@ div.cf7sendwa-single-product-button {
 	font-weight: 600;
 	margin-bottom: 0px;
 }
+#cf7sendwa-quickshop-container .product-item.variations h4 {
+    font-size: 1em;
+}
 #cf7sendwa-quickshop-container .variations {
 	border-left: 5px solid #333;
-	margin-left: 10px;
+	margin-left: 0px;
 	margin-bottom: 0px;
 }
 .cf7sendwa-quickshop-checkout {
@@ -389,8 +417,15 @@ body.cf7sendwa-single-product form.variations_form {
         grid-template-columns: 50% 50%;
         justify-content: space-between;
     }    
+    #cf7sendwa-quickshop-container .product-item:not(.variations) .product-item-info.has-variations {
+        display: flex;
+    }
     #cf7sendwa-quickshop-container .product-item.current-single:not(.variations) .product-item-info { 
         grid-template-columns: 60% 35%;
+    }
+    body.cf7sendwa-single-product #cf7sendwa-quickshop-container .product-item.current-single:not(.variations) .product-item-info {
+        display:flex;
+        justify-content: space-between;
     }
     #cf7sendwa-quickshop-container .product-item.current-single {
         padding: 0px;
@@ -398,11 +433,15 @@ body.cf7sendwa-single-product form.variations_form {
     
     #cf7sendwa-quickshop-container .product-item.variations {
         display: grid;
-        grid-template-columns: 50% 50%;
+        grid-template-columns: 50% 50%;     
         align-items: center;
     }
-    body.cf7sendwa-single-product #cf7sendwa-quickshop-container .product-item.variations {
+    /*body.cf7sendwa-single-product #cf7sendwa-quickshop-container .product-item.variations {
         grid-template-columns: 65% 25%;        
+    }*/
+    body.cf7sendwa-single-product #cf7sendwa-quickshop-container .product-item.variations {
+        display: flex;
+        justify-content: space-between;   
     }
     
     .sp-product-detail {

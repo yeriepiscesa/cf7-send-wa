@@ -12,7 +12,7 @@ function cf7sendwa_quickshop_item_qty( $product, $args ) {
 		<div class="product-item prd-<?php echo $product['prop']['id']; ?><?php echo isset( $args['is_current_product'] ) && $args['is_current_product'] =='yes' ? ' current-single':''; ?>">						
 			<div class="sp-mobile-flex-content item-block">
 				<a href="#" class="woo-link-detail"><img src="<?php echo $product['prop']['images'][0]['src']; ?>" width="100" align="left" border="0"></a>
-				<div class="product-item-info">
+				<div class="product-item-info<?php echo $product['prop']['type'] == 'variable' ? ' has-variations':''; ?>">
                     <div class="product-item-heading-wrap">                        
                         <h4><a href="#" class="woo-link-detail"><?php echo $product['name']; ?></a></h4>	
                         <?php

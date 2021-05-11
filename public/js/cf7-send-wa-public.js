@@ -207,7 +207,10 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 				$qs.loading();
 			}
 			var el_id = $qs.attr("id");
-			load_products( el_id, '', function(el_id, cat_slug, data_count){
+			load_products( el_id, '', function(el_id, cat_slug, data_count){                        
+                if( $( 'body.cf7sendwa-single-product' ).length ) {
+                    $( '.product-item .qty' ).trigger( 'change' );
+                }
 				if( cf7sendwa.quickshop_atts.mode != 'silent' ) {
 					$qs.loading( 'stop' );
 				}

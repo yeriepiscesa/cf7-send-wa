@@ -18,7 +18,7 @@ if( $atts['max-width'] != '' ) {
 					<?php do_action( 'cf7sendwa_quickshop_before_total_review' ); ?>		
 					<tr>
 						<td width="60%">Total</td>
-						<td width="40%" class="cart-nominal" data-bind="html:price_total">Rp. 0</td>
+						<td width="40%" class="cart-nominal" data-bind="html:price_total">0</td>
 					</tr>
 					<?php do_action( 'cf7sendwa_quickshop_after_total_review' ); ?>		
 				</thead>

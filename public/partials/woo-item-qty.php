@@ -6,9 +6,13 @@
             $n_readonly = '';
             if( $args['editableqty'] == 'no' ) {
                 $n_readonly = ' readonly="readonly"';
-            }						
+            }
+            $def_value = "0";
+            if( isset( $args['is_current_product'] ) && $args['is_current_product'] =='yes' ) {
+                $def_value = "1";
+            }
             ?>
-            <input type="number" name="item_qty" step="1"<?php echo $n_readonly ?> value="0" 
+            <input type="number" name="item_qty" step="1"<?php echo $n_readonly ?> value="<?php echo $def_value; ?>" 
                 data-sku="<?php echo $product['prop']['sku'] ?>" 
                 data-stock="<?php echo $product['prop']['stock_status'] ?>"
                 data-price="<?php echo $product['prop']['price'] ?>" 

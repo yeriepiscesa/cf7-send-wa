@@ -173,9 +173,10 @@
 		                        'woocommerce_after_add_to_cart_quantity' => 'After add to cart quantity',
 		                        'woocommerce_after_add_to_cart_button' => 'After add to cart button',
 		                        'woocommerce_after_add_to_cart_form' => 'After add to cart form',
+                                'replace' => 'Replace add to cart button'
 	                        ) );    
 	                        ?>
-				        	<label for="cf7sendwa_single_hook"><strong>Hook Location</strong></label><br>
+				        	<label for="cf7sendwa_single_hook" style="display:inline-block;margin-top:5px;"><strong>Hook Location</strong></label><br>
 				        	<select class="select2" name="cf7sendwa_single_hook" id="cf7sendwa_single_hook">
 					        	<option value="">Select WooCommerce hook</option>
 					        	<?php

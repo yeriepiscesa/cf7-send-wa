@@ -1015,7 +1015,9 @@ class Cf7_Send_Wa_Public {
 				
 			    if( $order_id && is_array( $customer ) && isset( $customer['id'] ) ) {
 					update_post_meta( $order_id, '_customer_user', $customer['id'] );	    
-			    }
+			    } elseif( $order_id && is_user_logged_in() ) {
+                    update_post_meta( $order_id, '_customer_user', get_current_user_id() );
+                }
 							    
 				if( ! apply_filters( 'cf7sendwa_disable_woocommerce_email', false ) ) {
 				    $mail_order = new WC_Email_New_Order();
@@ -1144,14 +1146,24 @@ class Cf7_Send_Wa_Public {
 	 * @access public
 	 */
 	public function woo_checkout_load_customer_info( $scanned_tag, $replace ) {
+        $contact_form = null;
+        
 		if( is_checkout() && get_option( 'cf7sendwa_woo_checkout', '' ) != '' ) {
+			$contact_form = WPCF7_ContactForm::get_instance( get_option( 'cf7sendwa_woo_checkout' ) );
+		} elseif( is_product() ) {
+    		$form_id = get_option( 'cf7sendwa_woo_single_product', '' );
+            if( $form_id != '' ) {
+                $contact_form = WPCF7_ContactForm::get_instance( $form_id );
+            }
+        }
+        
+        if( !is_null( $contact_form ) ) {
 	    	if( is_null( $this->customer ) && is_user_logged_in() ) {
 	        	$this->customer = new WC_Customer( get_current_user_id() );
 	        }
-			$contact_form = WPCF7_ContactForm::get_instance( get_option( 'cf7sendwa_woo_checkout' ) );
 			$fields = array( 'first_name', 'last_name', 'email', 'phone', 'address', 'order_note' );
 			$the_value = '';			
-			$cust_billing = $this->customer->billing;
+			$cust_billing = $this->customer->get_billing();
 			foreach( $fields as $field ) {
 				$tag = $contact_form->additional_setting( 'woo_checkout_'.$field );
 				if( !empty($tag) && $scanned_tag['name'] == $tag[0] ) {
@@ -1167,8 +1179,8 @@ class Cf7_Send_Wa_Public {
 				$scanned_tag['values'][] = $the_value;
 			} else {
 	 			$scanned_tag['content'] = $the_value;				
-			}
-		}
+			}            
+        }
 		return $scanned_tag;
 	} 
 	

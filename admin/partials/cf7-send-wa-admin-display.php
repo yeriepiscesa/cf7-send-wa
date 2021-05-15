@@ -202,9 +202,22 @@
 				        	</label><br><br>
                             
                             
-                            <label for="cf7sendwa_single_greet"><strong>Opening Text</strong><label><br>   
+                            <label for="cf7sendwa_single_greet"><strong>Opening Text</strong></label><br>   
                             <textarea id="cf7sendwa_single_greet" rows="3" cols="60" name="single_product_greet"><?php echo $single_product_greet; ?></textarea><br>
                             <p class="description">You can use these tags for dynamic value: {{product_name}} {{product_sku}}</p>
+                                
+				        	<?php
+	                        $checked_remove_addtocart = '';
+	                        if( $cf7sendwa_remove_add_to_cart_loop == '1' ) {
+	                            $checked_remove_addtocart = ' checked="checked"';
+	                        }
+					        ?>
+                            <br>
+                            <label for="cf7sendwa_remove_add_to_cart_loop">       
+                                <input type="checkbox" value="1"
+                                       name="cf7sendwa_remove_add_to_cart_loop" id="cf7sendwa_remove_add_to_cart_loop"<?php echo $checked_remove_addtocart ?>>
+                                Remove add to cart button on shop page.
+                            </label>
 			        	</div>
 			        </td>
 		        </tr>		        

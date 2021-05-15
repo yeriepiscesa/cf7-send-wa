@@ -258,9 +258,15 @@ class Cf7_Send_Wa {
                         remove_action( 'woocommerce_' . $ptype . '_add_to_cart', 'woocommerce_' . $ptype . '_add_to_cart', 30 );
                         $button_hook = 'woocommerce_single_product_summary';
                     }
-                    add_action( $button_hook, array( $plugin_public, 'cf7_wa_button' ), 30 );                    
+                    add_action( $button_hook, array( $plugin_public, 'cf7_wa_button' ), 30 );                                        
                 } );
             }
+            add_action( 'woocommerce_init', function(){
+                $cf7sendwa_remove_add_to_cart_loop = get_option( 'cf7sendwa_remove_add_to_cart_loop', '0' );
+                if( $cf7sendwa_remove_add_to_cart_loop == '1' ) {
+                    remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart' );
+                }
+            } );
             
 			$this->loader->add_action( 'wp_ajax_cf7sendwa_add_to_cart', $plugin_public, 'quickshop_add_to_cart' );
 			$this->loader->add_action( 'wp_ajax_nopriv_cf7sendwa_add_to_cart', $plugin_public, 'quickshop_add_to_cart' );

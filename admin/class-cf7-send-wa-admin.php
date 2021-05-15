@@ -183,7 +183,14 @@ class Cf7_Send_Wa_Admin {
 	 			$button_hook = $_POST['cf7sendwa_single_hook'];
 	 			update_option( 'cf7sendwa_single_button_hook', $button_hook );
  			}
-
+            
+            $cf7sendwa_remove_add_to_cart_loop = '0';
+            if( isset( $_POST['cf7sendwa_remove_add_to_cart_loop'] ) ) {
+	        	$cf7sendwa_remove_add_to_cart_loop = $_POST['cf7sendwa_remove_add_to_cart_loop'];    
+				if( $cf7sendwa_remove_add_to_cart_loop != '1' ) $cf7sendwa_remove_add_to_cart_loop = '0';
+            }
+            update_option( 'cf7sendwa_remove_add_to_cart_loop', $cf7sendwa_remove_add_to_cart_loop );
+            
             update_option( 'cf7sendwa_woo_order_redirect', $_POST['woo_order_redirect'] );
 
             $full_cart = '0'; 
@@ -265,6 +272,8 @@ class Cf7_Send_Wa_Admin {
         
         $single_product_greet = get_option( 'cf7sendwa_single_product_greet', '' );
         $woo_order_redirect = get_option( 'cf7sendwa_woo_order_redirect', '' );
+        
+        $cf7sendwa_remove_add_to_cart_loop = get_option( 'cf7sendwa_remove_add_to_cart_loop', '0' );
         
         $twilio_sid = get_option( 'cf7sendwa_twilio_sid', '' );
         $twilio_token = get_option( 'cf7sendwa_twilio_token', '' );

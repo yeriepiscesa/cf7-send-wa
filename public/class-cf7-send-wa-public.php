@@ -1412,6 +1412,14 @@ class Cf7_Send_Wa_Public {
         return $classes;
     }
     
+    public function disable_add_to_cart_button( $product, $args ) {
+        $cf7sendwa_remove_add_to_cart_loop = get_option( 'cf7sendwa_remove_add_to_cart_loop', '0' );
+        if( $cf7sendwa_remove_add_to_cart_loop == '1' ) {
+            return '';
+        }
+        return $product;        
+    }
+    
 	public function cf7_wa_button() {
 		if( is_product() ) {		
             global $product;

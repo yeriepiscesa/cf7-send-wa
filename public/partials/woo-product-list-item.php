@@ -1,4 +1,5 @@
 <?php
+$frmwoo_current_product = isset( $args['is_current_product'] ) && $args['is_current_product'] =='yes' ? true : false;
 function cf7sendwa_quickshop_item_qty( $product, $args ) {
     ob_start();
     include plugin_dir_path( __FILE__ ) . 'woo-item-qty.php';
@@ -9,10 +10,15 @@ function cf7sendwa_quickshop_item_qty( $product, $args ) {
 ?>
 <div class="product-items page-<?php echo $products['page']; ?>" data-total="<?php echo $products['total'] ?>">
 	<?php foreach( $products['results'] as $product ): ?>
-		<div class="product-item prd-<?php echo $product['prop']['id']; ?><?php echo isset( $args['is_current_product'] ) && $args['is_current_product'] =='yes' ? ' current-single':''; ?>">						
+		<div class="product-item prd-<?php echo $product['prop']['id']; ?><?php echo $frmwoo_current_product ? ' current-single':''; ?>">						
 			<div class="sp-mobile-flex-content item-block">
+                <?php 
+                if( $product['prop']['images'][0]['src'] == '' ) {
+                    $product['prop']['images'][0]['src'] = wc_placeholder_img_src( 'thumbnail' );
+                }
+                ?>
 				<a href="#" class="woo-link-detail"><img src="<?php echo $product['prop']['images'][0]['src']; ?>" width="100" align="left" border="0"></a>
-				<div class="product-item-info<?php echo $product['prop']['type'] == 'variable' ? ' has-variations':''; ?>">
+                <div class="product-item-info<?php echo $product['prop']['type'] == 'variable' ? ' has-variations':''; ?>">
                     <div class="product-item-heading-wrap">                        
                         <h4><a href="#" class="woo-link-detail"><?php echo $product['name']; ?></a></h4>	
                         <?php
@@ -93,7 +99,7 @@ function cf7sendwa_quickshop_item_qty( $product, $args ) {
 								style="display: inline-block; margin-top: 0px;">
 						</div>
 						
-						<?php if( !isset( $args['is_current_product'] ) ) : ?>
+						<?php if( !$frmwoo_current_product ) : ?>
 						<div class="cf7sendwa-div-wrapper">
 							<div class="item-subtotal"></div>
 						</div>

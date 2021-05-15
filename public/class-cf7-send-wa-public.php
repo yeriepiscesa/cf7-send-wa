@@ -1161,25 +1161,27 @@ class Cf7_Send_Wa_Public {
 	    	if( is_null( $this->customer ) && is_user_logged_in() ) {
 	        	$this->customer = new WC_Customer( get_current_user_id() );
 	        }
-			$fields = array( 'first_name', 'last_name', 'email', 'phone', 'address', 'order_note' );
-			$the_value = '';			
-			$cust_billing = $this->customer->get_billing();
-			foreach( $fields as $field ) {
-				$tag = $contact_form->additional_setting( 'woo_checkout_'.$field );
-				if( !empty($tag) && $scanned_tag['name'] == $tag[0] ) {
-					if( $field == 'address' ) {
-						$field = 'address_1';
-					}
-					if( isset( $cust_billing[ $field ] ) ) {
-						$the_value = $cust_billing[ $field ];
-					}
-				}	
-			}
-			if( $scanned_tag['basetype'] != 'textarea') {
-				$scanned_tag['values'][] = $the_value;
-			} else {
-	 			$scanned_tag['content'] = $the_value;				
-			}            
+            if( is_array( $this->customer ) ) {
+                $fields = array( 'first_name', 'last_name', 'email', 'phone', 'address', 'order_note' );
+                $the_value = '';			
+                $cust_billing = $this->customer->get_billing();
+                foreach( $fields as $field ) {
+                    $tag = $contact_form->additional_setting( 'woo_checkout_'.$field );
+                    if( !empty($tag) && $scanned_tag['name'] == $tag[0] ) {
+                        if( $field == 'address' ) {
+                            $field = 'address_1';
+                        }
+                        if( isset( $cust_billing[ $field ] ) ) {
+                            $the_value = $cust_billing[ $field ];
+                        }
+                    }	
+                }
+                if( $scanned_tag['basetype'] != 'textarea') {
+                    $scanned_tag['values'][] = $the_value;
+                } else {
+                    $scanned_tag['content'] = $the_value;				
+                }            
+            }
         }
 		return $scanned_tag;
 	} 

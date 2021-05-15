@@ -1161,7 +1161,7 @@ class Cf7_Send_Wa_Public {
 	    	if( is_null( $this->customer ) && is_user_logged_in() ) {
 	        	$this->customer = new WC_Customer( get_current_user_id() );
 	        }
-            if( is_array( $this->customer ) ) {
+            if( !is_null( $this->customer ) ) {
                 $fields = array( 'first_name', 'last_name', 'email', 'phone', 'address', 'order_note' );
                 $the_value = '';			
                 $cust_billing = $this->customer->get_billing();

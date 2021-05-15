@@ -1,3 +1,12 @@
+## Release 0.13.1
+- Set default quantity to 1 for single product quickshop
+- Single product form only affect to simple and variable product
+- Add "replace add to cart button" option to single product popup form
+- Add option to disable add to cart button on shop page
+- Load customer information on single product form popup when customer logged in 
+- Bugs fix & improvements
+- Fix styling
+
 ## Release 0.13.0
 - Quick shop redesign
 - Remove unsemantic grid dependency

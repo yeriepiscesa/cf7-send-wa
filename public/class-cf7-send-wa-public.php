@@ -208,7 +208,7 @@ class Cf7_Send_Wa_Public {
 			'popup' => 'false',
 			'popupdelay' => '2',
 			'buttontext' => 'Open Form',
-			'buttonicon' => 'fab fa-whatsapp',	
+			'buttonicon' => 'dashicons dashicons-whatsapp',	
 			'buttonclass' => '',
 			'style' => '',
 			'class' => '',
@@ -1664,7 +1664,7 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
 				if( _.indexOf( cf7wa_ids, frm_id ) >= 0 ) {
 					if( $btn.prop('tagName') == 'BUTTON' ) {
 						var btn_label = $btn.html();
-						var new_html = '<i class="fab fa-whatsapp"></i>&nbsp;' + btn_label;
+						var new_html = '<i class="dashicons dashicons-whatsapp"></i>&nbsp;' + btn_label;
 						$btn.html( new_html );
 						if( !$frm.find( '#cf7sendwa_quickshop_cart' ).length ) {
 							$btn.addClass( 'cf7-basic-submit' );

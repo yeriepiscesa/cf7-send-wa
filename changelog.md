@@ -1,3 +1,7 @@
+## Release 0.13.2
+- Fix styling for quick shop 
+- Fix styling for quick shop with only 1 product
+
 ## Release 0.13.1
 - Set default quantity to 1 for single product quickshop
 - Single product form only affect to simple and variable product

@@ -1288,7 +1288,14 @@ class Cf7_Send_Wa_Public {
 			
 			if( $atts['products'] == 'current' ) {
 				$atts['mode'] = 'silent';
-			}
+			} 
+            
+            if( $atts['products'] != '' ) {
+                $_products = explode( ',', $atts['products'] );
+                if( count( $_products ) == 1 ) {
+                    $atts['mode'] = 'silent';
+                }
+            }
 			
 		    $product_categories = array();
 		    
@@ -1403,14 +1410,14 @@ class Cf7_Send_Wa_Public {
 		}
 	}
 	
-    public function body_class( $classes ) {
+    public function body_class( $classes ) {        
 		if( is_product() ) {			
 			$form_id = get_option( 'cf7sendwa_woo_single_product', '' );
 			if( $form_id != '' ) {
                 $classes[] = 'cf7sendwa-single-product';
             }
         }
-        return $classes;
+        return $classes;        
     }
     
     public function disable_add_to_cart_button( $product, $args ) {
@@ -1631,6 +1638,9 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
 				theme:'tooltipster-noir'
 			});			
 		}
+        <?php if( !is_product() && $this->current_product_checkout ): ?>
+        $(document.body).addClass( 'cf7sendwa-single-product' );
+        <?php endif; ?>
 		<?php if( $this->woo_is_active && is_product() ): ?>
 		if( $( '.cf7sendwa-single-product-button' ).length && cf7wa_single_product != '' ) {
 			<?php 

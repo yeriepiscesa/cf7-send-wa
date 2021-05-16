@@ -20,8 +20,8 @@ div.cf7sendwa-single-product-button {
 	display: table;
 	width: auto;
 }
-#cf7sendwa-quickshop-container .quantity .input-text.qty {
-	padding: 10 0px;
+#cf7sendwa-quickshop-container .quantity input[type="number"].input-text.qty {
+	padding: 0px;
 	text-align: center;
 	background-color: transparent;
 	border: 0px;
@@ -40,7 +40,9 @@ body.cf7sendwa-single-product #cf7sendwa-quickshop-container .quantity.buttons_a
 }
 #cf7sendwa-quickshop-container .quantity.buttons_added .sp-woopos-minus,
 #cf7sendwa-quickshop-container .quantity.buttons_added .sp-woopos-plus {
-    padding: 5px 10px;
+    display: inline-block;
+    padding: 5px 0px;
+    width: 30px;
     border: 0px;
     cursor:pointer;
     -webkit-appearance: none;
@@ -48,7 +50,6 @@ body.cf7sendwa-single-product #cf7sendwa-quickshop-container .quantity.buttons_a
     background: #000;
     text-decoration: none!important;
     border-radius: 5px;
-    width: 35px;
     text-align: center;
     font-weight: 600;
 }
@@ -79,7 +80,7 @@ body.cf7sendwa-single-product #cf7sendwa-quickshop-container .quantity.buttons_a
 }
 #cf7sendwa-quickshop-container button.variant-option-button .dashicons, 
 #cf7sendwa-quickshop-container button.variant-option-button .dashicons-before:before {
-    line-height: 1.5rem;
+    line-height: 1.3rem;
 }
 #cf7sendwa-quickshop-container * {
 	font-size: 1em;	
@@ -305,6 +306,7 @@ table.quickshop-product-attributes td {
 	background-color: #000000;
 	color: #ffffff;
 	padding: 15px 25px;
+    margin-top: 0px;
 	margin-bottom: 14px;
 	font-weight:600;
     font-size: 1.15rem;
@@ -321,6 +323,11 @@ table.quickshop-product-attributes td {
 }
 .cf7sendwa-cf7-container.form-popup .wpcf7 p {
 	margin: 0px;
+}
+
+.cf7sendwa-quickshop-checkout-header.single-product table td,
+.cf7sendwa-quickshop-checkout-header.single-product table th {
+    padding: 10px 0px;
 }
 
 @media only screen and (max-width: 750px) {

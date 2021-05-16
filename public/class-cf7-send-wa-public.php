@@ -1323,7 +1323,8 @@ class Cf7_Send_Wa_Public {
 		    	wp_enqueue_style( 'jquery-modal' );
 		    	wp_enqueue_script( 'jquery-modal' );    
 			}
-			
+            
+            wp_enqueue_style( 'dashicons' );
 		    wp_enqueue_style( $this->plugin_name );
 			wp_enqueue_script( 'underscore' );
 			wp_enqueue_script( 'knockout' );

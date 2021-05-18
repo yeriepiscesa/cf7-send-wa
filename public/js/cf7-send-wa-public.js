@@ -730,11 +730,13 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
 	    $viewportMeta.attr('content', 'width=device-width,initial-scale=1,maximum-scale=1');
     }
     
-	// select2
-	if( $( '.cf7sendwa-woo-categories' ).length ) {
-		$( '.cf7sendwa-woo-categories' ).select2( {
-			placeholder: "Select Category", 
-			allowClear: true
-		} );
-	}
+    $( document ).ready( function() {
+        // select2
+        if( $( '.cf7sendwa-woo-categories' ).length ) {
+            $( '.cf7sendwa-woo-categories' ).select2( {
+                placeholder: "Select Category", 
+                allowClear: true
+            } );
+        }
+    } );
 })( jQuery );

@@ -1689,17 +1689,19 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
 		}
         <?php if( $this->cf7md_is_active ): ?>
         $( '.cf7sendwa-button-popup' ).on( "click", function(event) {
-            var _t = window.setInterval( function(){
-                $( '.cf7md-item input, .cf7md-item textarea' ).each( function(){
-                    var $el = $(this);
-                    if( $el.val() != '' ) {
-                        var $lbl = $el.closest( '.mdc-text-field' ).find( '.mdc-floating-label' );
-                        var w = Math.ceil($lbl.mdOutline_textWidth());                  
-                        $lbl.parent().css( "width", w );
-                    }
-                } );
-                window.clearInterval( _t );
-            }, 500 );
+            if( $( '.mdc-floating-label' ).length ) {
+                var _t = window.setInterval( function(){
+                    $( '.cf7md-item input, .cf7md-item textarea' ).each( function(){
+                        var $el = $(this);
+                        if( $el.val() != '' ) {
+                            var $lbl = $el.closest( '.mdc-text-field' ).find( '.mdc-floating-label' );
+                            var w = Math.ceil($lbl.mdOutline_textWidth());                  
+                            $lbl.parent().css( "width", w );
+                        }
+                    } );
+                    window.clearInterval( _t );
+                }, 500 );
+            }
         });
         <?php endif; ?>
 		Hooks.add_action( 'cf7sendwa_after_mailsent', function( options ){
@@ -1709,11 +1711,11 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
 				if( options.cf7event.detail.apiResponse.woo_links ) {
 					var r = options.cf7event.detail.apiResponse.woo_links.received;
 					var p = options.cf7event.detail.apiResponse.woo_links.payment;	
-					var message = options.cf7event.detail.apiResponse.message;
+					var message = String( options.cf7event.detail.apiResponse.message );
                     message = message.replace( '__woo_received__', '<a href="' + r + '" class="cf7sendwa-links" target="_blank">' );
 					message = message.replace( '__woo_payment__', '<a href="' + p + '" class="cf7sendwa-links" target="_blank">' );
-					message = message.replaceAll( /__close_a__/ig, '</a>' );
-					options.cf7event.detail.apiResponse.message = "";					
+					message = message.replace( /__close_a__/ig, '</a>' );
+					options.cf7event.detail.apiResponse.message = "";
 					woo_order_message = message;
 				}
 				

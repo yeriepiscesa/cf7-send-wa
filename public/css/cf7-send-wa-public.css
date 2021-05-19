@@ -40,17 +40,14 @@ body.cf7sendwa-single-product #cf7sendwa-quickshop-container .quantity.buttons_a
 }
 #cf7sendwa-quickshop-container .quantity.buttons_added .sp-woopos-minus,
 #cf7sendwa-quickshop-container .quantity.buttons_added .sp-woopos-plus {
-    display: inline-block;
-    padding: 5px 0px;
+    padding: 5px;
     width: 30px;
     border: 0px;
     cursor:pointer;
     -webkit-appearance: none;
     color:#fff;
     background: #000;
-    text-decoration: none!important;
     border-radius: 5px;
-    text-align: center;
     font-weight: 600;
 }
 body.cf7sendwa-single-product #cf7sendwa-quickshop-container .quantity.buttons_added .sp-woopos-minus,

@@ -117,8 +117,8 @@ function Woo_QuickShop_Cart_Item( id, title, subtitle, qty, price, prop ){
         $( '#'+id ).attr( 'step', '1' )
         $( '#'+id ).addClass( 'input-text qty text' );
         $( '#'+id ).wrap( '<div class="quantity buttons_added sp-mobile-flex-content"></div>' );		
-        $( '#'+id ).parent().prepend( '<a href="javascript:void(0);" class="button sp-woopos-minus"> - </a>' );
-        $( '#'+id ).parent().append( '<a href="javascript:void(0);" class="button sp-woopos-plus"> + </a>' );
+        $( '#'+id ).parent().prepend( '<input type="button" value="-" class="button sp-woopos-minus">' );
+        $( '#'+id ).parent().append( '<input type="button" value="+" class="button sp-woopos-plus">' );
     } 
 	
 	var ajax_search_txt = '';

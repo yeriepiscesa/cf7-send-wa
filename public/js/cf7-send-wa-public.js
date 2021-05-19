@@ -1,10 +1,3 @@
-// number spinner
-function wcqib_refresh_quantity_increments() {
-    jQuery("div.quantity:not(.buttons_added), td.quantity:not(.buttons_added)").each(function(a, b) {
-        var c = jQuery(b);
-        c.addClass("buttons_added"), c.children().first().before('<a href="javascript:void(0);" class="button sp-woopos-minus">-</a>'), c.children().last().after('<a href="javascript:void(0);" class="button sp-woopos-plus">+</a>')
-    });
-}
 String.prototype.getDecimals || (String.prototype.getDecimals = function() {
     var a = this,
         b = ("" + a).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);

@@ -1,3 +1,7 @@
+## Release 0.13.3
+- Fix styling for quick shop 
+- Bugs fixed & code improvements
+
 ## Release 0.13.2
 - Fix styling for quick shop 
 - Fix styling for quick shop with only 1 product

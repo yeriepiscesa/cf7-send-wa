@@ -1152,12 +1152,14 @@ class Cf7_Send_Wa_Public {
 	public function woo_checkout_load_customer_info( $scanned_tag, $replace ) {
         $contact_form = null;
         
-		if( is_checkout() && get_option( 'cf7sendwa_woo_checkout', '' ) != '' ) {
-			$contact_form = WPCF7_ContactForm::get_instance( get_option( 'cf7sendwa_woo_checkout' ) );
-		} elseif( is_product() ) {
-    		$form_id = get_option( 'cf7sendwa_woo_single_product', '' );
-            if( $form_id != '' ) {
-                $contact_form = WPCF7_ContactForm::get_instance( $form_id );
+        if( $this->woo_is_active ) {
+            if( is_checkout() && get_option( 'cf7sendwa_woo_checkout', '' ) != '' ) {
+                $contact_form = WPCF7_ContactForm::get_instance( get_option( 'cf7sendwa_woo_checkout' ) );
+            } elseif( is_product() ) {
+                $form_id = get_option( 'cf7sendwa_woo_single_product', '' );
+                if( $form_id != '' ) {
+                    $contact_form = WPCF7_ContactForm::get_instance( $form_id );
+                }
             }
         }
         
@@ -1271,7 +1273,7 @@ class Cf7_Send_Wa_Public {
 	}	
 	public function cf7sendwa_woo_quickshop_render( $atts ) {
 		
-		if( !is_checkout() && !$this->quickshop_rendered ) {
+		if( $this->woo_is_active && !is_checkout() && !$this->quickshop_rendered ) {
 			
 		    $atts = shortcode_atts( array(
                 'render' => 'list',
@@ -1415,7 +1417,7 @@ class Cf7_Send_Wa_Public {
 	}
 	
     public function body_class( $classes ) {        
-		if( is_product() ) {			
+		if( $this->woo_is_active && is_product() ) {			
 			$form_id = get_option( 'cf7sendwa_woo_single_product', '' );
 			if( $form_id != '' ) {
                 $classes[] = 'cf7sendwa-single-product';
@@ -1433,7 +1435,7 @@ class Cf7_Send_Wa_Public {
     }
     
 	public function cf7_wa_button() {
-		if( is_product() ) {		
+		if( $this->woo_is_active && is_product() ) {		
             global $product;
             if( $product->is_type( 'simple' ) || $product->is_type( 'variable' ) ) {
                 $form_id = get_option( 'cf7sendwa_woo_single_product', '' );
@@ -1642,7 +1644,7 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
 				theme:'tooltipster-noir'
 			});			
 		}
-        <?php if( !is_product() && $this->current_product_checkout ): ?>
+        <?php if( $this->woo_is_active && !is_product() && $this->current_product_checkout ): ?>
         $(document.body).addClass( 'cf7sendwa-single-product' );
         <?php endif; ?>
 		<?php if( $this->woo_is_active && is_product() ): ?>

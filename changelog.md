@@ -1,3 +1,6 @@
+## Release 0.13.4
+- Fix error when woocommerce not active
+
 ## Release 0.13.3
 - Fix styling for quick shop 
 - Bugs fixed & code improvements

@@ -40,6 +40,8 @@ class Cf7_Send_Wa_Public {
 	 */
 	private $version;
     
+    public $debug = false;
+    
 	protected $ids = array();
 	protected $script_loaded = false;
 	protected $numbers = array();
@@ -217,9 +219,13 @@ class Cf7_Send_Wa_Public {
 			'style' => '',
 			'class' => '',
 			'modalwidth' => '',
+            'debug' => 'no',
 		), $atts );
-		$atts = array_merge( $atts, $_atts );
-		
+		$atts = array_merge( $atts, $_atts );		
+        if( $atts['debug'] == 'yes' ) {
+            $this->debug = true;
+        }        
+        wp_enqueue_script( 'jquery' );
 		wp_enqueue_script( 'cf7sendwa-commonlib' );
         wp_enqueue_script( 'underscore' );
         wp_enqueue_style( 'dashicons' );        
@@ -1467,6 +1473,7 @@ class Cf7_Send_Wa_Public {
 		}
 		if( !empty( $this->ids ) && !$this->script_loaded ) : ob_start(); ?>
 <script type="text/javascript">
+var cf7wa_debug = <?php echo $this->debug ? 'true':'false'; ?>;    
 var cf7wa_ids = <?php echo json_encode( $this->ids ); ?>; 
 var cf7wa_country = '<?php echo get_option( 'cf7sendwa_country', '62' ) != '' ? get_option( 'cf7sendwa_country' ) : '62'; ?>';
 var cf7wa_numbers = <?php echo json_encode( $this->numbers ); ?>; 
@@ -1481,6 +1488,7 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
 <?php endif; ?>
 
 (function( $ ){
+    if( cf7wa_debug ) console.log( 'cf7sendwa init' );
 	<?php if( $this->quickshop_rendered ): ?>
 	function quickshop_get_cart_text() {
 		var vm = ko.toJS(Woo_QuickShop_Cart.getVM());
@@ -1513,7 +1521,9 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
 	}
 	<?php endif; ?>
 	document.addEventListener( 'wpcf7mailsent', function( event ) {
-		var the_id = event.detail.contactFormId;		
+        if( cf7wa_debug ) console.log( 'cf7sendwa : tigger event wpcf7mailsent' );
+        if( cf7wa_debug ) console.log( event.detail );
+        var the_id = event.detail.contactFormId;		               
 		if( _.indexOf( cf7wa_ids, the_id ) >= 0 ) {			
 			var inputs = event.detail.inputs;
 			var api_response = event.detail.apiResponse;

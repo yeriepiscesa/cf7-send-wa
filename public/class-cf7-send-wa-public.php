@@ -1524,7 +1524,8 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
         if( cf7wa_debug ) console.log( 'cf7sendwa : tigger event wpcf7mailsent' );
         if( cf7wa_debug ) console.log( event.detail );
         var the_id = event.detail.contactFormId;		               
-		if( _.indexOf( cf7wa_ids, the_id ) >= 0 ) {			
+		if( _.indexOf( cf7wa_ids, the_id ) >= 0 ) {	
+            if( cf7wa_debug ) console.log( 'cf7sendwa : prepare send message for id ' + the_id );
 			var inputs = event.detail.inputs;
 			var api_response = event.detail.apiResponse;
 			var the_text = api_response.wa_text;

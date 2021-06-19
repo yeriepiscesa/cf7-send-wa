@@ -63,7 +63,9 @@ class Cf7_Send_Wa_Public {
 
     protected $ruangwa_token = null;
     
+    public $instances = [];    
     public $instance_count = 0;
+    public $skip_sending = [];
     
     public $woo_is_active = false;
     public $woo_cart = null;
@@ -304,6 +306,8 @@ class Cf7_Send_Wa_Public {
         }
         
         array_push( $this->ids, intval($atts['id']) );
+        $this->instances[ $atts['id'] ] = WPCF7_ContactForm::get_instance( $atts['id'] );
+        
         $_wa = get_post_meta( $atts['id'], '_whatsapp', true );
         if( $_wa && isset( $_wa['body'] ) && trim($_wa['body']) != '' ) {
 	        $allow_resend = '0';
@@ -314,6 +318,17 @@ class Cf7_Send_Wa_Public {
 	        if( isset( $_wa['resendlabel'] ) ) {
 		    	$resend_label = is_null( $_wa['resendlabel'] ) ? '' : $_wa['resendlabel'];	    
 	        }
+            
+            $skip_whatsapp = $this->instances[ $atts['id'] ]->additional_setting( 'skip_whatsapp' );
+            $_skip_wa = '0';
+            if( !empty( $skip_whatsapp ) ) {
+                if( $skip_whatsapp[0] == 'on' ) {
+                    $allow_resend = '0';
+                    $_skip_wa = '1';
+                }
+            }
+            $this->skip_sending[ $atts['id'] ] = $_skip_wa;
+            
 	        $this->resends[ $atts['id'] ] = array(
 	        	'allow' => $allow_resend,
 	        	'label' => $resend_label
@@ -1475,6 +1490,7 @@ class Cf7_Send_Wa_Public {
 <script type="text/javascript">
 var cf7wa_debug = <?php echo $this->debug ? 'true':'false'; ?>;    
 var cf7wa_ids = <?php echo json_encode( $this->ids ); ?>; 
+var cf7wa_skips = <?php echo json_encode( $this->skip_sending ); ?>;
 var cf7wa_country = '<?php echo get_option( 'cf7sendwa_country', '62' ) != '' ? get_option( 'cf7sendwa_country' ) : '62'; ?>';
 var cf7wa_numbers = <?php echo json_encode( $this->numbers ); ?>; 
 var cf7wa_resends = <?php echo json_encode( $this->resends ) ?>;
@@ -1524,7 +1540,7 @@ var cf7wa_custom_apis = <?php echo json_encode( $cf7sendwa_custom_apis ); ?>;
         if( cf7wa_debug ) console.log( 'cf7sendwa : tigger event wpcf7mailsent' );
         if( cf7wa_debug ) console.log( event.detail );
         var the_id = event.detail.contactFormId;		               
-		if( _.indexOf( cf7wa_ids, the_id ) >= 0 ) {	
+		if( _.indexOf( cf7wa_ids, the_id ) >= 0 && cf7wa_skips[ the_id ] == '0' ) {	
             if( cf7wa_debug ) console.log( 'cf7sendwa : prepare send message for id ' + the_id );
 			var inputs = event.detail.inputs;
 			var api_response = event.detail.apiResponse;

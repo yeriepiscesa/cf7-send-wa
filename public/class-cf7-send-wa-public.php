@@ -224,9 +224,11 @@ class Cf7_Send_Wa_Public {
             'debug' => 'no',
 		), $atts );
 		$atts = array_merge( $atts, $_atts );		
+        
         if( $atts['debug'] == 'yes' ) {
             $this->debug = true;
         }        
+        
         wp_enqueue_script( 'jquery' );
 		wp_enqueue_script( 'cf7sendwa-commonlib' );
         wp_enqueue_script( 'underscore' );
@@ -238,7 +240,22 @@ class Cf7_Send_Wa_Public {
 	    	wp_enqueue_script( 'jquery-modal' );    
 			$is_popup = true;
         }
-        $shortcode = '[contact-form-7';
+        
+        if( isset( $atts['cf7key'] ) && $atts['cf7key'] != '' ) {
+            $_key = $atts['cf7key'];
+            if( !isset( $atts['id'] ) ) {
+                $cf7post = get_posts( array(
+                    'post_type' => 'wpcf7_contact_form',
+                    'post_name__in' => array( $_key )
+                ) );
+                if( !empty( $cf7post ) ) {
+                    $atts['id'] = $cf7post[0]->ID;
+                }
+            }
+            $shortcode = '[cf7form cf7key="' . $_key . '"';
+        } else {
+            $shortcode = '[contact-form-7';        
+        }
         if( isset( $atts['number'] ) && $atts['number'] != '' ) {
             $this->numbers[$atts['id']] = $atts['number'];
             unset( $atts['number'] );
@@ -1433,7 +1450,12 @@ class Cf7_Send_Wa_Public {
 		if( $this->global_form != '' ) {
 			wp_enqueue_style( $this->plugin_name );
 			add_filter( 'cf7sendwa_popup_button', array( $this, 'floating_button' ), 10, 3 );
-			echo do_shortcode( '[contact-form-7-wa id="' . $this->global_form . '" popup="button"]' );
+            $adds = '';
+            if( is_plugin_active( 'cf7-grid-layout/cf7-grid-layout.php' ) ) {
+                $cf7post = get_post( $this->global_form );
+                $adds = ' cf7key="' . $cf7post->post_name . '"';
+            }
+			echo do_shortcode( '[contact-form-7-wa id="' . $this->global_form . '" popup="button"'.$adds.']' );
 		}
 	}
 	

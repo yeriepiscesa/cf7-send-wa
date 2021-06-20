@@ -191,6 +191,15 @@ class Cf7_Send_Wa {
 		$this->loader->add_action( 'wpcf7_save_contact_form', $plugin_admin, 'save_contact_form_settings', 10, 3 );
 				
 		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'add_custom_field_tags', 20 );	
+        
+        add_action( 'plugins_loaded', function() use ( $plugin_admin ) {
+            if( class_exists( 'CF7SG_WP_Post_Table' ) ) {
+                $cf7_admin = CF7SG_WP_Post_Table::set_table();
+                remove_action( 'manage_wpcf7_contact_form_posts_custom_column', array( $cf7_admin, 'populate_custom_column' ) ,10,2 );
+                add_action( 'manage_wpcf7_contact_form_posts_custom_column', array( $plugin_admin, 'cf7sg_populate_custom_column' ) ,10,2 );
+            }
+        }, 90 );
+        
 	}
 
 	/**
@@ -265,7 +274,7 @@ class Cf7_Send_Wa {
             $this->loader->add_filter( 'woocommerce_loop_add_to_cart_link', $plugin_public, 'disable_add_to_cart_button', 10, 2 );
 			$this->loader->add_action( 'wp_ajax_cf7sendwa_add_to_cart', $plugin_public, 'quickshop_add_to_cart' );
 			$this->loader->add_action( 'wp_ajax_nopriv_cf7sendwa_add_to_cart', $plugin_public, 'quickshop_add_to_cart' );
-		}
+		}        
 	}
 
 	/**

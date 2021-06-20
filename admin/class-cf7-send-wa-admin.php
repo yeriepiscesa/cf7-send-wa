@@ -481,4 +481,26 @@ class Cf7_Send_Wa_Admin {
 		);
 	}
     
+    /* replace cf7-grid-layout shortcode column */
+    public function cf7sg_populate_custom_column( $column, $post_id ) {
+      switch ( $column ) {
+        case 'shortcode' :
+          $form = get_post($post_id);
+    			$output = "\n" . '<span class="shortcode cf7-2-post-shortcode"><input type="text"'
+    				. ' onfocus="this.select();" readonly="readonly"'
+    				. ' value="' . esc_attr( '[contact-form-7-wa id="' . $post_id . '" cf7key="'.$form->post_name.'"]' ) . '"'
+    				. ' class="large-text code" /></span>';
+      		echo trim( $output );
+          break;
+        case 'cf7_key':
+          $form = get_post($post_id);
+          $update = '';
+          if( get_post_meta($post_id, '_cf7sg_managed_form', true) ){
+            $version = get_post_meta($post_id, '_cf7sg_version', true);
+            if(version_compare($version, CF7SG_VERSION_FORM_UPDATE, '<')) $update = 'cf7sg-update';
+          }
+          echo '<span class="cf7-form-key" data-update="'.$update.'">'.$form->post_name.'</span>';
+          break;
+      }
+    }    
 }

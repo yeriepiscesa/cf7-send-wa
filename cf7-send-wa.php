@@ -41,9 +41,9 @@ define( 'CF7_SEND_WA_VERSION', '0.13.5' );
  * The code that runs during plugin activation.
  * This action is documented in includes/class-cf7-send-wa-activator.php
  */
-function activate_cf7_send_wa() {
+function activate_cf7_send_wa( $network_wide ) {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-cf7-send-wa-activator.php';
-	Cf7_Send_Wa_Activator::activate();
+	Cf7_Send_Wa_Activator::activate( $network_wide );
 }
 
 /**
@@ -57,6 +57,15 @@ function deactivate_cf7_send_wa() {
 
 register_activation_hook( __FILE__, 'activate_cf7_send_wa' );
 register_deactivation_hook( __FILE__, 'deactivate_cf7_send_wa' );
+
+function cf7sendwa_on_create_blog( $blog_id, $user_id, $domain, $path, $site_id, $meta ) {
+    if ( is_plugin_active_for_network( 'cf7-send-wa/cf7-send-wa.php' ) ) {
+        switch_to_blog( $blog_id );
+        Cf7_Send_Wa_Activator::do_activation( false );
+        restore_current_blog();
+    }
+}
+add_action( 'wpmu_new_blog', 'cf7sendwa_on_create_blog', 10, 6 );
 
 /**
  * The core plugin class that is used to define internationalization,

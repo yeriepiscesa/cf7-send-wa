@@ -1,3 +1,8 @@
+## Release 0.13.5
+- Add support to Contact Form 7 Grid Layout plugin
+- Add skip_whatsapp option for additional settings 
+- Add debug mode 
+
 ## Release 0.13.4
 - Fix error when woocommerce not active
 
